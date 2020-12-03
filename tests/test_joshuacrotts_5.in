@@ -1,0 +1,52 @@
+// 
+// 2D Array API.
+//
+
+char get_2d_char_idx(char[] arr, int rows, int cols, int i, int j) {
+	return arr[i * cols + j];
+}
+
+void set_2d_char_idx(char[] arr, int rows, int cols, int i, int j, char val) {
+	arr[i * cols + j] = val;
+}
+
+int get_2d_int_idx(int[] arr, int rows, int cols, int i, int j) {
+	return arr[i * cols + j];
+}
+
+void set_2d_int_idx(int[] arr, int rows, int cols, int i, int j, int val) {
+	arr[i * cols + j] = val;
+}
+
+char LC_Get2DIdxChar(char[] arr, int rows, int cols, int i, int j) {
+	return arr[i * cols + j];
+}
+
+void LC_Set2DIdxChar(char[] arr, int rows, int cols, int i, int j, char val) {
+	arr[i * cols + j] = val;
+}
+
+int LC_Get2DIdxInt(int[] arr, int rows, int cols, int i, int j) {
+	return arr[i * cols + j];
+}
+
+void LC_Set2DIdxInt(int[] arr, int rows, int cols, int i, int j, int val) {
+	arr[i * cols + j] = val;
+}
+
+void main() {
+	int ROWS = 4;
+	int COLS = 3;
+	int matrix[12];
+	int i;
+	int j;
+	for (i = 0; i < #matrix; i++) 
+		matrix[i] = i + 1;
+
+	for (i = 0; i < ROWS; i++) {
+		for (j = 0; j < COLS; j++) {
+			printd(get_2d_int_idx(matrix, ROWS, COLS, i, j));
+		}
+		prints("\n");
+	}
+}

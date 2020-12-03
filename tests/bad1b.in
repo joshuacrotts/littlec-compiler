@@ -1,0 +1,11 @@
+
+// Error case - undeclared variable
+
+void main() {
+    int i = 10;
+    while (i > 0) {
+        printd(j);   // Error is here - should have used variable i
+        i--;
+    }
+    prints("Blast off!");
+}

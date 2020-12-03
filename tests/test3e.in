@@ -1,0 +1,12 @@
+
+// Make sure char addition works properly - should wrap around (to -56)
+
+void main() {
+    char a = 100;
+    char b = 100;
+    char c;
+
+    c = a + b;
+    printd(c);
+    prints("\n");
+}

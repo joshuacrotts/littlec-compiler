@@ -1,0 +1,19 @@
+
+// Testing pre/post inc/dec
+
+void main() {
+    int a = 13;
+    int b;
+
+    b = a++;
+    printd(a); prints(" "); printd(b); prints("\n");
+
+    b = ++a;
+    printd(a); prints(" "); printd(b); prints("\n");
+
+    b = a--;
+    printd(a); prints(" "); printd(b); prints("\n");
+
+    b = --a;
+    printd(a); prints(" "); printd(b); prints("\n");
+}

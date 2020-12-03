@@ -1,0 +1,12 @@
+
+// Bad input - using variable namd in a function call
+
+void main() {
+    int i = 10;
+    while (i > 0) {
+        printd(i);
+        i--;
+    }
+    i(12);
+    prints("Blast off!");
+}

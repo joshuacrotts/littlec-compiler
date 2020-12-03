@@ -1,0 +1,39 @@
+// Harder short-circuit evaluation...
+
+void print_test(int c) {
+	printd(c);
+	prints("\n");
+}
+
+void main() {
+	int count = 0;
+	if (5==5&&6==6||++count==1)
+		prints("Test 1: ");
+	print_test(count);
+	
+	if (5!=5&&6==6||++count==1)
+		prints("Test 2: ");
+	print_test(count);
+	
+	if (5!=5||6!=6||7==7) {
+		count++;
+		prints("Test 3: ");
+	}
+	print_test(count);
+	
+	if (5==5&&6!=6&&7==7&&(count=20)==20) {
+		count++;
+		prints("Test 4: ");
+	}
+	print_test(count);
+	prints("... test 4 should not have printed!\n");
+	
+	if (count <= 10 || (count=20)==20)
+		prints("Test 5: ");
+	print_test(count);
+	
+	if (!(count == 0) || (count=20)==20)
+		prints("Test 6: ");
+	print_test(count);
+}
+		

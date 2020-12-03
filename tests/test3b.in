@@ -1,0 +1,26 @@
+// Basic calculation with some arrays, globals, loops, ...
+
+int iglobal = 12;
+char buffer[23];
+
+int addit(int x, int y) {
+    return x + y;
+}
+    
+void main() {
+     int small[7];
+     int i;
+
+     for (i=0; i<#buffer; i++) {
+         buffer[i] = ' ';
+     }
+
+     iglobal = 0;
+     small[0] = 0;
+     for (i=1; i<#small; i++) {
+         small[i] = addit(small[i-1],buffer[i]);
+     }
+
+     printd(small[3]);
+     prints("\n");
+}

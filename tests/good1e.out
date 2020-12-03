@@ -1,0 +1,42 @@
+void SEQ (
+  void FNDEF pow int (int,int) (
+    void SEQ (
+      void PDECL a (int),
+      void PDECL b (int),
+      void DECL halfb (int),
+      void DECL recurse (int),
+      void IF (
+        int BINOP('==') (
+          int ID b,
+          int LIT = 0),
+        void RETURN (
+          int LIT = 1)),
+      int ASN (
+        int ID recurse,
+        int FNCALL pow (
+          int ID a,
+          int BINOP('/') (
+            int ID b,
+            int LIT = 2))),
+      void IF (
+        int BINOP('==') (
+          int BINOP('%') (
+            int ID b,
+            int LIT = 2),
+          int LIT = 1),
+        void RETURN (
+          int BINOP('*') (
+            int BINOP('*') (
+              int ID recurse,
+              int ID recurse),
+            int ID a)),
+        void RETURN (
+          int BINOP('*') (
+            int ID recurse,
+            int ID recurse))))),
+  void FNDEF main void () (
+    void SEQ (
+      void FNCALL printd (
+        int FNCALL pow (
+          int LIT = 2,
+          int LIT = 6)))))

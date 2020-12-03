@@ -1,0 +1,12 @@
+
+// Error case -- using unknown function
+
+
+void main() {
+    int i = 10;
+    while (i > 0) {
+        printd(i);
+        i--;
+    }
+    print("Blast off!");  // Error is here - should have been prints
+}

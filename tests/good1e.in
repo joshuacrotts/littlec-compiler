@@ -1,0 +1,28 @@
+
+
+// A recursive powering function, using several more operations. One
+// important point here is that recursive functions must know about the
+// function being defined before the definition is complete (in other words
+// if you wait until exitFnDecl or something similar to actually declare
+// the function signature, then it won't recognize it inside the function
+// body for recursion!
+
+int pow(int a, int b) {
+    int halfb;
+    int recurse;
+    if (b == 0)
+        return 1;
+
+    recurse = pow(a, b/2);
+    if (b%2 == 1)
+        return recurse*recurse*a;
+    else
+        return recurse*recurse;
+}
+        
+
+void main() {
+    printd(pow(2, 6));
+}
+
+    

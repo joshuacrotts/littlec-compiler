@@ -1,0 +1,26 @@
+void SEQ (
+  void FNDEF pow int (int,int) (
+    void SEQ (
+      void PDECL a (int),
+      void PDECL b (int),
+      void DECL res (int) = 1,
+      void WHILE (
+        int BINOP('>') (
+          int ID b,
+          int LIT = 0),
+        void SEQ (
+          int ASN (
+            int ID res,
+            int BINOP('*') (
+              int ID res,
+              int ID a)),
+          int POST-DEC (
+            int ID b))),
+      void RETURN (
+        int ID res))),
+  void FNDEF main void () (
+    void SEQ (
+      void FNCALL printd (
+        int FNCALL pow (
+          int LIT = 2,
+          int LIT = 6)))))

@@ -1,0 +1,470 @@
+// 
+// A whole bunch of functions to use. Sort of like small library for the language.
+//
+
+
+// ============= FUNCTION PROTOTYPES FUNCTIONS ============== //
+
+char get_2d_char_idx(char[] arr, int rows, int cols, int i, int j);
+void set_2d_char_idx(char[] arr, int rows, int cols, int i, int j, char val);
+int get_2d_int_idx(int[] arr, int rows, int cols, int i, int j);
+void set_2d_int_idx(int[] arr, int rows, int cols, int i, int j, int val);
+
+int signum(int n);
+int pow(int x, int p);
+int atoi(char[] text);
+int min(int m, int n);
+int is_even(int n);
+int is_odd(int n);
+
+void ssort(int[] arr);
+void isort(int[] arr);
+void bsort(int[] arr);
+int binary_search(int[] arr, int val);
+
+int strcmp(char[] str1, char[] str2);
+int strlen(char[] str1);
+int strchr(char[] str1, char ch);
+int strstr(char[] str1, char[] str2);
+void strcat(char[] dst, char[] src);
+
+void printc(char c);
+void printlnc(char c);
+void printlnd(int d);
+void printlns(char[] s);
+void print_int_array(int[] arr);
+
+char readc();
+
+
+// ============= 2D ARRAY FUNCTIONS ============== //
+
+char get_2d_char_idx(char[] arr, int rows, int cols, int i, int j) {
+	char c;
+	c = arr[i * cols + j];
+	return c;
+}
+
+void set_2d_char_idx(char[] arr, int rows, int cols, int i, int j, char val) {
+	arr[i * cols + j] = val;
+}
+
+int get_2d_int_idx(int[] arr, int rows, int cols, int i, int j) {
+	return arr[i * cols + j];
+}
+
+void set_2d_int_idx(int[] arr, int rows, int cols, int i, int j, int val) {
+	arr[i * cols + j] = val;
+}
+
+
+
+// ============= ARITHMETIC FUNCTIONS ============== //
+
+//
+// Returns the sign of a number n.
+//
+// @return -1 if n < 0, 0 if n = 0, 1 if n > 0.
+//
+int signum(int n) {
+	if (n < 0) 
+		return -1;
+	else if (n > 0) 
+		return 1;
+	return 0;
+}
+
+//
+// Computes the power of x raise
+//
+int pow(int x, int n) {
+	int powNum = 1;
+	int i;
+
+	for (i = 0; i < n; i++) {
+		powNum = powNum * x;
+	}
+	
+	return powNum;
+}
+
+//
+// Computes the ascii value summation of 
+// a string of text.
+//
+// ex. "Hi!" returns 72+105+33.
+//
+int atoi(char[] text) {
+	int n;
+	int i;
+	
+	for (i = 0; i < #text; i++) {
+		n = n + text[i];
+	}
+	
+	return n;
+}
+
+//
+// Computes the absolute value of an integer.
+//
+int abs(int n) {
+	if (n < 0) {
+		return -n;
+	}
+	return n;
+}
+
+// 
+// Computes the max of two integers.
+//
+int max(int m, int n) {
+	if (m < n) 
+		return n;
+	return m;
+}
+
+//
+// Computes the min of two integers.
+//
+int min(int m, int n) {
+	if (m < n) 
+		return m;
+	return n;
+}
+
+//
+// Returns whether or not an integer n is even.
+// 
+// Returns 1 if even, 0 if odd.
+//
+int is_even(int n) {
+	return n % 2 == 0;
+}
+
+//
+// Returns whether or not an integer n is odd.
+// 
+// Returns 1 if odd, 0 if even.
+//
+int is_odd(int n) {
+	return is_even(n) == 0;
+}
+
+
+
+// ============= SORTING FUNCTIONS ============== //
+
+//
+// Swaps two integers in an array at the specified
+// indicies.
+//
+static void swap(int[] arr, int idx1, int idx2) {
+	int temp = 0;
+	temp = arr[idx1];
+	arr[idx1] = arr[idx2];
+	arr[idx2] = temp;
+}
+
+// 
+// Selection sorts an array of integers.
+//
+void ssort(int[] arr) {
+    int i;
+    int j;
+    int min_idx; 
+  
+    // One by one move boundary of unsorted subarray 
+    for (i = 0; i < #arr - 1; i++) 
+    { 
+        // Find the minimum element in unsorted array 
+        min_idx = i; 
+        for (j = i+1; j < #arr; j++) {
+          if (arr[j] < arr[min_idx]) {
+            min_idx = j; 
+          }
+        }
+  
+        // Swap the found minimum element with the first element 
+        swap(arr, min_idx, i); 
+    } 
+}
+
+//
+// Insertion sorts an array of integers.
+//
+void isort(int[] arr) {
+    int i;
+    int key;
+    int j;  
+    
+    for (i = 1; i < #arr; i++) 
+    {  
+        key = arr[i];  
+        j = i - 1;  
+  
+        while (j >= 0 && arr[j] > key) 
+        {  
+            arr[j + 1] = arr[j];  
+            j = j - 1;  
+        }  
+        arr[j + 1] = key;  
+    }  
+}
+
+//
+// Bubble sorts an array of integers.
+//
+void bsort(int[] arr) {
+	int i;
+	int j;
+	
+	for (i = 0; i < #arr; i++) {
+		for (j = 0; j < #arr; j++) {
+			if (arr[j] > arr[i]) {
+				swap(arr, i, j);
+			}
+		}
+	}
+}
+
+//
+// Binary searches an array for a value.
+//
+// Returns -1 if value is not in array.
+// Returns index of element otherwise.
+//
+int binary_search(int[] arr, int val) {
+	int low;
+	int high;
+	int mid;
+	
+	low = 0;
+	high = #arr - 1;
+	
+	while (low <= high) {
+		mid = low + (high - low) / 2;
+		if (val == arr[mid] ) {
+			return mid;
+		} else if (val < arr[mid]) {
+			high = mid - 1;
+		} else {
+			low = mid + 1;
+		}
+	}
+	
+	return -1;
+}
+
+
+
+// ============= STRING FUNCTIONS ============== //
+
+//
+// Compares two strings.
+//
+// Returns 0 if the two are equal, 1 if 
+// str1 is greater than str2, -1 if str1 is
+// less than str2.
+//
+int strcmp(char[] str1, char[] str2) {
+	int cmpVal = 0;
+	int str1Count = 0;
+	int str2Count = 0;
+	int i;
+	
+	// Checks size, then checks lexicographical ordering.
+	if (#str1 < #str2) 
+		return -1;
+	else if (#str1 > #str2)
+		return 1;
+	else {
+		for (i = 0; i < #str1 - 1; i++) {
+			str1Count = str1Count + str1[i];
+			str2Count = str2Count + str2[i];
+		}
+		
+		if (str1Count < str2Count) 
+			return -1;
+		else if (str1Count > str2Count)
+			return 1;
+		else 
+			return 0;	
+	}
+}
+
+//
+// Computes the length of a string.
+//
+int strlen(char[] str) {
+	int i;
+	for (i = 0; i < #str; i++) {
+		if (str[i] == '\0')
+			break;
+	}
+	return i;
+}
+
+//
+// Finds the first index of a char ch in a 
+// string str.
+//
+int strchr(char[] str, char ch) {
+	int i;
+	for (i = 0; i < #str; i++) {
+		if (str[i] == ch) {
+			return i;
+		}
+	}
+	return -1;
+}
+
+//
+// Finds the first index of a search string
+// "search" in a string str.
+//
+// Returns -1 if the length of the search string
+// is greater than str, 0 if the search string is empty,
+// and otherwise in other cases.
+//
+int strstr(char[] str, char[] search) {
+	int i;
+	int j;
+	if (#search > #str) {
+		return -1;
+	}
+	
+	else if (#search == 0) {
+		return 0;
+	}
+	
+	else {
+		for (i = 0; i <= #str - #search; i++) {
+			for (j = 0; j < #search; j++) {
+				if (search[j] != str[i + j]) {
+					break;
+				}
+			}
+			
+			if (j == #search) {
+				return i;
+			}
+		}
+		return -1;
+	}
+}
+
+//
+// Copies a string from src to dst.
+//
+void strcpy(char[] dst, char[] src) {
+    int i;
+    for (i=0; i<#src && i<#dst; i++) {
+        dst[i] = src[i];
+        if (dst[i] == '\0')
+            break;
+    }
+}
+
+//
+// Concatenates a string src onto the end of
+// another string dest.
+//
+// WARNING: This CAN cause undefined behavior with the destination as a string literal!
+//
+void strcat(char[] dst, char[] src) {
+	int i;
+	int j;
+	
+	if (#src > #dst) {
+		printlns("error: cannot concatenate string to destination buffer; src is too large.");
+		return;
+	}
+	
+	for (i = 0; dst[i] != '\0'; i++) {}
+	for (j = 0; src[j] != '\0'; j++) {
+		dst[i + j] = src[j];
+	}
+	dst[i + j] = '\0';
+}
+
+//
+// Sets a string array to hold a string literal. This
+// is a substitute for not storing string lit declarations
+// in the intermediate code. The buffer needs to be large
+// enough to hold the literal and the null terminator.
+//
+void strinit(char[] dest, char[] lit) {
+	int i;
+	
+	if (#lit >= #dest) {
+		printlns("error: cannot initialize string.");
+		return;
+	}
+	
+	for (i = 0; i < #lit; i++) 
+		dest[i] = lit[i];
+		
+	dest[i] = '\0';
+}
+
+
+// ============= PRINTING/DISPLAY FUNCTIONS ============== //
+
+//
+// Prints an integer then adds a return carriage.
+//
+void printlnd(int n) {
+	printd(n);
+	prints("\n");
+}
+
+//
+// Prints a string with a return carriage.
+//
+void printlns(char[] s) {
+	prints(s);
+	prints("\n");
+}
+
+// 
+// Outputs a character to standard output. This is needed
+// because LittleC doesn't support printing chars by default
+// (printd will print the ascii value but not the char itself).
+//
+void printc(char c) {
+	char buf[2];
+	buf[0] = c;
+	buf[1] = '\0';
+	prints(buf);
+}
+
+//
+// Outputs a character to standard output with a new line appended.
+//
+void printlnc(char c) {
+	printc(c);
+	prints("\n");
+}
+
+//
+// Prints an array of integers separated by new lines.
+//
+void print_int_array(int[] arr) {
+	int i;
+	for (i = 0; i < #arr; i++) 
+		printlnd(arr[i]);
+}
+
+
+
+// ============= INPUT FUNCTIONS ============== //
+
+// TESTING
+
+void main() {
+	char buffer[100];
+	strinit(buffer, "Hi there.");
+	prints("Length of 'Hi there.': ");
+	printlnd(strlen(buffer));
+}

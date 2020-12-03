@@ -1,0 +1,12 @@
+
+// Bad: Using a non-array as an array
+
+void main() {
+    int i;
+    int a[20];
+    int x;
+    int sum = 0;
+
+    x[1] = 0;
+}
+

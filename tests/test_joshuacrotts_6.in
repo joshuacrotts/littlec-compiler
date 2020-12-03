@@ -1,0 +1,160 @@
+//
+// N queens problem
+// 
+
+int TRUE = 1;
+int FALSE = 0;
+
+// ============= 2D ARRAY FUNCTIONS ============== //
+
+char get_2d_char_idx(char[] arr, int rows, int cols, int i, int j) {
+	char c;
+	c = arr[i * cols + j];
+	return c;
+}
+
+void set_2d_char_idx(char[] arr, int rows, int cols, int i, int j, char val) {
+	arr[i * cols + j] = val;
+}
+
+int get_2d_int_idx(int[] arr, int rows, int cols, int i, int j) {
+	return arr[i * cols + j];
+}
+
+void set_2d_int_idx(int[] arr, int rows, int cols, int i, int j, int val) {
+	arr[i * cols + j] = val;
+}
+
+
+
+// ============= PRINTING/DISPLAY FUNCTIONS ============== //
+
+//
+// Prints an integer then adds a return carriage.
+//
+void printlnd(int n) {
+	printd(n);
+	prints("\n");
+}
+
+//
+// Prints a string with a return carriage.
+//
+void printlns(char[] s) {
+	prints(s);
+	prints("\n");
+}
+
+//
+// Outputs a character to standard output with a new line appended.
+//
+void printlnc(char c) {
+	printc(c);
+	prints("\n");
+}
+
+
+
+// =============================================== //
+
+void printSolution(int[] board, int dim) {
+	int i;
+	int j;
+	for (i = 0; i < dim; i++) {
+		for (j = 0; j < dim; j++) {
+			prints(" ");
+			printd(get_2d_int_idx(board, dim, dim, i, j));
+			prints(" ");
+		}
+		prints("\n");
+	}
+}
+
+int isSafe(int[] board, int dim, int row, int col) {
+	int i;
+	int j;
+	
+	for (i = 0; i < col; i++) {
+		if (get_2d_int_idx(board, dim, dim, row, i)) {
+			return FALSE;
+		}
+	}
+	
+	i = row;
+	j = col;
+	while (i >= 0 && j >= 0) {
+		if (get_2d_int_idx(board, dim, dim, i, j)) {
+			return FALSE;
+		}
+		i--;
+		j--;
+	}
+	
+	i = row;
+	j = col;
+	while (j >= 0 && i < dim) {
+		if (get_2d_int_idx(board, dim, dim, i, j)) {
+			return FALSE;
+		}
+		i++;
+		j++;
+	}
+	
+	return TRUE;
+}
+
+int solveNQUtil(int[] board, int dim, int col) {
+	int i;
+	if (col >= dim) {
+		return TRUE;
+	}
+
+	for (i = 0; i < dim; i++) {
+		if (isSafe(board, dim, i, col)) {
+			set_2d_int_idx(board, dim, dim, i, col, 1);
+			
+			if (solveNQUtil(board, dim, col + 1)) {
+				return TRUE;
+			}
+			
+			set_2d_int_idx(board, dim, dim, i, col, 0);
+		}
+	}
+	
+	return FALSE;
+}
+
+int solveNQ() {
+	int board[64];
+	int DIM = 8;
+	int i;
+	for (i = 0; i < #board; i++)
+		board[i] = 0;
+		
+	if (solveNQUtil(board, DIM, 0) == FALSE) {
+		printlns("Solution does not exist.");
+		return FALSE;
+	}
+	
+	printSolution(board, DIM);
+	return TRUE;
+}
+
+void main() {
+	solveNQ();
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

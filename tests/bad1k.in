@@ -1,0 +1,12 @@
+
+// Bad input - post-increment on non-lvalue
+
+void main() {
+    int i = 10;
+    while (i > 0) {
+        printd(i);
+        i--;
+    }
+    (i+2)++;
+    prints("Blast off!");
+}

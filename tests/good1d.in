@@ -1,0 +1,20 @@
+
+
+// Similar to good1c, but with function order reversed, requiring a forward
+// signature definition for pow.
+
+int pow(int a, int b);
+
+void main() {
+    printd(pow(2, 6));
+}
+
+int pow(int a, int b) {
+    int i;
+    int res = 1;
+    for (i=0; i<b; i++) {
+        res = res * a;
+    }
+    return res;
+}
+        

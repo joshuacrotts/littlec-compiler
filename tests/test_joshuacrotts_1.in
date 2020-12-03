@@ -1,0 +1,79 @@
+//
+// Quicksort algorithm.
+//
+
+static int
+partition( int[] arr, int low, int high ) {
+  int pivot = 0;
+  int l     = 0;
+  int i;
+
+  l     = ( low - 1 );
+  pivot = arr[high];
+
+  for ( i = low; i < high; i++ ) {
+    if ( arr[i] < pivot ) {
+      l++;
+
+      {
+        int tmp = 0;
+        tmp     = arr[l];
+        arr[l]  = arr[i];
+        arr[i]  = tmp;
+      }
+    }
+  }
+
+  {
+    int tmp    = 0;
+    tmp        = arr[l + 1];
+    arr[l + 1] = arr[high];
+    arr[high]  = tmp;
+  }
+
+  return l + 1;
+}
+
+static void
+qsort_helper( int[] arr, int low, int high ) {
+  if ( low < high ) {
+    int p = 0;
+    p     = partition( arr, low, high );
+
+    qsort_helper( arr, low, p - 1 );
+    qsort_helper( arr, p + 1, high );
+  }
+}
+
+void
+qsort_f( int[] arr, int n ) {
+  qsort_helper( arr, 0, n - 1 );
+}
+
+void
+// int
+main() {
+  int arr[10]; // = {1, 1, -9, 99, 12, 13, 16, 77, 0, 3};
+  int i;
+  arr[0] = 1;
+  arr[1] = 1;
+  arr[2] = -9;
+  arr[3] = 99;
+  arr[4] = 12;
+  arr[5] = 13;
+  arr[6] = 16;
+  arr[7] = 77;
+  arr[8] = 0;
+  arr[9] = 3;
+  qsort_f( arr, 10 );
+
+  for ( i = 0; i < 10 - 1; i++ ) {
+    // printf( "%d\t", arr[i] );
+    printd(arr[i]);
+    prints(" ");
+  }
+  // printf( "\n" );
+  prints("\n");
+
+  // return 0;
+}

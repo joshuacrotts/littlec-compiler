@@ -1,0 +1,48 @@
+
+// Sieve...  just for something else to do...
+
+char flags[100];
+
+void strcpy(char[] dst, char[] src) {
+    int i;
+    for (i=0; i<#src && i<#dst; i++) {
+        dst[i] = src[i];
+        if (dst[i] == '\0')
+            break;
+    }
+}
+
+int isprime(int x) {
+    return flags[x] == 0;
+}
+
+void checkprime(int x) {
+	char buf[10];
+    printd(x);
+    if (isprime(x)) {
+    	strcpy(buf, " is ");
+    } else {
+    	strcpy(buf, " is not ");
+    }
+    prints(buf);
+    prints("prime\n");
+}
+
+void main() {
+    int i;
+    int j;
+    for (i=0; i<#flags; i++)
+        flags[i] = 0;
+        
+    for (i=2; i<#flags; i++) {
+        if (!flags[i]) {
+            for (j=2*i; j<#flags; j=j+i)
+                flags[j] = 1;
+        }
+    }
+    
+    checkprime(8);
+    checkprime(29);
+    checkprime(51);
+    checkprime(53);
+}

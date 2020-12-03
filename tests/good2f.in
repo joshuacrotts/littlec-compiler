@@ -1,0 +1,15 @@
+
+// Binop always produces an int - no casting required
+
+void main() {
+    char ca = 1;
+    char cb = 2;
+    int ia = 1;
+    int ib = 2;
+    char cc;
+    int  ic;
+
+    ic = ca && cb;
+    printd(ic);
+}
+

@@ -1,0 +1,12 @@
+
+// Bad: Assigning to array ref must be exact type match
+
+void main() {
+    int i;
+    int a[20];
+    char[] b;
+    int sum = 0;
+
+    b = a;
+}
+

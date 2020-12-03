@@ -1,0 +1,12 @@
+
+// Error case -- known function but bad parameter type
+
+
+void main() {
+    int i = 10;
+    while (i > 0) {
+        printd(i);
+        i--;
+    }
+    printd("Blast off!");  // Error is here - printd expects an int
+}

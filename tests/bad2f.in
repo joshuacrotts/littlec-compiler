@@ -1,0 +1,9 @@
+
+// Bad: Trying to initialize an array
+
+void main() {
+    int i;
+    int a[20] = 1;
+    int sum = 0;
+}
+

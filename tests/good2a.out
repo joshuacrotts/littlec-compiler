@@ -1,0 +1,45 @@
+void SEQ (
+  void FNDEF main void () (
+    void SEQ (
+      void DECL i (int),
+      void DECL a (int[20]),
+      void DECL sum (int) = 0,
+      void SEQ (
+        int ASN (
+          int ID i,
+          int LIT = 0),
+        void WHILE (
+          int BINOP('<') (
+            int ID i,
+            int LIT = 20),
+          void SEQ (
+            int ASN (
+              int AIDX (
+                int[20] ID a,
+                int ID i),
+              int ID i),
+            int POST-INC (
+              int ID i)))),
+      void SEQ (
+        int ASN (
+          int ID i,
+          int LIT = 0),
+        void WHILE (
+          int BINOP('<') (
+            int ID i,
+            int UNARYOP('#') (
+              int[20] ID a)),
+          void SEQ (
+            int ASN (
+              int ID sum,
+              int BINOP('+') (
+                int ID sum,
+                int AIDX (
+                  int[20] ID a,
+                  int ID i))),
+            int POST-INC (
+              int ID i)))),
+      void FNCALL prints (
+        char[] LIT = "Sum is "),
+      void FNCALL printd (
+        int ID sum))))

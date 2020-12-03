@@ -1,0 +1,11 @@
+
+// Basic syntax error
+
+void main() {
+    int i = = 10;   // Error is here
+    while (i > 0) {
+        printd(i);
+        i--;
+    }
+    prints("Blast off!");
+}

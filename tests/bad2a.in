@@ -1,0 +1,9 @@
+
+// Bad array declaration
+
+void main() {
+    int i;
+    int[] a[20];
+    int sum = 0;
+}
+

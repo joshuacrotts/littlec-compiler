@@ -1,0 +1,15 @@
+
+// Bad: Function can't return array ref
+
+int[] f(int a) {
+}
+
+void main() {
+    int i;
+    int a[20];
+    int x;
+    int sum = 0;
+
+    a[1] = 0;
+}
+

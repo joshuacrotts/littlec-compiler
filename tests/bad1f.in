@@ -1,0 +1,17 @@
+
+// Bad input - forgot a parameter in function call
+
+int pow(int a, int b) {
+    int res = 1;
+    while (b > 0) {
+        res = res * a;
+        b--;
+    }
+    return res;
+}
+
+void main() {
+    printd(pow(2));   // Error is here - pow has two parameters
+}
+
+        

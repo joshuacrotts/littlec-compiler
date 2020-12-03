@@ -1,0 +1,12 @@
+
+// Bad: Non-lvalue for array index
+
+void main() {
+    int i;
+    int a[20];
+    int x;
+    int sum = 0;
+
+    (x+5)[1] = 0;
+}
+

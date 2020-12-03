@@ -1,0 +1,13 @@
+
+// Passing by array ref - make sure size works
+
+int arr[13];
+
+void f(int[] foo) {
+    printd(#foo);
+    prints("\n");
+}
+
+void main() {
+    f(arr);
+}

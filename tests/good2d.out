@@ -1,0 +1,14 @@
+void SEQ (
+  void FNDEF main void () (
+    void SEQ (
+      void DECL ca (char) = 1,
+      void DECL cb (char) = 2,
+      void DECL ia (int) = 1,
+      void DECL ib (int) = 2,
+      void DECL cc (char),
+      void DECL ic (int),
+      void FNCALL printd (
+        int CAST (
+          char BINOP('*') (
+            char ID ca,
+            char ID cb))))))

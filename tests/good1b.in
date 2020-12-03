@@ -1,0 +1,17 @@
+
+// This tests out function definitions with parameters and resturn statements
+
+int pow(int a, int b) {
+    int res = 1;
+    while (b > 0) {
+        res = res * a;
+        b--;
+    }
+    return res;
+}
+
+void main() {
+    printd(pow(2, 6));
+}
+
+        

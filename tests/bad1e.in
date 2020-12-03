@@ -1,0 +1,18 @@
+
+// Bad input - multiply-defined variable a (parameter and variable)
+
+int pow(int a, int b) {
+    int a;
+    int res = 1;
+    while (b > 0) {
+        res = res * a;
+        b--;
+    }
+    return res;
+}
+
+void main() {
+    printd(pow(2, 6));
+}
+
+        

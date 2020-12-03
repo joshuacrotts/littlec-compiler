@@ -1,0 +1,21 @@
+void SEQ (
+  void DECL gvar (int) = 12,
+  void FNDEF main void () (
+    void SEQ (
+      void DECL i (int) = 10,
+      void FNCALL prints (
+        char[] LIT = "T "),
+      void FNCALL printd (
+        int UNARYOP('-') (
+          int ID i)),
+      void WHILE (
+        int BINOP('>') (
+          int ID i,
+          int LIT = 0),
+        void SEQ (
+          void FNCALL printd (
+            int ID i),
+          int POST-DEC (
+            int ID i))),
+      void FNCALL prints (
+        char[] LIT = "Blast off!"))))

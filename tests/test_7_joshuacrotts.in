@@ -1,0 +1,121 @@
+int reverseDigits(int num) 
+{ 
+    int rev_num = 0; 
+    while(num > 0) 
+    { 
+        rev_num = rev_num*10 + num%10; 
+        num = num/10; 
+    } 
+    return rev_num; 
+} 
+
+int fac(int n) {
+	if(n<=1)
+		return 1;
+	return n*fac(n-1);
+}
+
+int fib(int n) {
+	if(n<=1)
+		return 1;
+	return fib(n-1)+fib(n-2);
+}
+
+int binarySearch(int[] arr, int l, int r, int x) 
+{ 
+   if (r >= l) 
+   { 
+        int mid = 0;
+        mid = l + (r - l)/2; 
+  
+        // If the element is present at the middle itself 
+        if (arr[mid] == x)  return mid; 
+  
+        // If element is smaller than mid, then it can only be present 
+        // in left subarray 
+        if (arr[mid] > x) return binarySearch(arr, l, mid-1, x); 
+  
+        // Else the element can only be present in right subarray 
+        return binarySearch(arr, mid+1, r, x); 
+   } 
+  
+   // We reach here when element is not present in array 
+   return -1; 
+} 
+
+int linearSearch(int[] arr, int v, int l) {
+	if(l>=#arr)
+		return -1;
+	else if(v!=arr[l])
+		return linearSearch(arr, v, l+1);
+	else
+		return l;
+}
+
+void printlnd(int n) {
+	printd(n);
+	prints("\n");
+}
+
+void isort(int[] arr) {
+    int i;
+    int key;
+    int j;  
+    
+    for (i = 1; i < #arr; i++) 
+    {  
+        key = arr[i];  
+        j = i - 1;  
+  
+        while (j >= 0 && arr[j] > key) 
+        {  
+            arr[j + 1] = arr[j];  
+            j = j - 1;  
+        }  
+        arr[j + 1] = key;  
+    }  
+}
+
+void swap(int[] arr, int i, int j) {
+	int tmp;
+	tmp = arr[i];
+	arr[i] = arr[j];
+	arr[j] = tmp;
+}
+
+void reversearr(int[] arr) {
+	int i;
+	for(i=0;i<#arr/2;i++)
+		swap(arr, i, #arr-i-1);
+} 
+
+void mod(int[] arr) {
+	int i;
+	for(i=0;i<#arr;i++)
+		arr[i] = 5;
+}
+
+void parray(int[] arr) {
+	int i;
+	for(i=0;i<#arr;i++)
+		printlnd(arr[i]);
+}
+
+void main() {
+	int arr[5];
+	int i;
+	arr[0] = 5;
+	arr[1] = 6;
+	arr[2] = 10;
+	arr[3] = 20;
+	arr[4] = 100;
+	reversearr(arr);
+	parray(arr);
+	isort(arr);
+	parray(arr);
+	printlnd(binarySearch(arr, 0, #arr-1, 6));
+	printlnd(binarySearch(arr, 0, #arr-1, 5));
+	printlnd(binarySearch(arr, 0, #arr-1, 100));
+	printlnd(binarySearch(arr, 0, #arr-1, 10));
+	printlnd(binarySearch(arr, 0, #arr-1, 15));
+}

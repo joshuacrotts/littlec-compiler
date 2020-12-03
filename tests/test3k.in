@@ -1,0 +1,39 @@
+
+// Testing short circuiting
+
+int counter;
+
+int f(int x, int y) {
+    counter++;
+    return x+y;
+}
+
+void main() {
+    int a = 13;
+    int b = 11;
+    int c = 18;
+    int d = 17;
+    int e = 23;
+
+    counter=0;
+    
+    if ((a == f(b,2)) || (f(c,-1) == d)) prints("Yes\n");
+    else prints("No\n");
+    printd(counter);
+    prints("\n");
+    
+    if ((a != f(b,2)) || (f(c,-1) == d)) prints("Yes\n");
+    else prints("No\n");
+    printd(counter);
+    prints("\n");
+
+    if ((a == f(b,2)) || (f(c,-1) != d)) prints("Yes\n");
+    else prints("No\n");
+    printd(counter);
+    prints("\n");
+
+    if ((a != f(b,2)) || (f(c,-1) != d)) prints("Yes\n");
+    else prints("No\n");
+    printd(counter);
+    prints("\n");
+}

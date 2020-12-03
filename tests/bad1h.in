@@ -1,0 +1,16 @@
+
+// Bad input -- function not defined before it is used
+
+void main() {
+    printd(pow(2, 6));
+}
+
+int pow(int a, int b) {
+    int i;
+    int res = 1;
+    for (i=0; i<b; i++) {
+        res = res * a;
+    }
+    return res;
+}
+        

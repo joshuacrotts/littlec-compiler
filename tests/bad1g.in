@@ -1,0 +1,18 @@
+
+// Bad input. assignment with a non-lvalue on the left
+
+int pow(int a, int b) {
+    int i;
+    int res = 1;
+    (res + 1) = 12;
+    for (i=0; i<b; i++) {
+        res = res * a;
+    }
+    return res;
+}
+
+void main() {
+    printd(pow(2, 6));
+}
+
+        

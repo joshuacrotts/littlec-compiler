@@ -1,0 +1,19 @@
+
+
+// Bad input - forward declaration differs from later definition
+
+int pow(int a);
+
+void main() {
+    printd(pow(2, 6));
+}
+
+int pow(int a, int b) {
+    int i;
+    int res = 1;
+    for (i=0; i<b; i++) {
+        res = res * a;
+    }
+    return res;
+}
+        

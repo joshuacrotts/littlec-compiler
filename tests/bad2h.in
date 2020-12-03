@@ -1,0 +1,11 @@
+
+// Bad: index must be an integer type
+
+void main() {
+    int i;
+    int a[20];
+    int sum = 0;
+
+    a["hi"] = 0;
+}
+

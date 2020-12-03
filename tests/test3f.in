@@ -1,0 +1,21 @@
+
+// Test of break statement
+
+void main() {
+    int i;
+    int j;
+
+    for (i=2; i<10; i++) {
+        for (j=2; j<10; j++) {
+            if ((i*j)%10 == 0)
+                break;
+        }
+        if (j != 10) {
+            prints("Break with i=");
+            printd(i);
+            prints(" and j=");
+            printd(j);
+            prints("\n");
+        }
+    }
+}

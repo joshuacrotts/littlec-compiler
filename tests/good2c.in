@@ -1,0 +1,17 @@
+
+// Addition of chars should produce a char - no casting. But assigning to an
+// int involves casting.
+
+void main() {
+    char ca = 1;
+    char cb = 2;
+    int ia = 1;
+    int ib = 2;
+    char cc;
+    int  ic;
+    
+    cc = ca * cb;
+    ic = cc;
+    printd(ic);
+}
+

@@ -1,0 +1,11 @@
+
+// Bad: Oops, wrong name...
+
+void main() {
+    int i;
+    int a[20];
+    int sum = 0;
+
+    b[1] = 0;
+}
+

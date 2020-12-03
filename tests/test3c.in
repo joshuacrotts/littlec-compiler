@@ -1,0 +1,13 @@
+
+// Tests parameter order
+
+int f(int x, int y) {
+    return 10*x+y;
+}
+
+void main() {
+    int w;
+    w = f(3,6);
+    printd(w);
+    prints("\n");
+}
