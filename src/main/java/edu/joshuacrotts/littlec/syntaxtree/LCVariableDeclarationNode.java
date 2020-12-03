@@ -96,10 +96,12 @@ public class LCVariableDeclarationNode extends LCSyntaxTree {
           String lit = this.literalValue.toString();
           lit = LCUtilities.escapeString(lit.substring(1, lit.length() - 1));
           String byteChars = LCUtilities.getByteString(lit);
-          // We add 2 chars to account for the quotations in the literal.
           int remainingChars = arraySize - lit.length() - 1;
           ICode.quad.addLabel(byteChars);
-          ICode.quad.addLabel(".db 0#" + remainingChars);
+          
+          // If we have remaining chars, use the zero-padding operation.
+          if (remainingChars > 0) 
+            ICode.quad.addLabel(".db 0#" + remainingChars);
         } else {
           ICode.quad.addLabel(arrayInitSizeLabel);
         }
@@ -133,7 +135,6 @@ public class LCVariableDeclarationNode extends LCSyntaxTree {
         info.ADDR = lLabel;
       }
     }
-
   }
 
   @Override
