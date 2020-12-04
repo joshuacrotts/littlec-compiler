@@ -824,6 +824,16 @@ public class CodeGeneration {
       return "or";
     case "%":
       return "rem";
+    case "<<":
+      return "sll";
+    case ">>":
+      return "srl";
+    case "^":
+      return "xor";
+    case "|":
+      return "or";
+    case "&":
+      return "and";
     default:
       throw new IllegalArgumentException("Invalid MIPS binary operator " + op);
     }

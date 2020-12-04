@@ -113,7 +113,7 @@ public class LCUtilities {
    *         otherwise.
    */
   public static boolean isRelationalOp(String op) {
-    return (op.equals("<") || op.equals("<=") || op.contains(">") || op.equals(">=") || op.equals("!=")
+    return (op.equals("<") || op.equals("<=") || op.equals(">") || op.equals(">=") || op.equals("!=")
         || op.equals("=="));
   }
 

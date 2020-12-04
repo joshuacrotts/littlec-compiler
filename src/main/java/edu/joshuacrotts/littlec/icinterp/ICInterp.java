@@ -183,39 +183,47 @@ public class ICInterp {
   }
 
   public static class SimValue {
+    private enum SimType {
+      CHAR,
+      INT,
+      FLOAT;
+    }
     public static SimValue errVal = new SimValue(4, 999999999);
+    public SimType type;
     public int width;
     public int iVal;
     public float fVal;
     public byte cVal;
 
     public SimValue(int width, int val) {
+      this.type = width==1?SimType.CHAR : SimType.INT;
       this.width = width;
       iVal = val;
       cVal = (byte) val;
     }
 
     public SimValue(int width, float val) {
+      this.type = SimType.FLOAT;
       this.width = width;
       fVal = val;
     }
 
     public int getAsI() {
-      if (width == 4)
+      if (this.type == SimType.INT)
         return iVal;
       else
         return cVal;
     }
 
     public int getAsC() {
-      if (width == 1) {
+      if (this.type == SimType.CHAR) {
         return cVal;
       }
       throw new RuntimeException("Cannot return non-byte width val as char.");
     }
 
     public float getAsF() {
-      if (width == 4) {
+      if (this.type == SimType.FLOAT) {
         return this.fVal;
       }
       throw new RuntimeException("Cannot return non-word width val as float.");
@@ -258,6 +266,7 @@ public class ICInterp {
       if ((c == '\\') && (pos < val.length())) {
         char c2 = val.charAt(pos++);
         switch (c2) {
+        // Properly escape the characters.
         case 'n':
           c = '\n';
           break;
@@ -392,6 +401,7 @@ public class ICInterp {
         val2 = getVal(tWidth, parts[si + 2]);
         if ((tWidth == 1) || (val1.width == 1) && (val2.width == 1)) {
           byte cval = 111;
+          // TODO: Break this up...
           if (parts[si + 1].equals("-"))
             return new SimValue(1, (byte) (val1.cVal - val2.cVal));
           else if (parts[si + 1].equals("+"))
@@ -408,6 +418,10 @@ public class ICInterp {
             return new SimValue(1, (byte) (val1.cVal & val2.cVal));
           else if (parts[si + 1].equals("|"))
             return new SimValue(1, (byte) (val1.cVal | val2.cVal));
+          else if (parts[si + 1].equals("<<"))
+            return new SimValue(1, (byte) (val1.cVal << val2.cVal));
+          else if (parts[si + 1].equals(">>"))
+            return new SimValue(1, (byte) (val1.cVal >> val2.cVal));
           else if (parts[si + 1].equals("<"))
             return new SimValue(4, (val1.cVal < val2.cVal) ? 1 : 0);
           else if (parts[si + 1].equals("<="))
@@ -441,6 +455,10 @@ public class ICInterp {
             return new SimValue(4, val1.iVal & val2.iVal);
           else if (parts[si + 1].equals("|"))
             return new SimValue(4, val1.iVal | val2.iVal);
+          else if (parts[si + 1].equals("<<"))
+            return new SimValue(4, val1.iVal << val2.iVal);
+          else if (parts[si + 1].equals(">>"))
+            return new SimValue(4, val1.iVal >> val2.iVal);
           else if (parts[si + 1].equals("<"))
             return new SimValue(4, (val1.iVal < val2.iVal) ? 1 : 0);
           else if (parts[si + 1].equals("<="))

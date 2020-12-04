@@ -19,11 +19,12 @@ Most standard programming language concepts are present. These include
 - Recursion
 - Conditionals (Short-Circuiting)
 - Loops
+- Bitwise XOR, OR, AND, and Shifting.
 
 ## Planned Features
 The following is a list of planned features:
 - Single & Double Floating-Point Precision Variables
-- Bitwise Operators
+- Bitwise Negation
 - Standard API
 - Support for compiling down to "MARS MIPS"
 - ...?
