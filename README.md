@@ -7,6 +7,7 @@ LittleC is a small, C-like language written for my compilers course. Some segmen
 
 The code is first split into lexical tokens and parsed down to an abstract syntax tree. This is then converted to intermediate code in the form of a modified three-address-code schema. Finally, we compile to MIPS, using the QTSpim "standard" (as the MARS simulator supports things that QTSpim does not, and vice versa such as a few pseudo-operations).
 
+*Warning*: The interpreter and compiler generate two similar, but sometimes different results depending on the case. Most of the time, the results are identical. However, edge cases do exist, and not everything has been accounted for. From what I have tested, you can generally *trust* the results of the MIPS output, but the interpreter handles more cases (i.e. the quicksort implementation).
 
 ## Running the Compiler
 First, download the provided .JAR file. Run it as normal, and type "littlec" to view a list of possible commands. You may either type the code into a .lc file and provide it as an argument to one of the available subcommands, or you may feed in code via standard input.
