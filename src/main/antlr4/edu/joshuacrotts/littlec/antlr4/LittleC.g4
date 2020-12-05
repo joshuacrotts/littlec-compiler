@@ -47,7 +47,7 @@ BREAK          : 'break'  ;
 /* Rule tokens. */
 CHARLIT		   : (SINGLE_QUOTE (ESCAPED_CHAR | ~ ['\\] ) '\'');
 STRINGLIT      : (DOUBLE_QUOTE (ESCAPED_CHAR | ~ ["\\] )* '"');
-INTLIT         : (DIGIT)+                                     ;
+INTLIT         : (DIGIT)+ | ('0x'[0-9A-Fa-f]+) | ('0b'[0|1]+) ;
 FLOATLIT	   : (DIGIT)+('.'(DIGIT)*)?						  ;
 ID             : (ANY_CASE_LTR | UNDERSCORE)(ANY_CASE_LTR | DIGIT | UNDERSCORE)* ;
 

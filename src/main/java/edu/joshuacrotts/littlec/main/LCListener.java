@@ -1119,13 +1119,15 @@ public class LCListener extends LittleCBaseListener {
       else {
         LCConstantLiteralNode constantLiteral = null;
         if (ctx.term().INTLIT() != null) {
-          try {
-            Integer.parseInt(ctx.term().INTLIT().getText());
-          } catch (NumberFormatException ex) {
+          String intLit = "";
+          if (LCUtilities.isValidIntLiteral(ctx.term().INTLIT().getText())) {
+            intLit = "" + LCUtilities.getDecodedIntLiteral(ctx.term().INTLIT().getText());
+          } else {
             this.syntaxTree.printError(ctx, "cannot create an int literal.");
-            return;
+            return;            
           }
-          constantLiteral = new LCConstantLiteralNode(ctx, ctx.term().INTLIT().getText(), "int");
+          
+          constantLiteral = new LCConstantLiteralNode(ctx, intLit, "int");
         } else if (ctx.term().CHARLIT() != null) {
           String characterStr = ctx.term().CHARLIT().getText();
           String literalValue = String.valueOf((int) LCUtilities.getCharFromString(characterStr));
@@ -1499,13 +1501,15 @@ public class LCListener extends LittleCBaseListener {
     else {
       LCConstantLiteralNode constantLiteral = null;
       if (ctx.INTLIT() != null) {
-        try {
-          Integer.parseInt(ctx.INTLIT().getText());
-        } catch (NumberFormatException ex) {
+        String intLit = "";
+        if (LCUtilities.isValidIntLiteral(ctx.INTLIT().getText())) {
+          intLit = "" + LCUtilities.getDecodedIntLiteral(ctx.INTLIT().getText());
+        } else {
           this.syntaxTree.printError(ctx, "cannot create an int literal.");
-          return;
+          return;            
         }
-        constantLiteral = new LCConstantLiteralNode(ctx, ctx.INTLIT().getText(), "int");
+        
+        constantLiteral = new LCConstantLiteralNode(ctx, intLit, "int");
       } else if (ctx.CHARLIT() != null) {
         String characterStr = ctx.CHARLIT().getText();
         String literalValue = String.valueOf((int) LCUtilities.getCharFromString(characterStr));
@@ -1639,13 +1643,13 @@ public class LCListener extends LittleCBaseListener {
 
       /* If we're assigning to something, grab the literal value. */
       if (ctx.INTLIT() != null) {
-        try {
-          Integer.parseInt(ctx.INTLIT().getText());
-        } catch (NumberFormatException ex) {
+        if (LCUtilities.isValidIntLiteral(ctx.INTLIT().getText())) {
+          literalValue = LCUtilities.getDecodedIntLiteral(ctx.INTLIT().getText());  
+        } else {
+          System.out.println(ctx.INTLIT().getText());
           this.syntaxTree.printError(ctx, "cannot create an int literal.");
           return;
         }
-        literalValue = Integer.parseInt(ctx.INTLIT().getText());
       } else if (ctx.CHARLIT() != null) {
         String characterStr = ctx.CHARLIT().getText();
         literalValue = (int) LCUtilities.getCharFromString(characterStr);
@@ -1684,10 +1688,12 @@ public class LCListener extends LittleCBaseListener {
       String storageClass = LCUtilities.getStorageClassType(ctx.EXTERN(), ctx.STATIC());
       Object literalValue = null;
 
-      try {
-        Integer.parseInt(ctx.INTLIT().getText());
-      } catch (NumberFormatException ex) {
-        this.syntaxTree.printError(ctx, "cannot create int literal in array index.");
+      /*
+       * We need to test to see if the size is valid or not. It doesn't matter where
+       * we store it; it just needs to be valid.
+       */
+      if (!LCUtilities.isValidIntLiteral(ctx.INTLIT().getText())) {
+        this.syntaxTree.printError(ctx, "cannot create an int literal for array index.");
         return;
       }
 
@@ -1763,14 +1769,12 @@ public class LCListener extends LittleCBaseListener {
       }
       /* We can have both int literals and char literals for chars. */
       else if (ctx.INTLIT() != null) {
-        try {
-          Integer.parseInt(ctx.INTLIT().getText());
-        } catch (NumberFormatException ex) {
+        if (LCUtilities.isValidIntLiteral(ctx.INTLIT().getText())) {
+          literalValue = LCUtilities.getDecodedIntLiteral(ctx.INTLIT().getText());  
+        } else {
           this.syntaxTree.printError(ctx, "cannot create an int literal.");
           return;
         }
-
-        literalValue = Integer.parseInt(ctx.INTLIT().getText());
       }
 
       LCVariableDeclarationNode charDeclarationNode = new LCVariableDeclarationNode(ctx, this.symbolTable, lValue,
@@ -1811,9 +1815,11 @@ public class LCListener extends LittleCBaseListener {
         literalValue = ctx.STRINGLIT().getText();
       }
 
-      try {
-        Integer.parseInt(ctx.INTLIT().getText());
-      } catch (NumberFormatException ex) {
+      /*
+       * We need to test to see if the size is valid or not. It doesn't matter where
+       * we store it; it just needs to be valid.
+       */
+      if (!LCUtilities.isValidIntLiteral(ctx.INTLIT().getText())) {
         this.syntaxTree.printError(ctx, "cannot create an int literal for array index.");
         return;
       }

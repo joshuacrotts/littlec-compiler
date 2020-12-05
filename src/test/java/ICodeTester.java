@@ -220,10 +220,10 @@ public class ICodeTester {
      */
     @Test
     public void doUserTest() {
-        runICTest("test_joshuacrotts_1");
-        runICTest("test_joshuacrotts_2");
-        runICTest("test_joshuacrotts_3");
-        runICTest("test_joshuacrotts_4");
-        runICTest("test_joshuacrotts_5");
+//        runICTest("test_joshuacrotts_1");
+//        runICTest("test_joshuacrotts_2");
+//        runICTest("test_joshuacrotts_3");
+//        runICTest("test_joshuacrotts_4");
+//        runICTest("test_joshuacrotts_5");
     }
 }

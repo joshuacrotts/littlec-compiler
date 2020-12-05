@@ -28,17 +28,16 @@ There are a few differences between C and LittleC, which may be apparent as soon
 ## Features
 Most standard programming language concepts are present. These include
 - Functions (including prototypes)
-- Integers and Character Variables
+- Integers and Character Variables (with 0x and 0b prefixes)
 - Arrays (Strings are char arrays as in C)
 - Recursion
 - Conditionals (Short-Circuiting)
 - Loops
-- Bitwise XOR, OR, AND, and Shifting.
+- Bitwise XOR, OR, AND, Negation, and Shifting.
 
 ## Planned Features
 The following is a list of planned features:
 - Single & Double Floating-Point Precision Variables
-- Bitwise Negation
 - Standard API
 - Terminal argument support.
 - Support for compiling down to "MARS MIPS"

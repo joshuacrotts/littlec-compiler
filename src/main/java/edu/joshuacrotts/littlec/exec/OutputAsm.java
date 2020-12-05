@@ -54,7 +54,6 @@ public class OutputAsm {
     ParseTreeWalker walker = new ParseTreeWalker();
     LCListener compiler = new LCListener(parser);
     walker.walk(compiler, tree);
-
     return compiler;
   }
 

@@ -11,15 +11,7 @@ int pow(int a, int b) {
 }
 
 void main() {
-    int i;
-    int res = 1;
-    int b = 6;
-    int a = 2;
-    for (i=0; i<b; i++) {
-        res = res * a;
-    }
-    
-    printd(res);
+    printd(pow(2, 6));
 }
 
         
