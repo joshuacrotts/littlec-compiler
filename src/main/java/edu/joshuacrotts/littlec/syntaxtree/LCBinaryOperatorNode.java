@@ -35,9 +35,11 @@ public class LCBinaryOperatorNode extends LCSyntaxTree {
    * @param isComparsionOp
    */
   public LCBinaryOperatorNode(ParserRuleContext ctx, SymbolTable symbolTable, String op, LCSyntaxTree lOperand,
-      LCSyntaxTree rOperand, boolean isComparisonOp) {
+      LCSyntaxTree rOperand) {
     super("BINOP(\'" + op + "\')", null);
     this.op = op;
+    
+    boolean isComparisonOp = LCUtilities.isComparisonOp(this.op);
 
     // If one operand is a char, we promote it to an int.
     // If both are chars, the binary operator returns an int.

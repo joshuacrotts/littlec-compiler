@@ -154,7 +154,7 @@ expr					: term #exprTerm  // General term (literal or var.)
 						| ID OPEN_BRACKET expr CLOSE_BRACKET #exprArray // Array dereference.        
 						| (INC_OP|DEC_OP) ID (OPEN_BRACKET expr CLOSE_BRACKET)? #exprPreOp	// Pre operators.
 						| ID (OPEN_BRACKET expr CLOSE_BRACKET)? (INC_OP|DEC_OP) #exprPostOp // Post operators.
-						| (PLUS_OP|MINUS_OP|NOT|SIZE_OP) expr #exprUnary // Unary operators.
+						| (PLUS_OP|MINUS_OP|NOT|BIT_NEG|SIZE_OP) expr #exprUnary // Unary operators.
 						| expr (MULTIPLY_OP | DIVIDE_OP | MODULO_OP) expr #exprBinaryOp // Multiply, divide, modulo.
 						| expr (PLUS_OP | MINUS_OP) expr #exprBinaryOp // Addition & subtraction.
 						| expr (BIT_SHIFT_LEFT | BIT_SHIFT_RIGHT) expr #exprBinaryOp // Bitwise shift left/right.

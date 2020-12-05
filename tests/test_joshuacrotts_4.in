@@ -92,8 +92,8 @@ void longest_common_subsequence(char[] x, char[] y) {
 	}
 }
 
-char x[15] = "ABACABADRABOA";
-char y[10] = "BRAMADOBA";
+char x[25] = "AEDFHR";
+char y[25] = "ABCDGH";
 void main() {
 	prints("The Longest Common Subsequence is ");
 	longest_common_subsequence(x, y);

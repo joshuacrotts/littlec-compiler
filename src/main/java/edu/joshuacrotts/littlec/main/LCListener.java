@@ -1349,6 +1349,8 @@ public class LCListener extends LittleCBaseListener {
         op = "-";
       } else if (ctx.NOT() != null) {
         op = "!";
+      } else if (ctx.BIT_NEG() != null) {
+        op = "~";
       } else {
         this.syntaxTree.printError(ctx, "invalid unary operator for r-value expression of type " + type + ".");
         return;
@@ -1394,13 +1396,15 @@ public class LCListener extends LittleCBaseListener {
     LCSyntaxTree rexpr = this.values.get(ctx.expr().get(1));
 
     String op = null;
-    boolean isComparisonOp = false;
 
     /* If this is an arithmetic operator (where we CANNOT compare strings...) */
+    /* If this is an arithmetic operator (where we CANNOT compare strings...) */
+    /* A better way must be found... */
     if (ctx.PLUS_OP() != null || ctx.MINUS_OP() != null || ctx.MULTIPLY_OP() != null || ctx.DIVIDE_OP() != null
         || ctx.MODULO_OP() != null || ctx.GREATER_EQ_CMP() != null || ctx.GREATER_THAN_CMP() != null
-        || ctx.LESS_EQ_CMP() != null || ctx.LESS_THAN_CMP() != null || ctx.EQUAL_CMP() != null
-        || ctx.NOT_EQUAL_CMP() != null || ctx.AND() != null || ctx.OR() != null) {
+        || ctx.LESS_EQ_CMP() != null || ctx.LESS_THAN_CMP() != null || ctx.EQUAL_CMP() != null || ctx.BIT_XOR() != null
+        || ctx.BIT_AND() != null || ctx.BIT_SHIFT_LEFT() != null || ctx.BIT_SHIFT_RIGHT() != null
+        || ctx.BIT_OR() != null || ctx.NOT_EQUAL_CMP() != null || ctx.AND() != null || ctx.OR() != null) {
 
       boolean lStr = lexpr.isArray();
       boolean rStr = rexpr.isArray();
@@ -1412,6 +1416,7 @@ public class LCListener extends LittleCBaseListener {
       }
 
       /* Now actually get the flags and set the operator. */
+      /* There HAS to be a better way... */
       if (ctx.PLUS_OP() != null) {
         op = "+";
       } else if (ctx.MINUS_OP() != null) {
@@ -1422,35 +1427,36 @@ public class LCListener extends LittleCBaseListener {
         op = "/";
       } else if (ctx.MODULO_OP() != null) {
         op = "%";
+      } else if (ctx.BIT_AND() != null) {
+        op = "&";
+      } else if (ctx.BIT_OR() != null) {
+        op = "|";
+      } else if (ctx.BIT_XOR() != null) {
+        op = "^";
+      } else if (ctx.BIT_SHIFT_LEFT() != null) {
+        op = "<<";
+      } else if (ctx.BIT_SHIFT_RIGHT() != null) {
+        op = ">>";
       } else if (ctx.GREATER_EQ_CMP() != null) {
         op = ">=";
-        isComparisonOp = true;
       } else if (ctx.GREATER_THAN_CMP() != null) {
         op = ">";
-        isComparisonOp = true;
       } else if (ctx.LESS_EQ_CMP() != null) {
         op = "<=";
-        isComparisonOp = true;
       } else if (ctx.LESS_THAN_CMP() != null) {
         op = "<";
-        isComparisonOp = true;
       } else if (ctx.EQUAL_CMP() != null) {
         op = "==";
-        isComparisonOp = true;
       } else if (ctx.NOT_EQUAL_CMP() != null) {
         op = "!=";
-        isComparisonOp = true;
       } else if (ctx.AND() != null) {
         op = "&&";
-        isComparisonOp = true;
       } else if (ctx.OR() != null) {
         op = "||";
-        isComparisonOp = true;
       }
     }
 
-    LCBinaryOperatorNode binaryOpNode = new LCBinaryOperatorNode(ctx, this.symbolTable, op, lexpr, rexpr,
-        isComparisonOp);
+    LCBinaryOperatorNode binaryOpNode = new LCBinaryOperatorNode(ctx, this.symbolTable, op, lexpr, rexpr);
 
     this.values.put(ctx, binaryOpNode);
   }
@@ -1861,7 +1867,7 @@ public class LCListener extends LittleCBaseListener {
    * @return a syntax tree, or null if an error was detected.
    */
   public LCSyntaxTree getSyntaxTree() {
-    if ((this.syntaxTree.getFlags() & LCMasks.ERROR_MASK) != 0) {
+    if (this.syntaxTree.hasError()) {
       return null;
     }
 
@@ -1869,7 +1875,7 @@ public class LCListener extends LittleCBaseListener {
     if (this.symbolTable.hasSymbol("main") && this.symbolTable.getSymbolEntry("main").getVarType().equals("void")) {
       return this.syntaxTree;
     } else {
-      this.syntaxTree.printError(null, "Linker error: void main function definition not found.");
+      this.syntaxTree.printError(null, "Parsing error: void main function definition not found.");
       return null;
     }
   }
@@ -1882,7 +1888,6 @@ public class LCListener extends LittleCBaseListener {
    * @return the symbol table
    */
   public SymbolTable getSymbolTable() {
-    // You need to write this!
     return this.symbolTable;
   }
 
@@ -1900,12 +1905,12 @@ public class LCListener extends LittleCBaseListener {
     args.add(new LCVariableIdentifierNode(null, symbolTable, "number", "int"));
     this.symbolTable.addSymbol("printd", new SymbolEntry("FNDEF", "void", "extern", args));
     args = new LinkedList<>();
-    
+
     /* Adds the printc function. */
     args.add(new LCVariableIdentifierNode(null, symbolTable, "number", "char"));
     this.symbolTable.addSymbol("printc", new SymbolEntry("FNDEF", "void", "extern", args));
     args = new LinkedList<>();
-    
+
     /* Adds the printf function. */
     args.add(new LCVariableIdentifierNode(null, symbolTable, "number", "float"));
     this.symbolTable.addSymbol("printf", new SymbolEntry("FNDEF", "void", "extern", args));
@@ -1914,11 +1919,11 @@ public class LCListener extends LittleCBaseListener {
     /* Adds the read() function. */
     this.symbolTable.addSymbol("read", new SymbolEntry("FNDEF", "int", "extern", args));
     args = new LinkedList<>();
-    
+
     /* Adds the readc() function. */
     this.symbolTable.addSymbol("readc", new SymbolEntry("FNDEF", "char", "extern", args));
     args = new LinkedList<>();
-    
+
     /* Adds the readf() function. */
     this.symbolTable.addSymbol("readf", new SymbolEntry("FNDEF", "float", "extern", args));
     args = new LinkedList<>();

@@ -55,19 +55,14 @@ void
 main() {
   int arr[10]; // = {1, 1, -9, 99, 12, 13, 16, 77, 0, 3};
   int i;
-  arr[0] = 1;
-  arr[1] = 1;
-  arr[2] = -9;
-  arr[3] = 99;
-  arr[4] = 12;
-  arr[5] = 13;
-  arr[6] = 16;
-  arr[7] = 77;
-  arr[8] = 0;
-  arr[9] = 3;
+  
+  
+  for (i=0;i<#arr;i++)
+  	arr[i] = read();
+  
   qsort_f( arr, 10 );
 
-  for ( i = 0; i < 10 - 1; i++ ) {
+  for ( i = 0; i < #arr; i++ ) {
     // printf( "%d\t", arr[i] );
     printd(arr[i]);
     prints(" ");

@@ -118,4 +118,8 @@ void main() {
 	printlnd(binarySearch(arr, 0, #arr-1, 100));
 	printlnd(binarySearch(arr, 0, #arr-1, 10));
 	printlnd(binarySearch(arr, 0, #arr-1, 15));
+	reversearr(arr);
+	parray(arr);
+	isort(arr);
+	parray(arr);
 }
