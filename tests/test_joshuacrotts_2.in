@@ -28,13 +28,10 @@ int strchr(char[] str1, char ch);
 int strstr(char[] str1, char[] str2);
 void strcat(char[] dst, char[] src);
 
-void printc(char c);
 void printlnc(char c);
 void printlnd(int d);
 void printlns(char[] s);
 void print_int_array(int[] arr);
-
-char readc();
 
 
 // ============= 2D ARRAY FUNCTIONS ============== //
@@ -425,18 +422,6 @@ void printlnd(int n) {
 void printlns(char[] s) {
 	prints(s);
 	prints("\n");
-}
-
-// 
-// Outputs a character to standard output. This is needed
-// because LittleC doesn't support printing chars by default
-// (printd will print the ascii value but not the char itself).
-//
-void printc(char c) {
-	char buf[2];
-	buf[0] = c;
-	buf[1] = '\0';
-	prints(buf);
 }
 
 //

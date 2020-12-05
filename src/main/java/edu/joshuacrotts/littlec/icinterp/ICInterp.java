@@ -414,6 +414,8 @@ public class ICInterp {
             return new SimValue(1, (byte) (val1.cVal % val2.cVal));
           else if (parts[si + 1].equals("^"))
             return new SimValue(1, (byte) (val1.cVal ^ val2.cVal));
+          else if (parts[si + 1].equals("^"))
+            return new SimValue(1, (byte) (val1.cVal ^ val2.cVal));
           else if (parts[si + 1].equals("&"))
             return new SimValue(1, (byte) (val1.cVal & val2.cVal));
           else if (parts[si + 1].equals("|"))
@@ -492,6 +494,12 @@ public class ICInterp {
           return val1;
         else if (parts[si].equals("!"))
           return new SimValue(4, (val1.iVal == 0) ? 0 : 1);
+        else if (parts[si].equals("~")) {
+          if ((tWidth == 1) || (val1.width == 1))
+            return new SimValue(1, ~((byte) val1.cVal));
+          else
+            return new SimValue(4, ~val1.iVal);
+        }
         else if (parts[si].equals("&")) {
           return new SimValue(4, getAddr(parts[si + 1]));
         } else if (parts[si].equals("#")) {

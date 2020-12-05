@@ -36,9 +36,9 @@ public class CodeGeneration {
       int size = Integer.parseInt(op.substring(5, 6));
       sb.append(emitParam(function, progState, new ICAddress(op1, size)));
     } else if (op.contains("call") && res.isEmpty()) { // VOID FUNCTION CALL
-      sb.append(emitVoidFunctionCall(function, progState, op1));
+      sb.append(emitVoidFunctionCall(function, progState, op1, op2));
     } else if (op.contains("call")) { // NON-VOID FUNCTION CALL
-      sb.append(emitNonVoidFunctionCall(function, progState, new ICAddress(res), op1));
+      sb.append(emitNonVoidFunctionCall(function, progState, new ICAddress(res), op1, op2));
     } else if (op.equals("=")) { // ASN
       sb.append(emitAssignment(progState, new ICAddress(res), new ICAddress(op1)));
     } else if (op.contains("if")) { // IF
@@ -124,37 +124,18 @@ public class CodeGeneration {
   public static String emitParam(MIPSFunction function, ProgState progState, ICAddress param) {
     StringBuilder sb = new StringBuilder();
 
-    // If we are on a "stack" parameter, then
-    // we check to see if it's in a register. If it's not, store it in a temp one,
-    // then store it on the stack.
+    // Load param into tmp
     MIPSReg paramReg = progState.getCurrReg(param);
-    if (function.currentParamCount > MIPSReg.NUM_AREG) {
-      if (paramReg == null) {
-        paramReg = progState.getNextAvailableRegister();
-        sb.append(MIPSInstruction.genLoad(getMIPSLoadOp(param), paramReg, progState.getCanonicalMIPS(param)));
-      }
-      progState.copyVal(paramReg, param);
-
-      // Subtract four bytes from the stack.
-      sb.append(MIPSInstruction.genBinaryOp("subu", "$sp", "$sp", "4"));
-      sb.append(MIPSInstruction.genStore("sw", paramReg, "0($sp)"));
-    } else {
-      MIPSReg aReg = MIPSReg.aReg(function.currentParamCount - 1);
-
-      // Otherwise, check to see if the parameter is already in a register. If so,
-      // move it into the next $a register.
-      if (paramReg != null) {
-        sb.append(MIPSInstruction.genMove(aReg, paramReg));
-        progState.copyVal(aReg, paramReg);
-      }
-      // Otherwise, load it from memory directly to the $a register.
-      else {
-        sb.append(MIPSInstruction.genLoad(getMIPSLoadOp(param), aReg, progState.getCanonicalMIPS(param)));
-        progState.copyVal(aReg, param);
-      }
+    if (paramReg == null) {
+      paramReg = progState.getNextAvailableRegister();
+      sb.append(MIPSInstruction.genLoad(getMIPSLoadOp(param), paramReg, progState.getCanonicalMIPS(param)));
     }
 
-    function.currentParamCount--;
+    sb.append(MIPSInstruction.genBinaryOp("subu", "$sp", "$sp", "4"));
+    sb.append(MIPSInstruction.genStore("sw", paramReg, "0($sp)"));
+    progState.invalidate(paramReg);
+    function.currentParamCount++;
+
     return sb.toString();
   }
 
@@ -164,24 +145,43 @@ public class CodeGeneration {
    * function is complete, we remove the remaining registers by applying a byte
    * offset to the top of the stack.
    * 
+   * There may be instances when functions must remain on the stack because of a
+   * complicated chain of calls (see test3x). In this case, we may have more
+   * parameters on the stack than are needed for the function. In this event, we
+   * only pop the parameters that we need. The rest remain on the stack until they
+   * are used.
+   * 
    * @param function  - MIPSFunction object.
    * @param progState - ProgState object.
    * @param fnName    - name of function we're calling.
    * 
    * @return MIPS representation of called function.
    */
-  public static String emitVoidFunctionCall(MIPSFunction function, ProgState progState, String fnName) {
+  public static String emitVoidFunctionCall(MIPSFunction function, ProgState progState, String fnName,
+      String argCount) {
     StringBuilder sb = new StringBuilder();
+
+    int idx = 0;
+    // Load the parameters off the stack and push them into their respective
+    // registers.
+    for (idx = 0; idx < Integer.parseInt(argCount) && idx < MIPSReg.NUM_AREG; idx++) {
+      MIPSReg argReg = MIPSReg.aReg(idx);
+
+      sb.append(MIPSInstruction.genLoad("lw", argReg, "0($sp)"));
+      sb.append(MIPSInstruction.genBinaryOp("addu", "$sp", "$sp", "4"));
+    }
 
     // Call the function.
     sb.append(MIPSInstruction.genFunctionCall(fnName));
 
-    // Remove the other parameters from the stack, if they exist.
-    if (function.numParams > 4) {
-      sb.append(MIPSInstruction.genBinaryOp("addu", "$sp", "$sp", "" + ((function.numParams - 4) * 4)));
+    // Remove the other parameters from the stack, if they exist (AND we no longer
+    // need them).
+    if (idx >= MIPSReg.NUM_AREG && idx < function.currentParamCount) {
+      String remParams = "" + ((function.currentParamCount - MIPSReg.NUM_AREG) * MIPSReg.NUM_AREG);
+      sb.append(MIPSInstruction.genBinaryOp("addu", "$sp", "$sp", remParams));
     }
 
-    function.numParams = function.currentParamCount = 0;
+    function.currentParamCount = 0;
     return sb.toString();
   }
 
@@ -192,22 +192,40 @@ public class CodeGeneration {
    * offset to the top of the stack. The return value is moved from the $v0
    * register into wherever it should be.
    * 
+   * There may be instances when functions must remain on the stack because of a
+   * complicated chain of calls (see test3x). In this case, we may have more
+   * parameters on the stack than are needed for the function. In this event, we
+   * only pop the parameters that we need. The rest remain on the stack until they
+   * are used.
+   * 
    * @param function  - MIPSFunction object.
    * @param progState - ProgState object.
    * @param fnName    - name of function we're calling.
    * 
    * @return MIPS representation of called function.
    */
-  public static String emitNonVoidFunctionCall(MIPSFunction function, ProgState progState, ICAddress res,
-      String fnName) {
+  public static String emitNonVoidFunctionCall(MIPSFunction function, ProgState progState, ICAddress res, String fnName,
+      String argCount) {
     StringBuilder sb = new StringBuilder();
+    int idx = 0;
+
+    // Load the parameters off the stack and push them into their respective
+    // registers.
+    for (idx = 0; idx < Integer.parseInt(argCount) && idx < MIPSReg.NUM_AREG; idx++) {
+      MIPSReg argReg = MIPSReg.aReg(idx);
+
+      sb.append(MIPSInstruction.genLoad("lw", argReg, "0($sp)"));
+      sb.append(MIPSInstruction.genBinaryOp("addu", "$sp", "$sp", "4"));
+    }
 
     // Call the function.
     sb.append(MIPSInstruction.genFunctionCall(fnName));
 
-    // Remove the other parameters from the stack, if they exist.
-    if (function.numParams > 4) {
-      sb.append(MIPSInstruction.genBinaryOp("addu", "$sp", "$sp", "" + ((function.numParams - 4) * 4)));
+    // Remove the other parameters from the stack, if they exist (AND we no longer
+    // need them).
+    if (idx >= MIPSReg.NUM_AREG && idx < function.currentParamCount) {
+      String remParams = "" + ((function.currentParamCount - MIPSReg.NUM_AREG) * MIPSReg.NUM_AREG);
+      sb.append(MIPSInstruction.genBinaryOp("addu", "$sp", "$sp", remParams));
     }
 
     // Get a temporary register for the return value.
@@ -226,8 +244,8 @@ public class CodeGeneration {
     if (needToStore) {
       sb.append(MIPSInstruction.genStore(getMIPSStoreOp(res), retReg, progState.getCanonicalMIPS(res)));
     }
-
-    function.numParams = function.currentParamCount = 0;
+    
+    function.currentParamCount = 0;
     return sb.toString();
   }
 
@@ -322,6 +340,9 @@ public class CodeGeneration {
   }
 
   /**
+   * TODO: Fix bug that's allocating more and more registers. It starts with storing 
+   * values in arrays...
+   * 
    * Emits a store operation into an array.
    * 
    * @param progState - ProgState object.
@@ -359,7 +380,7 @@ public class CodeGeneration {
     progState.copyVal(valReg, val);
 
     // Create a temp idx register.
-    MIPSReg modIdxReg = progState.getNextAvailableRegister(null, null);
+    MIPSReg modIdxReg = progState.getNextAvailableRegister();
     progState.copyVal(modIdxReg, idxReg);
     sb.append(MIPSInstruction.genMove(modIdxReg, idxReg));
     idxReg = modIdxReg;
@@ -626,7 +647,7 @@ public class CodeGeneration {
   public static String emitUnaryOp(ProgState progState, ICAddress res, ICAddress op1, String op) {
     StringBuilder sb = new StringBuilder();
     boolean needToStore = false;
-
+    
     // Check to make sure that if the operand is a literal,
     // it shares the width of the dest.
     if (op1.isLiteral()) {
@@ -736,7 +757,7 @@ public class CodeGeneration {
    */
   public static String emitLabel(ProgState progState, String label) {
     StringBuilder sb = new StringBuilder();
-    
+
     // If the label is a goto dest label then print that out.
     if (label.contains("goto")) {
       String jmpLabel = label.substring(5);
@@ -773,8 +794,8 @@ public class CodeGeneration {
    * 
    * @param ICAddress to use.
    * 
-   * @throws IllegalArgumentException if src is not a literal, string, array,
-   *         or does not have width of 4 or 1.
+   * @throws IllegalArgumentException if src is not a literal, string, array, or
+   *                                  does not have width of 4 or 1.
    * 
    * @return "sw" if width == 4, "sb" if width == 1, "la" if string or array, "li"
    *         for lit.
@@ -819,21 +840,19 @@ public class CodeGeneration {
     case "/":
       return "div";
     case "&&":
+    case "&":
       return "and";
     case "||":
+    case "|":
       return "or";
     case "%":
       return "rem";
     case "<<":
       return "sll";
     case ">>":
-      return "srl";
+      return "sra";
     case "^":
       return "xor";
-    case "|":
-      return "or";
-    case "&":
-      return "and";
     default:
       throw new IllegalArgumentException("Invalid MIPS binary operator " + op);
     }
@@ -852,6 +871,8 @@ public class CodeGeneration {
     switch (op) {
     case "&":
       return "move";
+    case "~":
+      return "not";
     case "-":
     case "!":
       return "negu";

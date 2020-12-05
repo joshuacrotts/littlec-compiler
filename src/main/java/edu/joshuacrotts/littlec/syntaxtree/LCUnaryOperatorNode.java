@@ -13,7 +13,7 @@ public class LCUnaryOperatorNode extends LCSyntaxTree {
   private String op;
 
   /**
-   * Creates a unary operator node. These consist of +, -, !, and #.
+   * Creates a unary operator node. These consist of +, -, !, ~ (bitwise neg), and #.
    * 
    * Child 1 is the unary operator in parenthesis with single quotes.
    * 
