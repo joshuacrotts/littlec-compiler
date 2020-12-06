@@ -124,7 +124,7 @@ public class LCUtilities {
    */
   public static boolean isValidIntLiteral(String intVal) {
     try {
-      long v = Long.decode(intVal);
+      int v = Long.decode(intVal).intValue();
       if (v < Integer.MIN_VALUE || v > Integer.MAX_VALUE) {
         return false;
       }
