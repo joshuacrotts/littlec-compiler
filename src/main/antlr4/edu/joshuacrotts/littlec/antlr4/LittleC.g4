@@ -47,7 +47,7 @@ BREAK          : 'break'  ;
 /* Rule tokens. */
 CHARLIT		   : (SINGLE_QUOTE (ESCAPED_CHAR | ~ ['\\] ) '\'');
 STRINGLIT      : (DOUBLE_QUOTE (ESCAPED_CHAR | ~ ["\\] )* '"');
-INTLIT         : (DIGIT)+                                     ;
+INTLIT         : (DIGIT)+ | ('0x'[0-9A-Fa-f]+) | ('0b'[0|1]+) ;
 FLOATLIT	   : (DIGIT)+('.'(DIGIT)*)?						  ;
 ID             : (ANY_CASE_LTR | UNDERSCORE)(ANY_CASE_LTR | DIGIT | UNDERSCORE)* ;
 
@@ -154,7 +154,7 @@ expr					: term #exprTerm  // General term (literal or var.)
 						| ID OPEN_BRACKET expr CLOSE_BRACKET #exprArray // Array dereference.        
 						| (INC_OP|DEC_OP) ID (OPEN_BRACKET expr CLOSE_BRACKET)? #exprPreOp	// Pre operators.
 						| ID (OPEN_BRACKET expr CLOSE_BRACKET)? (INC_OP|DEC_OP) #exprPostOp // Post operators.
-						| (PLUS_OP|MINUS_OP|NOT|SIZE_OP) expr #exprUnary // Unary operators.
+						| (PLUS_OP|MINUS_OP|NOT|BIT_NEG|SIZE_OP) expr #exprUnary // Unary operators.
 						| expr (MULTIPLY_OP | DIVIDE_OP | MODULO_OP) expr #exprBinaryOp // Multiply, divide, modulo.
 						| expr (PLUS_OP | MINUS_OP) expr #exprBinaryOp // Addition & subtraction.
 						| expr (BIT_SHIFT_LEFT | BIT_SHIFT_RIGHT) expr #exprBinaryOp // Bitwise shift left/right.

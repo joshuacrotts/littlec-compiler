@@ -160,7 +160,7 @@ public class ActivationRecord {
     }
 
     String paramID = "p" + width + "@" + this.pAddressOffset;
-    this.pAddressOffset += width;
+    this.pAddressOffset += 4; // Parameters are always four bytes!
     this.PARAM_VARS.put(id, paramID);
 
     return paramID;

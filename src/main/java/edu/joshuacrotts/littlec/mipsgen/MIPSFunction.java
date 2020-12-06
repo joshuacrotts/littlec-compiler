@@ -132,37 +132,10 @@ public class MIPSFunction {
 
       // Build the code for the current basic block.
       BasicBlock bb = basicBlocks.get(i);
-      boolean fnCall = false;
-
-      // Optimization trick here: we scan through the block, find any instances of
-      // parameters,
-      // then start counting them until we reach a "call" statement. This allows us to
-      // store p_n > 4 on the stack, and all others in registers.
       for (int j = 0; j < bb.getNumberOfInstructions(); j++) {
         LinkedList<String> tac = bb.getCurrentInstruction(j);
-
-        if (tac.get(3).contains("param") && !fnCall) {
-          fnCall = true;
-          this.currentParamCount++;
-          for (int k = j + 1;; k++) {
-            LinkedList<String> tacP = bb.getCurrentInstruction(k);
-            if (tacP.get(3).contains("call")) {
-              this.numParams = this.currentParamCount;
-              break;
-            } else if (tacP.get(3).contains("param")) {
-              this.currentParamCount++;
-            }
-          }
-        }
-
-        if (tac.get(3).contains("call")) {
-          fnCall = false;
-        }
-
         fnBody.append(CodeGeneration.genInstruction(this, progState, tac.get(0), tac.get(1), tac.get(2), tac.get(3)));
       }
-
-      this.progState.clearTempRegisters();
     }
 
     // Generate the prologue and epilogue; we back-patch the prologue.

@@ -1,0 +1,33 @@
+// parameter passing test...
+
+void printlnd(int d) {
+	printd(d);
+	prints("\n");
+}
+
+int f(int x, int y) {	
+   prints("f: ");
+   printlnd(x+y);
+   return x+y;
+}
+
+int g(int x) {
+   prints("g: ");
+   printlnd(3*x);
+   return 3*x;
+}
+
+int h(int x, int y, int z) {
+   prints("h: ");
+   printlnd(x*y*z);
+    return x*y*z;
+}
+
+
+void main() {
+   int r;
+
+   r = h(g(f(53,23)),f(12,99),g(1));
+   printd(r);
+   prints("\n");
+}

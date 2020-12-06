@@ -4,6 +4,8 @@ package edu.joshuacrotts.littlec.exec;
  * Launcher for different functionality of the compiler.
  *
  * @author Steve Tate (srtate@uncg.edu)
+ * 
+ * @modified Joshua Crotts
  */
 public class Launcher {
   
@@ -17,8 +19,8 @@ public class Launcher {
     System.out.print("   -pt runs ParserTest\n");
     System.out.print("   -st outputs the syntax tree (like pt without symbol tables)\n");
     System.out.print("   -pi produces intermediate code output with Quadruple structure.\n");
-    System.out.print("   -pa produces MIPS assembly language output (experimental)\n");
-    System.out.print("   -rc runs code (from interpreting intermediate code) (stable)\n");
+    System.out.print("   -pa produces MIPS assembly language output\n");
+    System.out.print("   -rc runs code (from interpreting intermediate code)\n");
 
   }
 
