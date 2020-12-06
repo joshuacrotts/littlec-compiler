@@ -2,15 +2,13 @@
 // Bitwise operator testing.
 //
 
-int ff = 255;
-
 void printlnd(int n) {
 	printd(n);
 	printc('\n');
 }
 
 int create_argb_color(int a, int r, int g, int b) {
-	return ((a&ff)<<24)|((r&ff)<<16)|((g&ff)<<8)|(b&ff);
+	return ((a&0xff)<<24)|((r&0xff)<<16)|((g&0xff)<<8)|(b&0xff);
 }
 
 int create_rgb_color(int r, int g, int b) {
@@ -19,13 +17,13 @@ int create_rgb_color(int r, int g, int b) {
 
 void print_argb_color(int c) {
 	prints("a:");
-	printlnd(c>>24&ff);
+	printlnd(c>>24&0xff);
 	prints("r:");
-	printlnd(c>>16&ff);
+	printlnd(c>>16&0xff);
 	prints("g:");
-	printlnd(c>>8&ff);
+	printlnd(c>>8&0xff);
 	prints("b:");
-	printlnd(c&ff);
+	printlnd(c&0xff);
 }
 
 void main() {
@@ -45,8 +43,8 @@ void main() {
 	printlnd(((x + 1) >> 4) == 8); // multiple ops
 	x = -1;
 	printlnd(x & (1<<31)); // AND (should be min neg)
-	printlnd(create_argb_color(255, 255,0,0));
-	printlnd(create_rgb_color(0,255,0));
-	print_argb_color(-633946);
+	printlnd(create_argb_color(0xff, 0xff, 0, 0));
+	printlnd(create_rgb_color(0,0xff,0));
+	print_argb_color(0xffff69b4);
 	printlnd(x>>31==1); // checks sign bit should print 0
 }
