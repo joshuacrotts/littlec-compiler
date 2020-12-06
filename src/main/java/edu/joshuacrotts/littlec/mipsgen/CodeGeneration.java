@@ -333,6 +333,7 @@ public class CodeGeneration {
    */
   public static String emitArrayStore(ProgState progState, ICAddress res, ICAddress idx, ICAddress val) {
     StringBuilder sb = new StringBuilder();
+    
     // Load the address of the array if it exists (it WON'T, but just for the hell
     // of it.
     MIPSReg resReg = progState.getCurrReg(res);
@@ -359,9 +360,13 @@ public class CodeGeneration {
     progState.copyVal(valReg, val);
 
     // Create a temp idx register.
-    MIPSReg modIdxReg = progState.getNextAvailableRegister(null, null);
-    progState.copyVal(modIdxReg, idxReg);
+    MIPSReg modIdxReg = progState.getNextAvailableRegister();
     sb.append(MIPSInstruction.genMove(modIdxReg, idxReg));
+    progState.copyVal(modIdxReg, idxReg);
+    
+    // We need to invalidate the former idx register before overriding
+    // the value that's there.
+    progState.invalidate(idxReg); 
     idxReg = modIdxReg;
 
     // If the array is an int array, then we apply a 4byte offset.
@@ -379,7 +384,7 @@ public class CodeGeneration {
     progState.invalidate(resReg);
     progState.invalidate(idxReg);
     progState.invalidate(valReg);
-
+    
     return sb.toString();
   }
 
@@ -425,6 +430,10 @@ public class CodeGeneration {
     MIPSReg modIdxReg = progState.getNextAvailableRegister();
     progState.copyVal(modIdxReg, idxReg);
     sb.append(MIPSInstruction.genMove(modIdxReg, idxReg));
+    
+    // We need to invalidate the former idx register before overriding
+    // the value that's there.
+    progState.invalidate(idxReg); 
     idxReg = modIdxReg;
 
     // If the array is an int array, then we apply a 4byte offset.
