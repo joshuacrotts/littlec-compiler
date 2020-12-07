@@ -27,10 +27,8 @@ public class LCFunctionPrototypeNode extends LCSyntaxTree {
       String storageClass, LinkedHashMap<String, String> args) {
     super("FNPROTOTYPE", retType, id);
 
-    /*
-     * If we don't have the symbol in the table, then we're good to add it. The
-     * scope of a functions is always global.
-     */
+    // If we don't have the symbol in the table, then we're good to add it. The
+    // scope of a functions is always global.
     if (!symbolTable.hasSymbol(id)) {
       List<LCSyntaxTree> argsList = new LinkedList<>();
 

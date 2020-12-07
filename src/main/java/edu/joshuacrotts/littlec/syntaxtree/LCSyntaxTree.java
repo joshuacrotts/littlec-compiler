@@ -14,20 +14,7 @@ import edu.joshuacrotts.littlec.main.LCMasks;
  * Syntax tree class - the purpose of the parser is to construct a syntax tree
  * for any valid LittleC program (and detect errors for invalid programs).
  *
- * While you can use any structure you want in your code, my suggestion is that
- * you make this class be a generic syntax tree node, and then you can extend
- * this class with different node types for each type of node. For example,
- * you'd have a class for "if statement" nodes, and a class for "assignment
- * operations", and so on. I have 19 different node classes defined in my
- * solution.
- *
- * Regardless of how you implement the syntax tree, every tree node needs to
- * have a type, and should keep track of information relevant to that node, and
- * it can have 0 or more children. The README.md file defines all of the syntax
- * tree nodes, and how they should be printed. You'll need to write a tree
- * printing method to show a tree. Spacing is flexible, but otherwise the tree
- * must be printed *exactly* as defined in the README. It won't pass the tests
- * otherwise!
+ * @author Joshua Crotts
  */
 public class LCSyntaxTree implements Generatable {
 
@@ -44,16 +31,24 @@ public class LCSyntaxTree implements Generatable {
    */
   protected boolean isCalled = false;
 
-  /** Label specified by the syntax tree documentation. */
+  /** 
+   * Label specified by the syntax tree documentation. 
+   */
   private String label;
 
-  /** Type specified by the syntax tree documentation. */
+  /** 
+   * Type specified by the syntax tree documentation. 
+   */
   private String type;
 
-  /** Info specified by the syntax tree documentation. This may be null. */
+  /** 
+   * Info specified by the syntax tree documentation. This may be null. 
+   */
   private String info;
 
-  /** Children of this syntax tree. */
+  /** 
+   * Children of this syntax tree. 
+   */
   private List<LCSyntaxTree> children;
 
   /**
@@ -92,6 +87,7 @@ public class LCSyntaxTree implements Generatable {
   }
 
   /**
+   * Generates the code for the children of this LCSyntaxTree.
    * 
    * @param info
    */

@@ -17,21 +17,15 @@ import java.util.regex.Pattern;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
 /**
- * Testing file for CSC 439 parsers. This tester is designed to run test cases
+ * Testing file for the parser. This tester is designed to run test cases
  * that are located in the "tests" subdirectory of the main project directory.
  * Valid LittleC programs (which should parse and produce a syntax tree) are
  * tested by method goodFileTest(), and invalid LittleC program (which should
  * produce null for the syntax tree, indicating an error) are tested by method
  * badFileInput(). See those methods for more information.
- * <p>
- * Instructor-provided test cases will be handled with methods named doTest1(),
- * doTest2(), etc.  If you want to provide your own tests, put them in methods
- * named differently, such as the "doUserTests()" method below. These will not
- * be run from the GitHub classroom autotester, but can be run as part of your
- * development/testing.
  */
-
 public class ParserTester {
+  
     /**
      * Helper function to count number of newlines in a string
      * @param s the string

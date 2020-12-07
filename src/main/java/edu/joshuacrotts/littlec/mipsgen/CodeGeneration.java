@@ -383,6 +383,7 @@ public class CodeGeneration {
     MIPSReg modIdxReg = progState.getNextAvailableRegister();
     progState.copyVal(modIdxReg, idxReg);
     sb.append(MIPSInstruction.genMove(modIdxReg, idxReg));
+    progState.invalidate(idxReg);
     idxReg = modIdxReg;
 
     // If the array is an int array, then we apply a 4byte offset.
@@ -446,6 +447,7 @@ public class CodeGeneration {
     MIPSReg modIdxReg = progState.getNextAvailableRegister();
     progState.copyVal(modIdxReg, idxReg);
     sb.append(MIPSInstruction.genMove(modIdxReg, idxReg));
+    progState.invalidate(idxReg);
     idxReg = modIdxReg;
 
     // If the array is an int array, then we apply a 4byte offset.

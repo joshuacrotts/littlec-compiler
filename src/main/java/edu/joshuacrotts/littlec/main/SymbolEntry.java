@@ -5,12 +5,18 @@ import java.util.List;
 import edu.joshuacrotts.littlec.syntaxtree.LCSyntaxTree;
 
 /**
+ * This class represents the data stored in the SymbolTable - each identifier
+ * is the key for a SymbolEntry, providing information on what type of identifier
+ * (function/var) it is, the variable type it represents (int/char/etc.), 
+ * the storage class (auto/static/extern), and other info about that identifier.
  * 
  * @author Joshua Crotts
  */
 public class SymbolEntry {
 
-  /* Type of symbol (variable, function). */
+  /** 
+   * Type of symbol (variable, function). 
+   */
   private final String TYPE;
 
   /*

@@ -65,7 +65,7 @@ public class MIPSOptimizer {
    * la $t3, -60($fp) 
    * move $a0, $t3
    * 
-   * @param mipsSplitList
+   * @param ArrayList<String> of MIPS code, delimited by newlines.
    * 
    * @return string with all unnecessary loads removed.
    */
@@ -114,7 +114,7 @@ public class MIPSOptimizer {
    * 
    * sw $t0, -4($fp)
    * 
-   * @param mipsSplitList 
+   * @param ArrayList<String> of MIPS code, delimited by newlines.
    * 
    * @return string with all redundant loads removed.
    */
@@ -150,7 +150,7 @@ public class MIPSOptimizer {
    * complex SC evaluation. This method traverses the code generation backwards,
    * and removes duplicate labels once they've been seen.
    * 
-   * @param 
+   * @param ArrayList<String> of MIPS code, delimited by newlines.
    * 
    * @return string with all duplicate (erroneous) labels removed.
    */

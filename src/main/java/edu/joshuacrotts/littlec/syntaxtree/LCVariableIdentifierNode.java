@@ -35,7 +35,8 @@ public class LCVariableIdentifierNode extends LCSyntaxTree {
       return;
     super.isCalled = true;
 
-    // Check if it's a parameter first, then try for a local var.
+    // Check if it's a parameter first, then try for a local var,
+    // then finally check for globals.
     if (ICode.getTopAR().getParameterVariable(this.id) != null) {
       e.ADDR = ICode.getTopAR().getParameterVariable(this.id);
     } else if (ICode.getTopAR().getLocalVariable(this.id) != null) {

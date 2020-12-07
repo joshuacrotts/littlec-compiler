@@ -7,7 +7,7 @@ import edu.joshuacrotts.littlec.main.SymbolTable;
 
 public class LCFunctionArgsListNode extends LCSyntaxTree {
 
-  /* List of LCSyntaxTree arguments. */
+  /** List of LCSyntaxTree arguments. */
   private List<LCSyntaxTree> args;
 
   /**

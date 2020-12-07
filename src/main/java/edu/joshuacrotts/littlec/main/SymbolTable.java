@@ -52,8 +52,9 @@ public class SymbolTable {
    * Given an identifier, we return if the symbol is declared anywhere in the
    * symbol table.
    * 
-   * @param id
-   * @return
+   * @param id - identifier of symbol.
+   * 
+   * @return true if the symbol is in any environment stack, false otherwise.
    */
   public boolean hasSymbol(String id) {
     boolean found = false;
@@ -76,8 +77,9 @@ public class SymbolTable {
    * Given a symbol ID, returns the SymbolEntry object. This is useful for
    * comparing datatypes of a variable, function, etc.
    * 
-   * @param id
-   * @return
+   * @param id - identifier of symbol.
+   * 
+   * @return SymbolEntry value for identifier key.
    */
   public SymbolEntry getSymbolEntry(String id) {
     for (int i = this.environmentTable.size() - 1; i >= 0; i--) {
@@ -128,13 +130,13 @@ public class SymbolTable {
    */
   public void printGlobalVars() {
     int stackSize = this.environmentTable.size();
-    /* Retrieve the bottom of the stack which is the global block. */
+    // Retrieve the bottom of the stack (which is the global block).
     Environment globalEnvironment = this.environmentTable.get(stackSize - 1);
 
-    /* Return the set of keys. */
+    // Return the set of keys.
     TreeMap<String, SymbolEntry> map = globalEnvironment.getTreeMap();
 
-    /* Now iterate through the map and find all vars. */
+    // Now iterate through the map and find all vars.
     for (String key : map.keySet()) {
       if (map.get(key).getType().equals("VAR")) {
         String type = this.getSymbolEntry(key).getVarType();
@@ -152,31 +154,29 @@ public class SymbolTable {
    */
   public void printGlobalFns() {
     int stackSize = this.environmentTable.size();
-    /* Retrieve the bottom of the stack which is the global block. */
+    // Retrieve the bottom of the stack which is the global block.
     Environment globalEnvironment = this.environmentTable.get(stackSize - 1);
 
-    /* Return the set of keys. */
+    // Return the set of keys.
     TreeMap<String, SymbolEntry> map = globalEnvironment.getTreeMap();
 
-    /* Now iterate through the map and find all vars. */
+    // Now iterate through the map and find all vars.
     for (String key : map.keySet()) {
       if (map.get(key).getType().equals("FNDEF")) {
 
-        /* Grab the parameters and return type. */
+        // Grab the parameters and return type.
         List<LCSyntaxTree> params = this.getSymbolEntry(key).getInfoList();
         String returnType = this.getSymbolEntry(key).getVarType();
         StringBuilder paramStr = new StringBuilder();
 
-        /* Procedurally build the parameter types in parenthesis. */
+        // Procedurally build the parameter types in parenthesis.
         for (LCSyntaxTree pt : params) {
           paramStr.append(pt.getType());
           paramStr.append(",");
         }
 
-        /*
-         * If the parameter string is not empty, then cut the end off so we don't have a
-         * trailing comma (,).
-         */
+        // If the parameter string is not empty, then cut the end off so we don't have a
+        // trailing comma (,).
         if (paramStr.length() != 0) {
           paramStr.setLength(paramStr.length() - 1);
         }

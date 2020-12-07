@@ -30,36 +30,30 @@ public class LCFunctionCallNode extends LCSyntaxTree {
   public LCFunctionCallNode(ParserRuleContext ctx, SymbolTable symbolTable, String id,
       LCFunctionArgsListNode parameters) {
     this.id = id;
-    /* Get the definition parameters from the symbol table so we can check them. */
+    // Get the definition parameters from the symbol table so we can check them.
     LinkedList<LCSyntaxTree> fnDefArgs = (LinkedList<LCSyntaxTree>) symbolTable.getSymbolEntry(id).getInfoList();
     LinkedList<LCSyntaxTree> parametersList;
 
-    /*
-     * If we don't have a parameter list object defined, then we just give it a
-     * blank list. That's what it's analogous to.
-     */
+    // If we don't have a parameter list object defined, then we just give it a
+    // blank list. That's what it's analogous to.
     if (parameters != null) {
       parametersList = (LinkedList<LCSyntaxTree>) parameters.getParams();
     } else {
       parametersList = new LinkedList<>();
     }
 
-    /*
-     * If the two parameter declarations aren't the same size, then there's no point
-     * of continuing.
-     */
+    // If the two parameter declarations aren't the same size, then there's no point
+    // of continuing.
     if (fnDefArgs.size() != parametersList.size()) {
       this.printError(ctx, "function definition for " + id + " expects " + fnDefArgs.size()
           + " arguments, but was given " + parametersList.size() + ".");
       return;
     }
 
-    /* Go through one by one and compare the types. */
+    // Go through one by one and compare the types. 
     for (int i = 0; i < fnDefArgs.size(); i++) {
-      /*
-       * If we get to here and find a null value in the parameter list, we just bail
-       * out.
-       */
+      // If we get to here and find a null value in the parameter list, we just bail
+      // out.
       if (fnDefArgs.get(i) == null || parametersList.get(i) == null) {
         this.printError(ctx, "parameter " + (i + 1) + " is null.");
         return;
@@ -85,9 +79,9 @@ public class LCFunctionCallNode extends LCSyntaxTree {
     this.setType(symbolTable.getSymbolEntry(id).getVarType());
     this.setInfo(id);
 
-    /* If we actually have parameters, add them as children of this node. */
+    // If we actually have parameters, add them as children of this node.
     if (parameters != null) {
-      /* 0 or more children depending on the parameters. */
+      // 0 or more children depending on the parameters. 
       for (LCSyntaxTree param : parameters.getParams()) {
         super.addChild(param);
       }

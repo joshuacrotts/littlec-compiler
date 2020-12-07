@@ -38,17 +38,13 @@ public class LCVariableDeclarationNode extends LCSyntaxTree {
     this.varType = varType;
     this.literalValue = literalValue;
 
-    /*
-     * If we don't have the symbol in the current environment table (which defines
-     * the current scope, then we're good to add it (we can shadow it).
-     */
+    // If we don't have the symbol in the current environment table (which defines
+    // the current scope, then we're good to add it (we can shadow it). 
     if (!symbolTable.hasSymbolInCurrentEnvironment(this.id)) {
 
-      /*
-       * If the symbol DOES exist somewhere in the table (in other words, it's either
-       * shadowing a variable or there's a function with the same name declared), then
-       * we need to make sure it's not previously declared as a function.
-       */
+      // If the symbol DOES exist somewhere in the table (in other words, it's either
+      // shadowing a variable or there's a function with the same name declared), then
+      // we need to make sure it's not previously declared as a function.
       if (symbolTable.hasSymbol(this.id)) {
         String symbolEntry = symbolTable.getSymbolEntry(this.id).getType();
         if (symbolEntry.equals("FNDEF")) {

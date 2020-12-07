@@ -136,6 +136,7 @@ public class MIPSFunction {
         LinkedList<String> tac = bb.getCurrentInstruction(j);
         fnBody.append(CodeGeneration.genInstruction(this, progState, tac.get(0), tac.get(1), tac.get(2), tac.get(3)));
       }
+      progState.clearTempRegisters();
     }
 
     // Generate the prologue and epilogue; we back-patch the prologue.
@@ -195,15 +196,13 @@ public class MIPSFunction {
    * @return String representation of instructions.
    */
   private String genPrologue(String fnName) {
-    /* Saves the data for this specific function call. */
-
     // We can optimize the $ra register by omitting it if this function does
     // *not* call another function.
     int calleeSavedSpace = this.isCallingOtherFunction ? 12 : 8;
 
     // SP saves necessary $s registers (min of 4 and however many we use), the # of
-    // temp vars
-    // generated in 3AC, and the local var size, alongside the callee saved space.
+    // temp vars generated in 3AC, and the local var size, alongside the callee
+    // saved space.
     this.stackSpace = Math.min(4, this.maxArgRegSize) * 4 + this.tempVarSize
         + LCUtilities.getNextAddress(this.localVarSize) + calleeSavedSpace;
 
@@ -252,7 +251,6 @@ public class MIPSFunction {
     sb.append(fnName);
     sb.append(":\n");
 
-    // Do stuff with $a registers!
     sb.append(this.loadArgRegisters());
     sb.append("\tlw $s7, " + this.s7Register + "($sp)").append("\n");
     sb.append("\tlw $fp, " + this.previousFunctionPointer + "($sp)").append("\n");
@@ -297,7 +295,6 @@ public class MIPSFunction {
       sb.append(i);
       sb.append("\n");
 
-      // TODO: deal with parameters n > 4.
       MIPSReg sReg = MIPSReg.sReg(i);
       MIPSReg aReg = MIPSReg.aReg(i);
       this.progState.copyVal(sReg, aReg);

@@ -65,7 +65,7 @@ public class LCAssignmentNode extends LCSyntaxTree {
     // Add the array index node as the l-value.
     this.addChild(arrayIdxNode);
 
-    /* Cast it if we can. */
+    // Cast it if we can.
     if (!expr.getType().equals(elementType)) {
       if (!LCUtilities.isCastable(expr.getType(), arrayIdxNode.getType())) {
         this.printError(ctx, "cannot assign " + expr.getType() + " to " + idVarType + ".");
@@ -76,8 +76,7 @@ public class LCAssignmentNode extends LCSyntaxTree {
       }
     } else {
       // If we're not casting, just add the r-value expr (it's embedded in the cast if
-      // we
-      // are doing that).
+      // we are doing that).
       this.addChild(expr);
     }
   }

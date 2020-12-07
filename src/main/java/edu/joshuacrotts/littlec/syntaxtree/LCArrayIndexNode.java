@@ -25,7 +25,6 @@ public class LCArrayIndexNode extends LCSyntaxTree {
       LCSyntaxTree indexExpr) {
     super("AIDX", arrayType); // Parameter 2 is the type of one of the array elements.
                               // No third parameter.
-    /* Two children. */
     /* Child 1 is the array identifier (as a syntax tree). */
     super.addChild(arrayIdentifier);
 
@@ -65,7 +64,6 @@ public class LCArrayIndexNode extends LCSyntaxTree {
     ICode.quad.addLine(tmpAddr, e1.ADDR, op);
     info.ADDR = tmpAddr;
 
-    // TODO document code
     if (!info.TYPE.equals("LVAL")) {
       String oldTmp = tmpAddr;
       tmpAddr = ICode.getTopAR().addTemporaryVariable(width);

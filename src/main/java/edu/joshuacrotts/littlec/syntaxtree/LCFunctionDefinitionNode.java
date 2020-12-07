@@ -18,7 +18,9 @@ import edu.joshuacrotts.littlec.main.SymbolTable;
 
 public class LCFunctionDefinitionNode extends LCSyntaxTree {
 
-  /** Identifier of function. */
+  /** 
+   * Identifier of function. 
+   */
   private String id;
 
   /**
@@ -48,22 +50,18 @@ public class LCFunctionDefinitionNode extends LCSyntaxTree {
     this.id = id;
     this.argsList = new LinkedList<>();
 
-    /* Add syntax tree nodes to our list of parameters. */
+    // Add syntax tree nodes to our list of parameters.
     for (String key : args.keySet()) {
       argsList.add(new LCVariableIdentifierNode(ctx, symbolTable, key, args.get(key)));
     }
 
-    /*
-     * If we don't have the symbol in the table, then we're good to add it. The
-     * scope of a functions is always global.
-     */
+    // If we don't have the symbol in the table, then we're good to add it. The
+    // scope of a functions is always global.
     if (!symbolTable.hasSymbol(id)) {
       symbolTable.addSymbol(id, new SymbolEntry("FNDEF", retType, storageClass, argsList));
     } else {
-      /*
-       * If the definition already exists, then it has to be a function prototype or
-       * it's invalid.
-       */
+      // If the definition already exists, then it has to be a function prototype or
+      // it's invalid.
       if (!this.checkParameterMatching(ctx, symbolTable, argsList, id, retType, storageClass)) {
         return;
       }
@@ -131,7 +129,7 @@ public class LCFunctionDefinitionNode extends LCSyntaxTree {
   private boolean checkParameterMatching(ParserRuleContext ctx, SymbolTable symbolTable, List<LCSyntaxTree> argsList,
       String id, String retType, String storageClass) {
     if (symbolTable.getSymbolEntry(id).getType().equals("FNPROTOTYPE")) {
-      /* We first need to check if the return types match. */
+      // We first need to check if the return types match.
       String prototypeReturnType = symbolTable.getSymbolEntry(id).getVarType();
       if (!prototypeReturnType.equals(retType)) {
         this.printError(ctx, "prototype function " + id + " expects return type " + prototypeReturnType
@@ -140,7 +138,7 @@ public class LCFunctionDefinitionNode extends LCSyntaxTree {
         return false;
       }
 
-      /* Next, we need to check that the storage classes match. */
+      // Next, we need to check that the storage classes match.
       String prototypeStorageClass = symbolTable.getSymbolEntry(id).getStorageClass();
       if (!prototypeStorageClass.equals(storageClass)) {
         this.printError(ctx, "prototype function " + id + " expects a storage class of " + prototypeStorageClass
@@ -149,16 +147,12 @@ public class LCFunctionDefinitionNode extends LCSyntaxTree {
         return false;
       }
 
-      /*
-       * If there already exists a prototype, go through and make sure the existing
-       * data matches this one.
-       */
+      // If there already exists a prototype, go through and make sure the existing
+      // data matches this one.
       LinkedList<LCSyntaxTree> prototypeArgs = (LinkedList<LCSyntaxTree>) symbolTable.getSymbolEntry(id).getInfoList();
 
-      /*
-       * If the two parameter declarations aren't the same size, then there's no point
-       * of continuing.
-       */
+      // If the two parameter declarations aren't the same size, then there's no point
+      // of continuing.
       if (prototypeArgs.size() != argsList.size()) {
         this.printError(ctx, "prototype function " + id + " expects " + prototypeArgs.size()
             + " arguments, but the declaration expects " + argsList.size() + " arguments.");
@@ -166,7 +160,7 @@ public class LCFunctionDefinitionNode extends LCSyntaxTree {
         return false;
       }
 
-      /* Go through one by one and compare the types. */
+      // Go through one by one and compare the types.
       for (int i = 0; i < argsList.size(); i++) {
         String fnArg = argsList.get(i).getType();
         String param = prototypeArgs.get(i).getType();
@@ -209,10 +203,8 @@ public class LCFunctionDefinitionNode extends LCSyntaxTree {
     /* If the parameter map isn't empty, we can push them to the stack. */
     StringBuilder info = new StringBuilder(id + " " + retType + " (");
     if (!args.isEmpty()) {
-      /*
-       * Iterate through the arguments and declare the variables assigned onto the
-       * local stack environment.
-       */
+      // Iterate through the arguments and declare the variables assigned onto the
+      // local stack environment.
       for (String varID : args.keySet()) {
         String varDatatype = args.get(varID); // Gets the datatype.
 

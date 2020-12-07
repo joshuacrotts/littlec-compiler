@@ -57,7 +57,7 @@ public class LCBinaryOperatorNode extends LCSyntaxTree {
       this.setType("int");
     }
 
-    // Comparison operators always result in an integer.
+    // Comparison operators ALWAYS, no matter WHAT, result in an integer.
     if (isComparisonOp) {
       this.setType("int");
     }

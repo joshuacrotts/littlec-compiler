@@ -13,18 +13,12 @@ import edu.joshuacrotts.littlec.exec.RunCode;
 import edu.joshuacrotts.littlec.icode.ICode;
 
 /**
- * Testing file for CSC 439 intermediate code generation (phase 4 of the
+ * Testing file for intermediate code generation (phase 4 of the
  * compiler project). This tester is designed to run test cases that are located
  * in the "tests" subdirectory of the main project directory. All test programs
  * are valid LittleC programs whose output varies depending on some
  * feature/requirement of LittleC. Output must match exactly with the provided
  * output file.
- * <p>
- * Instructor-provided test cases will be handled with methods named
- * phase4TestA(), phase4TestB(), etc. If you want to provide your own tests, put
- * them in methods named differently, such as the "doUserTests()" method below.
- * These will not be run from the GitHub classroom autotester, but can be run as
- * part of your development/testing.
  */
 
 public class ICodeTester {
@@ -54,9 +48,6 @@ public class ICodeTester {
       System.setOut(origOut);
       String[] actual = captureOut.toString().split("\\r?\\n");
       String[] expected = Files.readAllLines(Paths.get(expName)).toArray(new String[0]);
-
-      // System.out.println(java.util.Arrays.toString(actual));
-      // System.out.println(java.util.Arrays.toString(expected));
 
       ICodeTester.cleanup();
       assertArrayEquals(expected, actual, "Files differ");

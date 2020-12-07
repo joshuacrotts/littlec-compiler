@@ -997,13 +997,7 @@ public class LCListener extends LittleCBaseListener {
 
   /**
    * Assignment statement exit context listener. All type-checking is handled
-   * inside the node itself, but id existence is verified here. Array
-   * dereferencing and checks are not done yet:
-   * 
-   * @TODO Add array checks (derefs should be labeled as their respective data
-   *       type): int a[10]; a = 5; // Error!
-   * 
-   *       a[0] = 5; // Good!
+   * inside the node itself, but id existence is verified here.
    */
   @Override
   public void exitAssignStatement(LittleCParser.AssignStatementContext ctx) {
@@ -1025,40 +1019,31 @@ public class LCListener extends LittleCBaseListener {
 
     String lvalueType = this.symbolTable.getSymbolEntry(id).getVarType();
 
-    /*
-     * If there are two expressions, this means an array was created (or we tried to
-     * use a non-array as an array). The second expression is the one we want to
-     * assign.
-     */
+    // If there are two expressions, this means an array was created (or we tried to
+    // use a non-array as an array). The second expression is the one we want to assign.
     if (ctx.expr().size() == 2) {
-      /*
-       * If we dereference the array, then it has a "pseudotype" of whatever type of
-       * array it is. This suggests that we can't do something like int x[5]; x = 5;
-       * But we can do x[0] = 5;
-       */
+      // If we dereference the array, then it has a "pseudotype" of whatever type of
+      // array it is. This suggests that we can't do something like int x[5]; x = 5;
+      // But we can do x[0] = 5;
       if (!this.symbolTable.getSymbolEntry(id).getVarType().contains("[")
           && !this.symbolTable.getSymbolEntry(id).getVarType().contains("]")) {
         this.syntaxTree.printError(ctx, "cannot treat non-array " + id + " as array.");
         return;
       }
 
-      /*
-       * When we're in here, this means that we HAVE to use an array; that's our
-       * invariant.
-       */
+      // When we're in here, this means that we HAVE to use an array; that's our
+      // invariant.
       String arrType = LCUtilities.getArrayType(lvalueType);
 
-      /* We're assigning either a term or an expression. */
+      // We're assigning either a term or an expression.
       if (ctx.expr() != null) {
         rvalue = this.values.get(ctx.expr(1));
       } else if (ctx.term() != null) {
         rvalue = this.values.get(ctx.term());
       }
 
-      /*
-       * We need to create the array identifier, reference, and then the assignment
-       * node.
-       */
+      // We need to create the array identifier, reference, and then the assignment
+      // node.
       LCVariableIdentifierNode arrayIdentifier = new LCVariableIdentifierNode(ctx, symbolTable, id, lvalueType);
       LCArrayIndexNode arrayReference = new LCArrayIndexNode(ctx, arrType, arrayIdentifier,
           this.values.get(ctx.expr(0)));
@@ -1126,7 +1111,6 @@ public class LCListener extends LittleCBaseListener {
             this.syntaxTree.printError(ctx, "cannot create an int literal.");
             return;            
           }
-          
           constantLiteral = new LCConstantLiteralNode(ctx, intLit, "int");
         } else if (ctx.term().CHARLIT() != null) {
           String characterStr = ctx.term().CHARLIT().getText();
@@ -1219,19 +1203,18 @@ public class LCListener extends LittleCBaseListener {
 
     LCSyntaxTree lvar = new LCVariableIdentifierNode(ctx, this.symbolTable, id, idType);
 
-    /*
-     * If we have an expression that means we're using an array. Arrays are
-     * l-values!
-     * 
-     * TODO Fix bug that *always* allows this operator on arrays - e.g. int a[20];
-     * ++a compiles egregiously.
-     */
+    /* If we have an expression that means we're using an array. Arrays are
+     * l-values! */
     if (ctx.expr() != null) {
       if (LCUtilities.isTypeArray(idType)) {
         idType = LCUtilities.getArrayType(idType);
         lvar = new LCArrayIndexNode(ctx, idType, lvar, this.values.get(ctx.expr()));
-      } else {
-        this.syntaxTree.printError(ctx, "cannot use " + id + " as an array l-value for this postfix unary operator.");
+      }
+    } else {
+      // If the expression is null and we're on an array, that means we're 
+      // not using an AIDX node.
+      if (lvar.isArray()) {
+        this.syntaxTree.printError(ctx, "cannot use " + id + " as an array l-value for this prefix unary operator.");
         return;
       }
     }
@@ -1290,15 +1273,17 @@ public class LCListener extends LittleCBaseListener {
 
     LCSyntaxTree lvar = new LCVariableIdentifierNode(ctx, this.symbolTable, id, idType);
 
-    /*
-     * If we have an expression that means we're using an array. Arrays are
-     * l-values!
-     */
+    /* If we have an expression that means we're using an array. Arrays are
+     * l-values! */
     if (ctx.expr() != null) {
       if (LCUtilities.isTypeArray(idType)) {
         idType = LCUtilities.getArrayType(idType);
         lvar = new LCArrayIndexNode(ctx, idType, lvar, this.values.get(ctx.expr()));
-      } else {
+      }
+    } else {
+      // If the expression is null and we're on an array, that means we're 
+      // not using an AIDX node.
+      if (lvar.isArray()) {
         this.syntaxTree.printError(ctx, "cannot use " + id + " as an array l-value for this postfix unary operator.");
         return;
       }
@@ -1400,13 +1385,8 @@ public class LCListener extends LittleCBaseListener {
     String op = null;
 
     /* If this is an arithmetic operator (where we CANNOT compare strings...) */
-    /* If this is an arithmetic operator (where we CANNOT compare strings...) */
     /* A better way must be found... */
-    if (ctx.PLUS_OP() != null || ctx.MINUS_OP() != null || ctx.MULTIPLY_OP() != null || ctx.DIVIDE_OP() != null
-        || ctx.MODULO_OP() != null || ctx.GREATER_EQ_CMP() != null || ctx.GREATER_THAN_CMP() != null
-        || ctx.LESS_EQ_CMP() != null || ctx.LESS_THAN_CMP() != null || ctx.EQUAL_CMP() != null || ctx.BIT_XOR() != null
-        || ctx.BIT_AND() != null || ctx.BIT_SHIFT_LEFT() != null || ctx.BIT_SHIFT_RIGHT() != null
-        || ctx.BIT_OR() != null || ctx.NOT_EQUAL_CMP() != null || ctx.AND() != null || ctx.OR() != null) {
+    if (hasBinaryOperator(ctx)) {
 
       boolean lStr = lexpr.isArray();
       boolean rStr = rexpr.isArray();
@@ -1418,43 +1398,10 @@ public class LCListener extends LittleCBaseListener {
       }
 
       /* Now actually get the flags and set the operator. */
-      /* There HAS to be a better way... */
-      if (ctx.PLUS_OP() != null) {
-        op = "+";
-      } else if (ctx.MINUS_OP() != null) {
-        op = "-";
-      } else if (ctx.MULTIPLY_OP() != null) {
-        op = "*";
-      } else if (ctx.DIVIDE_OP() != null) {
-        op = "/";
-      } else if (ctx.MODULO_OP() != null) {
-        op = "%";
-      } else if (ctx.BIT_AND() != null) {
-        op = "&";
-      } else if (ctx.BIT_OR() != null) {
-        op = "|";
-      } else if (ctx.BIT_XOR() != null) {
-        op = "^";
-      } else if (ctx.BIT_SHIFT_LEFT() != null) {
-        op = "<<";
-      } else if (ctx.BIT_SHIFT_RIGHT() != null) {
-        op = ">>";
-      } else if (ctx.GREATER_EQ_CMP() != null) {
-        op = ">=";
-      } else if (ctx.GREATER_THAN_CMP() != null) {
-        op = ">";
-      } else if (ctx.LESS_EQ_CMP() != null) {
-        op = "<=";
-      } else if (ctx.LESS_THAN_CMP() != null) {
-        op = "<";
-      } else if (ctx.EQUAL_CMP() != null) {
-        op = "==";
-      } else if (ctx.NOT_EQUAL_CMP() != null) {
-        op = "!=";
-      } else if (ctx.AND() != null) {
-        op = "&&";
-      } else if (ctx.OR() != null) {
-        op = "||";
+      op = getBinaryOperator(ctx);
+      if (op == null) {
+        this.syntaxTree.printError(ctx, "invalid binary operator.");
+        return;
       }
     }
 
@@ -1937,6 +1884,71 @@ public class LCListener extends LittleCBaseListener {
     /* Add the readline() function. */
     args.add(new LCVariableIdentifierNode(null, symbolTable, "str", "char[]"));
     this.symbolTable.addSymbol("readline", new SymbolEntry("FNDEF", "void", "extern", args));
+  }
+  
+  /**
+   * Returns whether or not there is a non-null binary operator node in the ExprBinaryOpContext
+   * object.
+   * 
+   * @param ctx ExprBinaryOpContext object.
+   * 
+   * @return true if there is a non-null node, false otherwise.
+   */
+  private boolean hasBinaryOperator(LittleCParser.ExprBinaryOpContext ctx) {
+    return (ctx.PLUS_OP() != null || ctx.MINUS_OP() != null || ctx.MULTIPLY_OP() != null || ctx.DIVIDE_OP() != null
+        || ctx.MODULO_OP() != null || ctx.GREATER_EQ_CMP() != null || ctx.GREATER_THAN_CMP() != null
+        || ctx.LESS_EQ_CMP() != null || ctx.LESS_THAN_CMP() != null || ctx.EQUAL_CMP() != null || ctx.BIT_XOR() != null
+        || ctx.BIT_AND() != null || ctx.BIT_SHIFT_LEFT() != null || ctx.BIT_SHIFT_RIGHT() != null
+        || ctx.BIT_OR() != null || ctx.NOT_EQUAL_CMP() != null || ctx.AND() != null || ctx.OR() != null);
+  }
+  
+  /**
+   * Returns the appropriate string binary operator in the ExprBinaryOpContext.
+   * We have to painstakingly check each node for "nullness".
+   * 
+   * @param ctx - ExprBinaryOpContext object.
+   * 
+   * @return string operator if there is a non-null one, null otherwise.
+   */
+  private String getBinaryOperator(LittleCParser.ExprBinaryOpContext ctx) {
+    if (ctx.PLUS_OP() != null) {
+      return "+";
+    } else if (ctx.MINUS_OP() != null) {
+      return "-";
+    } else if (ctx.MULTIPLY_OP() != null) {
+      return "*";
+    } else if (ctx.DIVIDE_OP() != null) {
+      return "/";
+    } else if (ctx.MODULO_OP() != null) {
+      return "%"; 
+    } else if (ctx.AND() != null) {
+      return "&&";
+    } else if (ctx.OR() != null) {
+      return "||";
+    } else if (ctx.BIT_AND() != null) {
+      return "&";
+    } else if (ctx.BIT_OR() != null) {
+      return "|";
+    } else if (ctx.BIT_XOR() != null) {
+      return "^";
+    } else if (ctx.BIT_SHIFT_LEFT() != null) {
+      return "<<";
+    } else if (ctx.BIT_SHIFT_RIGHT() != null) {
+      return ">>";
+    } else if (ctx.GREATER_EQ_CMP() != null) {
+      return ">=";
+    } else if (ctx.GREATER_THAN_CMP() != null) {
+      return ">";
+    } else if (ctx.LESS_EQ_CMP() != null) {
+      return "<=";
+    } else if (ctx.LESS_THAN_CMP() != null) {
+      return "<";
+    } else if (ctx.EQUAL_CMP() != null) {
+      return "==";
+    } else if (ctx.NOT_EQUAL_CMP() != null) {
+      return "!=";
+    }
+    return null;
   }
 }
 //Why is Dr. Tate so evilllllllllllllllllllllllll
