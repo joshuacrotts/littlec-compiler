@@ -21,6 +21,7 @@ public class Launcher {
     System.out.print("   -pi produces intermediate code output with Quadruple structure.\n");
     System.out.print("   -pa produces MIPS assembly language output\n");
     System.out.print("   -rc runs code (from interpreting intermediate code)\n");
+    System.out.print("   -rm runs MIPS assembly code (warning: you must have SPIM installed!)\n");
 
   }
 
@@ -51,6 +52,9 @@ public class Launcher {
       RunCode.main(argsTail);
     else if (argv[0].equals("-pa"))
       OutputAsm.main(argsTail);
+    else if (argv[0].equals("rm")) {
+      RunMIPS.main(argsTail);
+    }
     else {
       usage();
     }
