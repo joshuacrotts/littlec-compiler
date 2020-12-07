@@ -52,7 +52,7 @@ public class Launcher {
       RunCode.main(argsTail);
     else if (argv[0].equals("-pa"))
       OutputAsm.main(argsTail);
-    else if (argv[0].equals("rm")) {
+    else if (argv[0].equals("-rm")) {
       RunMIPS.main(argsTail);
     }
     else {
