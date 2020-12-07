@@ -349,7 +349,7 @@ public class ICInterp {
           return SimValue.errVal;
         else
           return val;
-      } else if (Character.isDigit(name.charAt(0))) {
+      } else if (Character.isDigit(name.charAt(0)) || !Character.isAlphabetic(name.charAt(0))) {
         return new SimValue(tWidth, Integer.parseInt(name));
       }
       return SimValue.errVal;

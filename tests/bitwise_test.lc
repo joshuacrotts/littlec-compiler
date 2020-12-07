@@ -45,6 +45,6 @@ void main() {
 	printlnd(x & (1<<31)); // AND (should be min neg)
 	printlnd(create_argb_color(0xff, 0xff, 0, 0));
 	printlnd(create_rgb_color(0,0xff,0));
-	print_argb_color(0xffff69b4);
+	print_argb_color(0xffffffff);
 	printlnd(x>>31==1); // checks sign bit should print 0
 }
