@@ -38,6 +38,7 @@ Most standard programming language concepts are present. These include
 ## Planned Features
 The following is a list of planned features:
 - Single & Double Floating-Point Precision Variables
+- Power (double asterisk) operator as in Python
 - Standard API
 - Terminal argument support.
 - Support for compiling down to "MARS MIPS"
