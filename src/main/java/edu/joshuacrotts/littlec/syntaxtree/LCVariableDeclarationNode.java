@@ -71,10 +71,8 @@ public class LCVariableDeclarationNode extends LCSyntaxTree {
       return;
     super.isCalled = true;
 
-    /*
-     * If we're in an array reference or declaration, we need to do something
-     * different.
-     */
+    // If we're in an array reference or declaration, we need to do something
+    // different.
     if (this.varType.endsWith("]")) {
       String arrayType = LCUtilities.getArrayType(this.varType);
       int arraySize = LCUtilities.getArraySize(this.varType);
@@ -84,7 +82,7 @@ public class LCVariableDeclarationNode extends LCSyntaxTree {
       if (ICode.getARStackSize() == 1) {
         String gLabel = ICode.getTopAR().addGlobalVariable(id, 0);
         String gLabelDecl = ".dw ";
-        String arrayInitSizeLabel = (arrayType.equals("int") ? ".dw 0#" : ".db 0#") + arraySize;
+        String arrayInitSizeLabel = this.getICLabel(arrayType) + " 0#" + arraySize;
         ICode.quad.addLine(gLabel, gLabelDecl, Integer.toString(arraySize), "");
 
         // If we have a char literal, then we need to add its declaration.
@@ -107,7 +105,7 @@ public class LCVariableDeclarationNode extends LCSyntaxTree {
       // Add array to local scope.
       else {
         String lLabel = ICode.getTopAR().addLocalArray(id, 0, dataWidth);
-        int size = this.varType.contains("int") ? 4 : 1;
+        int size = LCUtilities.getDataWidth(this.varType);
         ICode.quad.addLine(lLabel, Integer.toString(arraySize), "", "setsize" + size);
         info.ADDR = lLabel;
       }
@@ -120,7 +118,7 @@ public class LCVariableDeclarationNode extends LCSyntaxTree {
       // Add array to global scope.
       if (ICode.getARStackSize() == 1) {
         String gLabel = ICode.getTopAR().addGlobalVariable(id, dataWidth);
-        String gLabelDecl = (this.varType.equals("int") ? ".dw" : ".db");
+        String gLabelDecl = this.getICLabel(this.varType);
         ICode.quad.addLine(gLabel, gLabelDecl, lit.toString(), "");
         info.ADDR = gLabel;
       }
@@ -131,6 +129,23 @@ public class LCVariableDeclarationNode extends LCSyntaxTree {
         info.ADDR = lLabel;
       }
     }
+  }
+  
+  /**
+   * 
+   * @param type
+   * @return
+   */
+  private String getICLabel(String type) {
+    switch (type) {
+    case "int":
+      return ".dw";
+    case "float":
+      return ".df";
+    case "char":
+      return ".db";
+    }
+    return null;
   }
 
   @Override

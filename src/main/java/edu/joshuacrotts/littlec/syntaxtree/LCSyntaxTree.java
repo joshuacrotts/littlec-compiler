@@ -120,6 +120,29 @@ public class LCSyntaxTree implements Generatable {
     System.err.println("line " + lineNo + ":" + colNo + " " + errorMsg + "\n\n");
     this.setFlags(LCMasks.ERROR_MASK);
   }
+  
+  /**
+   * Prints an warning message to the console with the line and column number
+   * specified by the ParserRuleContext.
+   * 
+   * @param ctx
+   * @param errorMsg
+   */
+  public void printWarning(ParserRuleContext ctx, String warningMsg) {
+    if ((this.getFlags() & LCMasks.WARNING_MASK) == 0) {
+      return;
+    }
+    
+    int lineNo = 0;
+    int colNo = 0;
+
+    if (ctx != null) {
+      lineNo = ctx.start.getLine();
+      colNo = ctx.start.getCharPositionInLine();
+    }
+
+    System.out.println("warning on line " + lineNo + ":" + colNo + " - " + warningMsg);
+  }
 
   /**
    * A method which will print this syntax tree. Since you need to print the top

@@ -9,7 +9,9 @@ import edu.joshuacrotts.littlec.main.SymbolTable;
 
 public class LCUnaryOperatorNode extends LCSyntaxTree {
 
-  /** Unary operator to use on r-value. */
+  /** 
+   * Unary operator to use on r-value. 
+   */
   private String op;
 
   /**

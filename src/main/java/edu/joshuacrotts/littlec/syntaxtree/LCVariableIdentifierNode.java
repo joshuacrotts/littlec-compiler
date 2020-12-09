@@ -8,7 +8,9 @@ import edu.joshuacrotts.littlec.main.SymbolTable;
 
 public class LCVariableIdentifierNode extends LCSyntaxTree {
 
-  /** Name of the variable for later reference. */
+  /** 
+   * Name of the variable for later reference. 
+   */
   private String id;
 
   /**

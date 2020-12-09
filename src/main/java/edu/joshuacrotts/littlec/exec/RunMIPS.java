@@ -203,7 +203,7 @@ public class RunMIPS {
   private static void deleteLCFile() {
     File f = new File("file.lc");
     if (!f.delete()) {
-      throw new IllegalStateException("File deleted unsuccessfully.");
+      throw new IllegalStateException("Temporary LC file deleted unsuccessfully.");
     }
   }
 }

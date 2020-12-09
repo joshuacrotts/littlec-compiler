@@ -60,8 +60,9 @@ public class LCUtilities {
    * @return true if we can cast from type to "to" type, false otherwise.
    */
   public static boolean isCastable(String from, String to) {
-    // Char to int (Widen) or int to char (narrow).
-    if (from.equals("char") && to.equals("int") || from.equals("int") && to.equals("char")) {
+    if ((from.equals("char") && to.equals("int")) || (from.equals("int") && to.equals("char"))
+        || (from.equals("char") && to.equals("float")) || (from.equals("float") && to.equals("char"))
+        || (from.equals("int") && to.equals("float")) || (from.equals("float") && to.equals("int"))) {
       return true;
     }
 
@@ -91,14 +92,14 @@ public class LCUtilities {
 
   /**
    * Returns the integer representation of a string in hex, binary, or decimal
-   * form. 
+   * form.
    * 
    * ** A call to this method should most likely be prefaced with a call to
    * isValidIntLiteral to make sure it is valid. **
    * 
-   * Because Integer.decode() doesn't work on hex values where the most significant
-   * bit (the sign bit) is toggled, we have to convert it to a long, then use
-   * its .intValue() method. Ugh.
+   * Because Integer.decode() doesn't work on hex values where the most
+   * significant bit (the sign bit) is toggled, we have to convert it to a long,
+   * then use its .intValue() method. Ugh.
    * 
    * A NumberFormatException is thrown by the Integer.decode call if the string
    * passed is not a valid, parsable integer.
@@ -114,13 +115,13 @@ public class LCUtilities {
   }
 
   /**
-   * Determines if the string is a valid, parsable integer literal. 
-   * The string may have a leading 0x, 0b, or standard decimal.  
+   * Determines if the string is a valid, parsable integer literal. The string may
+   * have a leading 0x, 0b, or standard decimal.
    * 
    * @param intVal - string to parse.
    * 
    * @return true if the string represents a valid 32-bit integer, false
-   * otherwise.
+   *         otherwise.
    */
   public static boolean isValidIntLiteral(String intVal) {
     try {
@@ -131,7 +132,7 @@ public class LCUtilities {
     } catch (NumberFormatException ex) {
       return false;
     }
-    
+
     return true;
   }
 

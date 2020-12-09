@@ -149,24 +149,17 @@ public class LCListener extends LittleCBaseListener {
       return;
     }
 
-    /*
-     * We need to create a new LCSyntaxTree to add to the fnDefNode so it makes a
-     * new scope.
-     */
+    // We need to create a new LCSyntaxTree to add to the fnDefNode so it makes a
+    // new scope.
     LCSyntaxTree newScope = new LCSyntaxTree();
-
     this.syntaxTree.addChild(newScope);
 
-    /*
-     * We push the current syntaxtree for traversal to the stack so we can save its
-     * context.
-     */
+    // We push the current syntaxtree for traversal to the stack so we can save its
+    // context.
     this.syntaxTreeScopes.push(this.syntaxTree);
 
-    /*
-     * Set the scope of the syntax tree to be this new one so variables can easily
-     * add to it.
-     */
+    // Set the scope of the syntax tree to be this new one so variables can easily
+    // add to it.
     this.syntaxTree = newScope;
     this.symbolTable.addEnvironment();
   }
@@ -179,10 +172,8 @@ public class LCListener extends LittleCBaseListener {
       return;
     }
 
-    /*
-     * Removes the current environment from the stack and the syntax tree scope is
-     * appended back to the main tree.
-     */
+    // Removes the current environment from the stack and the syntax tree scope is
+    // appended back to the main tree.
     this.symbolTable.popEnvironment();
     this.syntaxTree = this.syntaxTreeScopes.pop();
   }
@@ -222,6 +213,7 @@ public class LCListener extends LittleCBaseListener {
     if (ctx.OPEN_BRACE() != null && ctx.CLOSE_BRACE() != null) {
       // First, we grab the saved expression. 
       condPortion = this.values.get(ctx.ruleIfStatementCond());
+      
       // Then, we get the children of the if statement node (the THEN part).
       List<LCSyntaxTree> thenPortionChildren = this.syntaxTree.getChildren();
       thenPortion = new LCSyntaxTree();

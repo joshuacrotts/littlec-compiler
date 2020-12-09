@@ -7,13 +7,13 @@ import java.util.TreeMap;
 import edu.joshuacrotts.littlec.syntaxtree.LCSyntaxTree;
 
 /**
- * Symbol Table class for the LittleC compiler project. Implementation details
- * are up to you, but make sure you fill in the printGlobalVars() and
- * printGlobalFns() methods below.
+ * Symbol Table class for the LittleC compiler project.
+ * 
+ * @author Joshua Crotts
  */
 public class SymbolTable {
 
-  /*
+  /**
    * Stack of environment objects to represent the call-stack/scope for variables
    * and functions. Each time a variable or function is referenced, it is checked
    * against this table. Variables are checked in the top-most stack for existence

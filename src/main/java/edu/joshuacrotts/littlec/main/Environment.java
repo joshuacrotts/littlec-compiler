@@ -12,7 +12,9 @@ import java.util.TreeMap;
  */
 public class Environment {
 
-  /** HashMap of identifiers and SymbolEntry values. */
+  /** 
+   * HashMap of identifiers and SymbolEntry values. 
+   */
   private TreeMap<String, SymbolEntry> symbols;
 
   /**
