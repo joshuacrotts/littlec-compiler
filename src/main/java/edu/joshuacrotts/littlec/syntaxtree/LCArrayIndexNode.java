@@ -4,6 +4,7 @@ import org.antlr.v4.runtime.ParserRuleContext;
 
 import edu.joshuacrotts.littlec.icode.ICInhAttr;
 import edu.joshuacrotts.littlec.icode.ICode;
+import edu.joshuacrotts.littlec.main.CoreType;
 import edu.joshuacrotts.littlec.main.LCUtilities;
 
 public class LCArrayIndexNode extends LCSyntaxTree {
@@ -21,14 +22,14 @@ public class LCArrayIndexNode extends LCSyntaxTree {
    * @param arrayIdentifier
    * @param indexExpr
    */
-  public LCArrayIndexNode(ParserRuleContext ctx, String arrayType, LCSyntaxTree arrayIdentifier,
+  public LCArrayIndexNode(ParserRuleContext ctx, CoreType arrayType, LCSyntaxTree arrayIdentifier,
       LCSyntaxTree indexExpr) {
     super("AIDX", arrayType); // Parameter 2 is the type of one of the array elements.
                               // No third parameter.
     /* Child 1 is the array identifier (as a syntax tree). */
     super.addChild(arrayIdentifier);
 
-    if (!(indexExpr.getType().equals("int")) && !(LCUtilities.isCastable(indexExpr.getType(), "int"))) {
+    if (!(indexExpr.getType().equals(CoreType.INT)) && !(LCUtilities.isCastable(indexExpr.getType(), CoreType.INT))) {
       this.printError(ctx, "array index expression is invalid.");
       return;
     }
@@ -47,7 +48,7 @@ public class LCArrayIndexNode extends LCSyntaxTree {
     super.isCalled = true;
 
     // Generate the temp var to store the address.
-    int width = LCUtilities.getDataWidth(this.getType());
+    int width = this.getType().getWidth();
     String tmpAddr = ICode.getTopAR().addTemporaryVariable(width);
     String op = "";
 

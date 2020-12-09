@@ -5,6 +5,7 @@ import org.antlr.v4.runtime.ParserRuleContext;
 import edu.joshuacrotts.littlec.icode.ActivationRecord;
 import edu.joshuacrotts.littlec.icode.ICInhAttr;
 import edu.joshuacrotts.littlec.icode.ICode;
+import edu.joshuacrotts.littlec.main.CoreType;
 
 public class LCIfStatementNode extends LCSyntaxTree {
 
@@ -26,7 +27,7 @@ public class LCIfStatementNode extends LCSyntaxTree {
    * @param elsePart
    */
   public LCIfStatementNode(ParserRuleContext ctx, LCSyntaxTree ifPart, LCSyntaxTree thenPart, LCSyntaxTree elsePart) {
-    super("IF", "void");// No third parameter.
+    super("IF", CoreType.VOID);// No third parameter.
 
     /* Two or three children. */
     /* Child 1 is the conditions. */

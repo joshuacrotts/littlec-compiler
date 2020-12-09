@@ -4,6 +4,7 @@ import org.antlr.v4.runtime.ParserRuleContext;
 
 import edu.joshuacrotts.littlec.icode.ICInhAttr;
 import edu.joshuacrotts.littlec.icode.ICode;
+import edu.joshuacrotts.littlec.main.CoreType;
 import edu.joshuacrotts.littlec.main.LCUtilities;
 import edu.joshuacrotts.littlec.main.SymbolTable;
 
@@ -28,13 +29,13 @@ public class LCUnaryOperatorNode extends LCSyntaxTree {
    * @param rValType    - type of operator on the right side.
    * @param rvalue      - rvalue itself.
    */
-  public LCUnaryOperatorNode(ParserRuleContext ctx, SymbolTable symbolTable, String op, String rValType,
+  public LCUnaryOperatorNode(ParserRuleContext ctx, SymbolTable symbolTable, String op, CoreType rValType,
       LCSyntaxTree rvalue) {
     super("UNARYOP(\'" + op + "\')", rValType);
     this.op = op;
     /* Handles the one operator that has to be an integer as specified above. */
-    if (LCUtilities.isCastable(rValType, "int") && op.equals("!")) {
-      LCTypeCastNode cast = new LCTypeCastNode(ctx, rvalue, "int");
+    if (LCUtilities.isCastable(rValType, CoreType.INT) && op.equals("!")) {
+      LCTypeCastNode cast = new LCTypeCastNode(ctx, rvalue, CoreType.INT);
       this.addChild(cast);
       // Reset the type of this cast node to what we cast it to.
       this.setType(cast.getType());
@@ -55,10 +56,10 @@ public class LCUnaryOperatorNode extends LCSyntaxTree {
     super.isCalled = true;
 
     // E.addr = new Temp()
-    int dataWidth = LCUtilities.getDataWidth(this.getType());
+    int dataWidth = this.getType().getWidth();
     e.ADDR = ICode.getTopAR().addTemporaryVariable(dataWidth);
 
-    // E1
+    // E1.
     ICInhAttr e1 = new ICInhAttr();
     e1.TYPE = e.TYPE; // Pass down the inherited type.
 

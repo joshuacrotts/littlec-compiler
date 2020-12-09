@@ -5,6 +5,7 @@ import org.antlr.v4.runtime.ParserRuleContext;
 import edu.joshuacrotts.littlec.icode.ActivationRecord;
 import edu.joshuacrotts.littlec.icode.ICInhAttr;
 import edu.joshuacrotts.littlec.icode.ICode;
+import edu.joshuacrotts.littlec.main.CoreType;
 
 public class LCLoopStatementNode extends LCSyntaxTree {
 
@@ -22,7 +23,7 @@ public class LCLoopStatementNode extends LCSyntaxTree {
    * @param loopBody
    */
   public LCLoopStatementNode(ParserRuleContext ctx, LCSyntaxTree condPart, LCSyntaxTree loopBody) {
-    super("WHILE", "void");
+    super("WHILE", CoreType.VOID);
 
     /* Child 1 is the loop condition. */
     super.addChild(condPart);

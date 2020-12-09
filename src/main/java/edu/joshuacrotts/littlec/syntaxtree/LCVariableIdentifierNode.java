@@ -4,6 +4,7 @@ import org.antlr.v4.runtime.ParserRuleContext;
 
 import edu.joshuacrotts.littlec.icode.ICInhAttr;
 import edu.joshuacrotts.littlec.icode.ICode;
+import edu.joshuacrotts.littlec.main.CoreType;
 import edu.joshuacrotts.littlec.main.SymbolTable;
 
 public class LCVariableIdentifierNode extends LCSyntaxTree {
@@ -21,7 +22,7 @@ public class LCVariableIdentifierNode extends LCSyntaxTree {
    * @param id
    * @param varType
    */
-  public LCVariableIdentifierNode(ParserRuleContext ctx, SymbolTable symbolTable, String id, String varType) {
+  public LCVariableIdentifierNode(ParserRuleContext ctx, SymbolTable symbolTable, String id, CoreType varType) {
     super("VAR", varType, id);
     this.id = id;
   }

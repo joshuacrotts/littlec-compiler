@@ -10,9 +10,9 @@ import org.antlr.v4.runtime.ParserRuleContext;
 import edu.joshuacrotts.littlec.icode.ActivationRecord;
 import edu.joshuacrotts.littlec.icode.ICInhAttr;
 import edu.joshuacrotts.littlec.icode.ICode;
+import edu.joshuacrotts.littlec.main.CoreType;
 import edu.joshuacrotts.littlec.main.Environment;
 import edu.joshuacrotts.littlec.main.LCMasks;
-import edu.joshuacrotts.littlec.main.LCUtilities;
 import edu.joshuacrotts.littlec.main.SymbolEntry;
 import edu.joshuacrotts.littlec.main.SymbolTable;
 
@@ -42,8 +42,8 @@ public class LCFunctionDefinitionNode extends LCSyntaxTree {
    * @param params       - HashMap of identifier/datatype pairs.
    * @param newScope     - Scope of this function call, the current LCSyntaxTree
    */
-  public LCFunctionDefinitionNode(ParserRuleContext ctx, SymbolTable symbolTable, String id, String retType,
-      String storageClass, LinkedHashMap<String, String> args, LCSyntaxTree newScope) {
+  public LCFunctionDefinitionNode(ParserRuleContext ctx, SymbolTable symbolTable, String id, CoreType retType,
+      String storageClass, LinkedHashMap<String, CoreType> args, LCSyntaxTree newScope) {
     super("FNDEF", retType, id);
     super.addChild(newScope);
 
@@ -84,7 +84,7 @@ public class LCFunctionDefinitionNode extends LCSyntaxTree {
 
     // Add the parameters to the AR stack.
     for (LCSyntaxTree params : this.argsList) {
-      int width = LCUtilities.getDataWidth(params.getType());
+      int width = params.getType().getWidth();
       String id = params.getInfo();
       ICode.getTopAR().addParameterVariable(id, width);
     }
@@ -127,10 +127,10 @@ public class LCFunctionDefinitionNode extends LCSyntaxTree {
    * @return true if parameters were matched without error, false otherwise.
    */
   private boolean checkParameterMatching(ParserRuleContext ctx, SymbolTable symbolTable, List<LCSyntaxTree> argsList,
-      String id, String retType, String storageClass) {
+      String id, CoreType retType, String storageClass) {
     if (symbolTable.getSymbolEntry(id).getType().equals("FNPROTOTYPE")) {
       // We first need to check if the return types match.
-      String prototypeReturnType = symbolTable.getSymbolEntry(id).getVarType();
+      CoreType prototypeReturnType = symbolTable.getSymbolEntry(id).getVarType();
       if (!prototypeReturnType.equals(retType)) {
         this.printError(ctx, "prototype function " + id + " expects return type " + prototypeReturnType
             + ", but the declaration expects " + retType + ".");
@@ -162,8 +162,8 @@ public class LCFunctionDefinitionNode extends LCSyntaxTree {
 
       // Go through one by one and compare the types.
       for (int i = 0; i < argsList.size(); i++) {
-        String fnArg = argsList.get(i).getType();
-        String param = prototypeArgs.get(i).getType();
+        CoreType fnArg = argsList.get(i).getType();
+        CoreType param = prototypeArgs.get(i).getType();
 
         // Here we run into a small problem with arrays but it's easily solvable.
         if (!fnArg.equals(param)) {
@@ -197,7 +197,7 @@ public class LCFunctionDefinitionNode extends LCSyntaxTree {
    * @param retType     - return type of function.
    */
   private void addArgsToStack(ParserRuleContext ctx, SymbolTable symbolTable, LCSyntaxTree newScope,
-      HashMap<String, String> args, String id, String retType) {
+      LinkedHashMap<String, CoreType> args, String id, CoreType retType) {
     Environment environment = new Environment();
 
     /* If the parameter map isn't empty, we can push them to the stack. */
@@ -206,7 +206,7 @@ public class LCFunctionDefinitionNode extends LCSyntaxTree {
       // Iterate through the arguments and declare the variables assigned onto the
       // local stack environment.
       for (String varID : args.keySet()) {
-        String varDatatype = args.get(varID); // Gets the datatype.
+        CoreType varDatatype = args.get(varID); // Gets the datatype.
 
         LCParameterDeclarationNode paramNode = new LCParameterDeclarationNode(ctx, varID, varDatatype);
 

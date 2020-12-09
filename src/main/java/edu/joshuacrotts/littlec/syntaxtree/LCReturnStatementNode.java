@@ -4,6 +4,7 @@ import org.antlr.v4.runtime.ParserRuleContext;
 
 import edu.joshuacrotts.littlec.icode.ICInhAttr;
 import edu.joshuacrotts.littlec.icode.ICode;
+import edu.joshuacrotts.littlec.main.CoreType;
 import edu.joshuacrotts.littlec.main.LCUtilities;
 
 public class LCReturnStatementNode extends LCSyntaxTree {
@@ -18,7 +19,7 @@ public class LCReturnStatementNode extends LCSyntaxTree {
    * @param returnVal
    */
   public LCReturnStatementNode(ParserRuleContext ctx, LCSyntaxTree returnVal) {
-    super("RETURN", "void");
+    super("RETURN", CoreType.VOID);
 
     // Third child is the optional return value.
     if (returnVal != null) {
@@ -44,7 +45,7 @@ public class LCReturnStatementNode extends LCSyntaxTree {
     // Otherwise,
     if (!this.getChildren().isEmpty()) {
       this.getChildren().get(0).genCode(info);
-      int retWidth = LCUtilities.getDataWidth(this.getChildren().get(0).getType());
+      int retWidth = this.getChildren().get(0).getType().getWidth();
       returnStr += retWidth;
     }
 

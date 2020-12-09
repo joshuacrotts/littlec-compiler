@@ -4,7 +4,7 @@ import org.antlr.v4.runtime.ParserRuleContext;
 
 import edu.joshuacrotts.littlec.icode.ICInhAttr;
 import edu.joshuacrotts.littlec.icode.ICode;
-import edu.joshuacrotts.littlec.main.LCUtilities;
+import edu.joshuacrotts.littlec.main.CoreType;
 import edu.joshuacrotts.littlec.main.SymbolTable;
 
 public class LCPrePostOperatorNode extends LCSyntaxTree {
@@ -23,7 +23,7 @@ public class LCPrePostOperatorNode extends LCSyntaxTree {
    * @param lvarType
    * @param lvar
    */
-  public LCPrePostOperatorNode(ParserRuleContext ctx, SymbolTable symbolTable, String type, String lvarType,
+  public LCPrePostOperatorNode(ParserRuleContext ctx, SymbolTable symbolTable, String type, CoreType lvarType,
       LCSyntaxTree lvar) {
     super(type, lvarType);
 
@@ -54,7 +54,7 @@ public class LCPrePostOperatorNode extends LCSyntaxTree {
 
     // Get the width of the l-address type and
     // generate a temp variable if necessary.
-    int dataWidth = LCUtilities.getDataWidth(this.getType());
+    int dataWidth = this.getType().getWidth();
 
     // Generate the lvalue IC.
     ICInhAttr e1 = new ICInhAttr();

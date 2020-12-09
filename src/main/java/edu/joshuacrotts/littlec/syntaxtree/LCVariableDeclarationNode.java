@@ -4,6 +4,7 @@ import org.antlr.v4.runtime.ParserRuleContext;
 
 import edu.joshuacrotts.littlec.icode.ICInhAttr;
 import edu.joshuacrotts.littlec.icode.ICode;
+import edu.joshuacrotts.littlec.main.CoreType;
 import edu.joshuacrotts.littlec.main.LCUtilities;
 import edu.joshuacrotts.littlec.main.SymbolEntry;
 import edu.joshuacrotts.littlec.main.SymbolTable;
@@ -14,7 +15,7 @@ public class LCVariableDeclarationNode extends LCSyntaxTree {
   private String id;
 
   /** Type of variable that we're declaring. */
-  private String varType;
+  private CoreType varType;
 
   /** The literal value that we're assigning. Null if no lit. */
   private Object literalValue;
@@ -31,9 +32,9 @@ public class LCVariableDeclarationNode extends LCSyntaxTree {
    * @param storageClass - storage class of variable.
    * @param literalValue - object either of type int, char, or String.
    */
-  public LCVariableDeclarationNode(ParserRuleContext ctx, SymbolTable symbolTable, String id, String varType,
+  public LCVariableDeclarationNode(ParserRuleContext ctx, SymbolTable symbolTable, String id, CoreType varType,
       String storageClass, Object literalValue) {
-    super("DECL", "void", id + " " + "(" + varType + ")" + (literalValue != null ? " = " + literalValue : ""));
+    super("DECL", CoreType.VOID, id + " " + "(" + varType + ")" + (literalValue != null ? " = " + literalValue : ""));
     this.id = id;
     this.varType = varType;
     this.literalValue = literalValue;
@@ -71,30 +72,28 @@ public class LCVariableDeclarationNode extends LCSyntaxTree {
       return;
     super.isCalled = true;
 
-    /*
-     * If we're in an array reference or declaration, we need to do something
-     * different.
-     */
-    if (this.varType.endsWith("]")) {
-      String arrayType = LCUtilities.getArrayType(this.varType);
-      int arraySize = LCUtilities.getArraySize(this.varType);
-      int dataWidth = LCUtilities.getDataWidth(this.varType);
+    // If we're in an array reference or declaration, we need to do something
+    // different.
+    if (this.varType.isArray()) {
+      int arraySize = this.varType.getSize();
+      int dataWidth = this.varType.getWidth();
 
       // Add array to global scope.
       if (ICode.getARStackSize() == 1) {
         String gLabel = ICode.getTopAR().addGlobalVariable(id, 0);
         String gLabelDecl = ".dw ";
-        String arrayInitSizeLabel = (arrayType.equals("int") ? ".dw 0#" : ".db 0#") + arraySize;
+        String arrayInitSizeLabel = (this.varType.equals(CoreType.INT) ? ".dw 0#" : ".db 0#") + arraySize;
         ICode.quad.addLine(gLabel, gLabelDecl, Integer.toString(arraySize), "");
 
         // If we have a char literal, then we need to add its declaration.
-        if (arrayType.equals("char") && this.literalValue != null) {
+        if (varType.equals(CoreType.CHAR) && this.literalValue != null) {
+          // Extract the char literal.
           String lit = this.literalValue.toString();
           lit = LCUtilities.escapeString(lit.substring(1, lit.length() - 1));
+          // Build the string.
           String byteChars = LCUtilities.getByteString(lit);
           int remainingChars = arraySize - lit.length() - 1;
           ICode.quad.addLabel(byteChars);
-          
           // If we have remaining chars, use the zero-padding operation.
           if (remainingChars > 0) 
             ICode.quad.addLabel(".db 0#" + remainingChars);
@@ -107,20 +106,20 @@ public class LCVariableDeclarationNode extends LCSyntaxTree {
       // Add array to local scope.
       else {
         String lLabel = ICode.getTopAR().addLocalArray(id, 0, dataWidth);
-        int size = this.varType.contains("int") ? 4 : 1;
+        int size = this.varType.equals(CoreType.INT) || this.varType.equals(CoreType.FLOAT) ? 4 : 1;
         ICode.quad.addLine(lLabel, Integer.toString(arraySize), "", "setsize" + size);
         info.ADDR = lLabel;
       }
     }
     /* Otherwise, we insert the value as normal. */
     else {
-      int dataWidth = LCUtilities.getDataWidth(this.varType);
+      int dataWidth = this.varType.getWidth();
       String lit = this.literalValue == null ? "0" : this.literalValue.toString();
 
       // Add array to global scope.
       if (ICode.getARStackSize() == 1) {
         String gLabel = ICode.getTopAR().addGlobalVariable(id, dataWidth);
-        String gLabelDecl = (this.varType.equals("int") ? ".dw" : ".db");
+        String gLabelDecl = this.varType.getICDataSpecifier();
         ICode.quad.addLine(gLabel, gLabelDecl, lit.toString(), "");
         info.ADDR = gLabel;
       }

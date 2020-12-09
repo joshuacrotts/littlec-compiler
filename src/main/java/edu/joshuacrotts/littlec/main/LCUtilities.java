@@ -59,21 +59,8 @@ public class LCUtilities {
    * @param to
    * @return true if we can cast from type to "to" type, false otherwise.
    */
-  public static boolean isCastable(String from, String to) {
-    // Char to int (Widen) or int to char (narrow).
-    if (from.equals("char") && to.equals("int") || from.equals("int") && to.equals("char")) {
-      return true;
-    }
-
-    // Array declaration (int a[20]) to array reference (int[]).
-    if (from.matches(".+\\[[0-9]+\\]") && to.endsWith("[]")) {
-      String arrType1 = LCUtilities.getArrayType(from);
-      String arrType2 = LCUtilities.getArrayType(to);
-
-      return arrType1.equals(arrType2);
-    }
-
-    return false;
+  public static boolean isCastable(CoreType from, CoreType to) {
+    return from.getPriority() <= to.getPriority();
   }
 
   /**

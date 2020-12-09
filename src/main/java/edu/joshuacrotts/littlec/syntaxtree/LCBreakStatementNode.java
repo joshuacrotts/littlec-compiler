@@ -4,6 +4,7 @@ import org.antlr.v4.runtime.ParserRuleContext;
 
 import edu.joshuacrotts.littlec.icode.ICInhAttr;
 import edu.joshuacrotts.littlec.icode.ICode;
+import edu.joshuacrotts.littlec.main.CoreType;
 
 public class LCBreakStatementNode extends LCSyntaxTree {
 
@@ -13,7 +14,7 @@ public class LCBreakStatementNode extends LCSyntaxTree {
    * @param ctx
    */
   public LCBreakStatementNode(ParserRuleContext ctx) {
-    super("BREAK", "void"); // No third parameter.
+    super("BREAK", CoreType.VOID); // No third parameter.
   }
 
   /**

@@ -4,6 +4,7 @@ import org.antlr.v4.runtime.ParserRuleContext;
 
 import edu.joshuacrotts.littlec.icode.ICInhAttr;
 import edu.joshuacrotts.littlec.icode.ICode;
+import edu.joshuacrotts.littlec.main.CoreType;
 import edu.joshuacrotts.littlec.main.LCUtilities;
 
 public class LCTypeCastNode extends LCSyntaxTree {
@@ -17,7 +18,7 @@ public class LCTypeCastNode extends LCSyntaxTree {
    * @param rvalue
    * @param targetType
    */
-  public LCTypeCastNode(ParserRuleContext ctx, LCSyntaxTree rvalue, String targetType) {
+  public LCTypeCastNode(ParserRuleContext ctx, LCSyntaxTree rvalue, CoreType targetType) {
     super("CAST", targetType); // No third parameter.
 
     /* One child for the value that is casted. */
@@ -34,22 +35,19 @@ public class LCTypeCastNode extends LCSyntaxTree {
     }
     super.isCalled = true;
 
-    String rvalType = this.getChildren().get(0).getType();
+    CoreType rvalType = this.getChildren().get(0).getType();
     String castType = "";
 
-    // This is a VERY ugly solution for now and doesn't handle array refs or
-    // declarations,
-    // but it's alright for this point in time (NOT for final ass4 but still).
-    if (rvalType.equals("char") && this.getType().equals("int")) {
+    if (rvalType.getPriority() < this.getType().getPriority()) {
       castType = "widen";
-    } else if (rvalType.equals("int") && this.getType().equals("char")) {
+    } else if (rvalType.getPriority() > this.getType().getPriority()) {
       castType = "narrow";
     } else {
       castType = "&";
     }
 
     // Generate the cast variable temp.
-    int castWidth = LCUtilities.getDataWidth(this.getType());
+    int castWidth = this.getType().getWidth();
     String tmpCastVar = ICode.getTopAR().addTemporaryVariable(castWidth);
 
     // Generate the r-value that we're going to cast.

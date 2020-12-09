@@ -4,6 +4,7 @@ import org.antlr.v4.runtime.ParserRuleContext;
 
 import edu.joshuacrotts.littlec.icode.ICInhAttr;
 import edu.joshuacrotts.littlec.icode.ICode;
+import edu.joshuacrotts.littlec.main.CoreType;
 import edu.joshuacrotts.littlec.main.LCUtilities;
 import edu.joshuacrotts.littlec.main.SymbolTable;
 
@@ -18,7 +19,7 @@ public class LCAssignmentNode extends LCSyntaxTree {
    * @param idVarType
    * @param expr
    */
-  public LCAssignmentNode(ParserRuleContext ctx, SymbolTable symbolTable, String id, String idVarType,
+  public LCAssignmentNode(ParserRuleContext ctx, SymbolTable symbolTable, String id, CoreType idVarType,
       LCSyntaxTree expr) {
     super("ASN", expr.getType());
 
@@ -55,18 +56,15 @@ public class LCAssignmentNode extends LCSyntaxTree {
    * @param expr         r-value of expression; the expression being evaluated
    *                     itself.
    */
-  public LCAssignmentNode(ParserRuleContext ctx, SymbolTable symbolTable, String id, String idVarType,
+  public LCAssignmentNode(ParserRuleContext ctx, SymbolTable symbolTable, String id, CoreType idVarType,
       LCArrayIndexNode arrayIdxNode, LCSyntaxTree expr) {
     super("ASN", expr.getType());
-
-    /* Get the element type of the array. */
-    String elementType = LCUtilities.getArrayType(idVarType);
-
+    
     // Add the array index node as the l-value.
     this.addChild(arrayIdxNode);
 
     // Cast it if we can.
-    if (!expr.getType().equals(elementType)) {
+    if (!expr.getType().equals(idVarType)) {
       if (!LCUtilities.isCastable(expr.getType(), arrayIdxNode.getType())) {
         this.printError(ctx, "cannot assign " + expr.getType() + " to " + idVarType + ".");
       } else {

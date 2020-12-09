@@ -5,6 +5,7 @@ import org.antlr.v4.runtime.ParserRuleContext;
 import edu.joshuacrotts.littlec.icode.ActivationRecord;
 import edu.joshuacrotts.littlec.icode.ICInhAttr;
 import edu.joshuacrotts.littlec.icode.ICode;
+import edu.joshuacrotts.littlec.main.CoreType;
 import edu.joshuacrotts.littlec.main.LCUtilities;
 import edu.joshuacrotts.littlec.main.SymbolTable;
 
@@ -44,22 +45,22 @@ public class LCBinaryOperatorNode extends LCSyntaxTree {
     // If one operand is a char, we promote it to an int.
     // If both are chars, the binary operator returns an int.
     // If only one is a char, then it's casted to an integer.
-    if (lOperand.isChar() && rOperand.isChar()) {
-      this.setType("char");
-    } else if (lOperand.isInteger() && rOperand.isInteger()) {
-      this.setType("int");
+    if (lOperand.getType().isChar() && rOperand.getType().isChar()) {
+      this.setType(CoreType.CHAR);
+    } else if (lOperand.getType().isInt() && rOperand.getType().isInt()) {
+      this.setType(CoreType.INT);
     } else {
-      if (lOperand.isChar()) {
-        lOperand = new LCTypeCastNode(ctx, lOperand, "int");
-      } else if (rOperand.isChar()) {
-        rOperand = new LCTypeCastNode(ctx, rOperand, "int");
+      if (lOperand.getType().isChar()) {
+        lOperand = new LCTypeCastNode(ctx, lOperand, CoreType.INT);
+      } else if (rOperand.getType().isChar()) {
+        rOperand = new LCTypeCastNode(ctx, rOperand, CoreType.INT);
       }
-      this.setType("int");
+      this.setType(CoreType.INT);
     }
 
     // Comparison operators ALWAYS, no matter WHAT, result in an integer.
     if (isComparisonOp) {
-      this.setType("int");
+      this.setType(CoreType.INT);
     }
 
     this.addChild(lOperand);
@@ -88,7 +89,7 @@ public class LCBinaryOperatorNode extends LCSyntaxTree {
       // If we're not inside a conditional or loop, then we can safely
       // generate a temporary variable.
       if (e.TYPE.isEmpty()) {
-        int width = LCUtilities.getDataWidth(this.getType());
+        int width = this.getType().getWidth();
         e.ADDR = ICode.getTopAR().addTemporaryVariable(width);
         b1.ADDR = b2.ADDR = e.ADDR;
       }
@@ -136,7 +137,7 @@ public class LCBinaryOperatorNode extends LCSyntaxTree {
       // If we're not in an if and we have no logic operators then
       // we need to print the temp labels here.
       if (e.TYPE.isEmpty() && e.REL_TYPE.isEmpty()) {
-        int width = LCUtilities.getDataWidth(this.getType());
+        int width = this.getType().getWidth();
         e.ADDR = ICode.getTopAR().addTemporaryVariable(width);
         String t = e.TRUE.isEmpty() ? ActivationRecord.newLabel() : e.TRUE;
         String f = e.FALSE.isEmpty() ? ActivationRecord.newLabel() : e.FALSE;
@@ -165,7 +166,7 @@ public class LCBinaryOperatorNode extends LCSyntaxTree {
       this.getChildren().get(1).genCode(e2);
 
       // E.addr = new Temp();
-      int width = LCUtilities.getDataWidth(this.getType());
+      int width = this.getType().getWidth();
       e.ADDR = ICode.getTopAR().addTemporaryVariable(width);
 
       // gen(E.addr = E1.addr op E2.addr);

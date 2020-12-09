@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.antlr.v4.runtime.ParserRuleContext;
 
+import edu.joshuacrotts.littlec.main.CoreType;
 import edu.joshuacrotts.littlec.main.SymbolEntry;
 import edu.joshuacrotts.littlec.main.SymbolTable;
 
@@ -23,8 +24,8 @@ public class LCFunctionPrototypeNode extends LCSyntaxTree {
    * @param storageClass
    * @param args
    */
-  public LCFunctionPrototypeNode(ParserRuleContext ctx, SymbolTable symbolTable, String id, String retType,
-      String storageClass, LinkedHashMap<String, String> args) {
+  public LCFunctionPrototypeNode(ParserRuleContext ctx, SymbolTable symbolTable, String id, CoreType retType,
+      String storageClass, LinkedHashMap<String, CoreType> args) {
     super("FNPROTOTYPE", retType, id);
 
     // If we don't have the symbol in the table, then we're good to add it. The

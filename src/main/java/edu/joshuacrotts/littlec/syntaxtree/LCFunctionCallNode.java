@@ -6,6 +6,7 @@ import org.antlr.v4.runtime.ParserRuleContext;
 
 import edu.joshuacrotts.littlec.icode.ICInhAttr;
 import edu.joshuacrotts.littlec.icode.ICode;
+import edu.joshuacrotts.littlec.main.CoreType;
 import edu.joshuacrotts.littlec.main.LCUtilities;
 import edu.joshuacrotts.littlec.main.SymbolTable;
 
@@ -59,8 +60,8 @@ public class LCFunctionCallNode extends LCSyntaxTree {
         return;
       }
 
-      String fnArg = fnDefArgs.get(i).getType();
-      String param = parametersList.get(i).getType();
+      CoreType fnArg = fnDefArgs.get(i).getType();
+      CoreType param = parametersList.get(i).getType();
 
       if (!fnArg.equals(param)) {
         // If we can cast from one type ot another, try to.
@@ -105,7 +106,7 @@ public class LCFunctionCallNode extends LCSyntaxTree {
     // Push the arguments in reverse order.
     for (int i = args - 1; i >= 0; i--) {
       LCSyntaxTree param = this.getChildren().get(i);
-      int width = LCUtilities.getDataWidth(param.getType());
+      int width = param.getType().getWidth();
       param.genCode(info);
       // Add the parameter to <op1> <op>
       ICode.quad.addLine("", info.ADDR, "", "param" + width);
@@ -113,8 +114,8 @@ public class LCFunctionCallNode extends LCSyntaxTree {
 
     // If the return type is non-void, we need to generate a new compiler temp
     // variable.
-    if (!this.getType().equals("void")) {
-      String tempVar = ICode.getTopAR().addTemporaryVariable(LCUtilities.getDataWidth(this.getType()));
+    if (!this.getType().equals(CoreType.VOID)) {
+      String tempVar = ICode.getTopAR().addTemporaryVariable(this.getType().getWidth());
       ICode.quad.addFunctionCall(tempVar, "gf_" + this.id, args);
       info.ADDR = tempVar;
     } else {

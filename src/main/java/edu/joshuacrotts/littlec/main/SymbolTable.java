@@ -139,7 +139,7 @@ public class SymbolTable {
     // Now iterate through the map and find all vars.
     for (String key : map.keySet()) {
       if (map.get(key).getType().equals("VAR")) {
-        String type = this.getSymbolEntry(key).getVarType();
+        CoreType type = this.getSymbolEntry(key).getVarType();
         System.out.println(key + ": " + type);
       }
     }
@@ -166,7 +166,7 @@ public class SymbolTable {
 
         // Grab the parameters and return type.
         List<LCSyntaxTree> params = this.getSymbolEntry(key).getInfoList();
-        String returnType = this.getSymbolEntry(key).getVarType();
+        CoreType returnType = this.getSymbolEntry(key).getVarType();
         StringBuilder paramStr = new StringBuilder();
 
         // Procedurally build the parameter types in parenthesis.

@@ -2,6 +2,8 @@ package edu.joshuacrotts.littlec.syntaxtree;
 
 import org.antlr.v4.runtime.ParserRuleContext;
 
+import edu.joshuacrotts.littlec.main.CoreType;
+
 public class LCParameterDeclarationNode extends LCSyntaxTree {
 
   /**
@@ -10,8 +12,8 @@ public class LCParameterDeclarationNode extends LCSyntaxTree {
    * @param id
    * @param varType
    */
-  public LCParameterDeclarationNode(ParserRuleContext ctx, String id, String varType) {
-    super("PDECL", "void", id + " (" + varType + ")"); // Name of the identifier being declared followed by its type in
+  public LCParameterDeclarationNode(ParserRuleContext ctx, String id, CoreType varType) {
+    super("PDECL", CoreType.VOID, id + " (" + varType + ")"); // Name of the identifier being declared followed by its type in
                                                        // parenthesis.
   }
 

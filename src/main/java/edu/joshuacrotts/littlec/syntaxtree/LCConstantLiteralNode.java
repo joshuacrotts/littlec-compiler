@@ -4,6 +4,7 @@ import org.antlr.v4.runtime.ParserRuleContext;
 
 import edu.joshuacrotts.littlec.icode.ICInhAttr;
 import edu.joshuacrotts.littlec.icode.ICode;
+import edu.joshuacrotts.littlec.main.CoreType;
 
 public class LCConstantLiteralNode extends LCSyntaxTree {
 
@@ -14,8 +15,8 @@ public class LCConstantLiteralNode extends LCSyntaxTree {
    * @param value
    * @param type
    */
-  public LCConstantLiteralNode(ParserRuleContext ctx, String value, String type) {
-    super("LIT = " + value, type, value);
+  public LCConstantLiteralNode(ParserRuleContext ctx, String value, CoreType varType) {
+    super("LIT = " + value, varType, value);
   }
 
   /**
@@ -28,7 +29,7 @@ public class LCConstantLiteralNode extends LCSyntaxTree {
     super.isCalled = true;
 
     // If our literal is a string, then we need to add it to the string table.
-    if (this.getType().equals("char[]")) {
+    if (this.getType().equals(CoreType.CHAR_ARRAY)) {
       e.ADDR = ICode.getTopAR().addString(this.getInfo());
     } else {
       // E.addr = lit.

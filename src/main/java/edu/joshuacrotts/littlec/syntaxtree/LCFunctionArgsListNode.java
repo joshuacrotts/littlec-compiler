@@ -3,6 +3,7 @@ package edu.joshuacrotts.littlec.syntaxtree;
 import java.util.LinkedList;
 import java.util.List;
 
+import edu.joshuacrotts.littlec.main.CoreType;
 import edu.joshuacrotts.littlec.main.SymbolTable;
 
 public class LCFunctionArgsListNode extends LCSyntaxTree {
@@ -18,7 +19,7 @@ public class LCFunctionArgsListNode extends LCSyntaxTree {
    * @param args
    */
   public LCFunctionArgsListNode(SymbolTable symbolTable, LinkedList<LCSyntaxTree> args) {
-    super("FNARGS", "!!!UNUSED!!!");
+    super("FNARGS", CoreType.VOID);
     this.args = args;
   }
 

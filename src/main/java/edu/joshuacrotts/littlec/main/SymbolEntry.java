@@ -23,7 +23,7 @@ public class SymbolEntry {
    * Data type associated with the symbol (e.g. for a variable, it's the data
    * type, and for a function, it's the return type.
    */
-  private final String VAR_TYPE;
+  private final CoreType VAR_TYPE;
 
   /*
    * Storage class for the entry into the table. If this is not set in the
@@ -46,7 +46,7 @@ public class SymbolEntry {
    * @param varType
    * @param info
    */
-  public SymbolEntry(String type, String varType, String storageClass, List<LCSyntaxTree> info) {
+  public SymbolEntry(String type, CoreType varType, String storageClass, List<LCSyntaxTree> info) {
     this.TYPE = type;
     this.VAR_TYPE = varType;
     this.STORAGE_CLASS = storageClass;
@@ -61,7 +61,7 @@ public class SymbolEntry {
    * @param varType
    * @param storageClass
    */
-  public SymbolEntry(String type, String varType, String storageClass) {
+  public SymbolEntry(String type, CoreType varType, String storageClass) {
     this(type, varType, storageClass, null);
   }
 
@@ -72,7 +72,7 @@ public class SymbolEntry {
    * @param type
    * @param varType
    */
-  public SymbolEntry(String type, String varType) {
+  public SymbolEntry(String type, CoreType varType) {
     this(type, varType, "", null);
   }
 
@@ -80,7 +80,7 @@ public class SymbolEntry {
     return this.TYPE;
   }
 
-  public String getVarType() {
+  public CoreType getVarType() {
     return this.VAR_TYPE;
   }
 

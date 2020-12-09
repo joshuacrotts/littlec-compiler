@@ -8,6 +8,7 @@ import org.antlr.v4.runtime.ParserRuleContext;
 
 import edu.joshuacrotts.littlec.icode.Generatable;
 import edu.joshuacrotts.littlec.icode.ICInhAttr;
+import edu.joshuacrotts.littlec.main.CoreType;
 import edu.joshuacrotts.littlec.main.LCMasks;
 
 /**
@@ -39,7 +40,7 @@ public class LCSyntaxTree implements Generatable {
   /** 
    * Type specified by the syntax tree documentation. 
    */
-  private String type;
+  private CoreType type;
 
   /** 
    * Info specified by the syntax tree documentation. This may be null. 
@@ -56,7 +57,7 @@ public class LCSyntaxTree implements Generatable {
    * subsequent children are appended to the list.
    */
   public LCSyntaxTree() {
-    this("SEQ", "void");
+    this("SEQ", CoreType.VOID);
   }
 
   /**
@@ -66,7 +67,7 @@ public class LCSyntaxTree implements Generatable {
    * @param label - label specified by the documentation.
    * @param type  - type specified by the documentation.
    */
-  public LCSyntaxTree(String label, String type) {
+  public LCSyntaxTree(String label, CoreType type) {
     this(label, type, null);
   }
 
@@ -75,11 +76,11 @@ public class LCSyntaxTree implements Generatable {
    * child linked list is also instantiated here.
    * 
    * @param label - String label specified by the documentation (syntax tree).
-   * @param type  - String type specified by the documentation (syntax tree).
+   * @param type  - CoreType type specified by the documentation (syntax tree).
    * @param info  - String of extra info specified by the documentation (syntax
    *              tree).
    */
-  public LCSyntaxTree(String label, String type, String info) {
+  public LCSyntaxTree(String label, CoreType type, String info) {
     this.label = label;
     this.type = type;
     this.info = info;
@@ -198,11 +199,11 @@ public class LCSyntaxTree implements Generatable {
     this.label = label;
   }
 
-  public String getType() {
+  public CoreType getType() {
     return type;
   }
 
-  public void setType(String type) {
+  public void setType(CoreType type) {
     this.type = type;
   }
 
@@ -220,18 +221,6 @@ public class LCSyntaxTree implements Generatable {
 
   public int getFlags() {
     return LCSyntaxTree.flags;
-  }
-
-  public boolean isInteger() {
-    return this.getType().equals("int");
-  }
-
-  public boolean isChar() {
-    return this.getType().equals("char");
-  }
-
-  public boolean isArray() {
-    return this.getType().endsWith("[]") || (this.getType().indexOf("[") < this.getType().indexOf("]"));
   }
 
   public boolean hasError() {
