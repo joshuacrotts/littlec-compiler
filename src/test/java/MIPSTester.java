@@ -133,6 +133,21 @@ public class MIPSTester {
   }
   
   @Test
+  public void mipsTestO() {
+    runMIPSTest("test3o");
+  }
+  
+  @Test
+  public void mipsTestP() {
+    runMIPSTest("test3p");
+  }
+  
+  @Test
+  public void mipsTestQ() {
+    runMIPSTest("test3q");
+  }
+  
+  @Test
   public void myTest1() {
     runMIPSTest("test_joshuacrotts_1");
   }
@@ -165,5 +180,10 @@ public class MIPSTester {
   @Test
   public void myTest7() {
     runMIPSTest("test_joshuacrotts_7");
+  }
+  
+  @Test
+  public void myTest8() {
+    runMIPSTest("test_joshuacrotts_8");
   }
 }

@@ -5,7 +5,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Stack;
 
+import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.ParseTreeProperty;
+import org.antlr.v4.runtime.tree.TerminalNode;
 
 import edu.joshuacrotts.littlec.antlr4.LittleCBaseListener;
 import edu.joshuacrotts.littlec.antlr4.LittleCParser;
@@ -1135,13 +1137,12 @@ public class LCListener extends LittleCBaseListener {
 
     // First check if the symbol exists.
     String id = ctx.ID().getText();
+    String idType = this.symbolTable.getSymbolEntry(id).getVarType();
+    String op = "";
     if (!this.symbolTable.hasSymbol(id)) {
       this.syntaxTree.printError(ctx, "variable " + id + " was not previously declared.");
       return;
     }
-
-    String idType = this.symbolTable.getSymbolEntry(id).getVarType();
-    String op = "";
 
     // Find the pre operator symbol that we're using.
     if (ctx.INC_OP() != null) {
@@ -1205,13 +1206,12 @@ public class LCListener extends LittleCBaseListener {
 
     // First check if the symbol exists.
     String id = ctx.ID().getText();
+    String idType = this.symbolTable.getSymbolEntry(id).getVarType();
+    String op = "";
     if (!this.symbolTable.hasSymbol(id)) {
       this.syntaxTree.printError(ctx, "variable " + id + " was not previously declared.");
       return;
     }
-
-    String idType = this.symbolTable.getSymbolEntry(id).getVarType();
-    String op = "";
 
     // Find the post operator symbol that we're using.
     if (ctx.INC_OP() != null) {
@@ -1277,19 +1277,15 @@ public class LCListener extends LittleCBaseListener {
 
     // Get the right-hand expression.
     LCSyntaxTree rexpr = this.values.get(ctx.expr());
-
+    ParseTree opNode = ctx.getChild(0);
+      
     String op = null;
     String type = rexpr.getType();
 
+    // Check the expression type and make sure we're using the right op on the right r-value.
     if (rexpr.isInteger() || rexpr.isChar()) {
-      if (ctx.PLUS_OP() != null) {
-        op = "+";
-      } else if (ctx.MINUS_OP() != null) {
-        op = "-";
-      } else if (ctx.NOT() != null) {
-        op = "!";
-      } else if (ctx.BIT_NEG() != null) {
-        op = "~";
+      if (opNode != null) {
+        op = ((TerminalNode) opNode).getSymbol().getText();
       } else {
         this.syntaxTree.printError(ctx, "invalid unary operator for r-value expression of type " + type + ".");
         return;
@@ -1333,13 +1329,12 @@ public class LCListener extends LittleCBaseListener {
 
     LCSyntaxTree lexpr = this.values.get(ctx.expr().get(0));
     LCSyntaxTree rexpr = this.values.get(ctx.expr().get(1));
-
+    ParseTree opNode = ctx.getChild(1);
+    
     String op = null;
 
     /* If this is an arithmetic operator (where we CANNOT compare strings...) */
-    /* A better way must be found... */
-    if (hasBinaryOperator(ctx)) {
-
+    if (opNode != null) {
       boolean lStr = lexpr.isArray();
       boolean rStr = rexpr.isArray();
 
@@ -1350,7 +1345,7 @@ public class LCListener extends LittleCBaseListener {
       }
 
       // Now actually get the flags and set the operator.
-      op = getBinaryOperator(ctx);
+      op = ((TerminalNode) opNode).getSymbol().getText();
       if (op == null) {
         this.syntaxTree.printError(ctx, "invalid binary operator.");
         return;
@@ -1635,6 +1630,10 @@ public class LCListener extends LittleCBaseListener {
 
   /**
    * Enter declaration for a char variable.
+   * 
+   * @param ctx - CharDeclarationContext object.
+   * 
+   * @return void.
    */
   @Override
   public void enterCharDeclaration(LittleCParser.CharDeclarationContext ctx) {
@@ -1830,71 +1829,6 @@ public class LCListener extends LittleCBaseListener {
     /* Add the readline() function. */
     args.add(new LCVariableIdentifierNode(null, symbolTable, "str", "char[]"));
     this.symbolTable.addSymbol("readline", new SymbolEntry("FNDEF", "void", "extern", args));
-  }
-  
-  /**
-   * Returns whether or not there is a non-null binary operator node in the ExprBinaryOpContext
-   * object.
-   * 
-   * @param ctx ExprBinaryOpContext object.
-   * 
-   * @return true if there is a non-null node, false otherwise.
-   */
-  private boolean hasBinaryOperator(LittleCParser.ExprBinaryOpContext ctx) {
-    return (ctx.PLUS_OP() != null || ctx.MINUS_OP() != null || ctx.MULTIPLY_OP() != null || ctx.DIVIDE_OP() != null
-        || ctx.MODULO_OP() != null || ctx.GREATER_EQ_CMP() != null || ctx.GREATER_THAN_CMP() != null
-        || ctx.LESS_EQ_CMP() != null || ctx.LESS_THAN_CMP() != null || ctx.EQUAL_CMP() != null || ctx.BIT_XOR() != null
-        || ctx.BIT_AND() != null || ctx.BIT_SHIFT_LEFT() != null || ctx.BIT_SHIFT_RIGHT() != null
-        || ctx.BIT_OR() != null || ctx.NOT_EQUAL_CMP() != null || ctx.AND() != null || ctx.OR() != null);
-  }
-  
-  /**
-   * Returns the appropriate string binary operator in the ExprBinaryOpContext.
-   * We have to painstakingly check each node for "nullness".
-   * 
-   * @param ctx - ExprBinaryOpContext object.
-   * 
-   * @return string operator if there is a non-null one, null otherwise.
-   */
-  private String getBinaryOperator(LittleCParser.ExprBinaryOpContext ctx) {
-    if (ctx.PLUS_OP() != null) {
-      return "+";
-    } else if (ctx.MINUS_OP() != null) {
-      return "-";
-    } else if (ctx.MULTIPLY_OP() != null) {
-      return "*";
-    } else if (ctx.DIVIDE_OP() != null) {
-      return "/";
-    } else if (ctx.MODULO_OP() != null) {
-      return "%"; 
-    } else if (ctx.AND() != null) {
-      return "&&";
-    } else if (ctx.OR() != null) {
-      return "||";
-    } else if (ctx.BIT_AND() != null) {
-      return "&";
-    } else if (ctx.BIT_OR() != null) {
-      return "|";
-    } else if (ctx.BIT_XOR() != null) {
-      return "^";
-    } else if (ctx.BIT_SHIFT_LEFT() != null) {
-      return "<<";
-    } else if (ctx.BIT_SHIFT_RIGHT() != null) {
-      return ">>";
-    } else if (ctx.GREATER_EQ_CMP() != null) {
-      return ">=";
-    } else if (ctx.GREATER_THAN_CMP() != null) {
-      return ">";
-    } else if (ctx.LESS_EQ_CMP() != null) {
-      return "<=";
-    } else if (ctx.LESS_THAN_CMP() != null) {
-      return "<";
-    } else if (ctx.EQUAL_CMP() != null) {
-      return "==";
-    } else if (ctx.NOT_EQUAL_CMP() != null) {
-      return "!=";
-    }
-    return null;
   }
 }
 //Why is Dr. Tate so evilllllllllllllllllllllllll
