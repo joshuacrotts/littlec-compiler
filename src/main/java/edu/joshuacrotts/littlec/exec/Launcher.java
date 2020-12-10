@@ -12,13 +12,16 @@ public class Launcher {
   public static void usage() {
     System.out.print("LittleC Compiler\n");
     System.out.print("Run as follows (input is from stdin unless a filename is given):\n\n");
-    System.out.print("   littlec mode [optinfile]\n\n");
-    System.out.print("where [optinfile] is a .lc file or standard input (leave blank)\n");
+    System.out.print("   littlec mode flags [optinfile]\n\n");
+    System.out.print("where [optinfile] is a .lc file or standard input (leave blank)\n\n");
+    System.out.print("where \"flags\" is zero or more of the following:\n");
+    System.out.print("   -o enables optimizations (in progress)\n");
+    System.out.print("   -d enables comments in assembly code generation (in progress)\n\n");
     System.out.print("where \"mode\" is one of the following:\n");
     System.out.print("   -lt runs LexerTest\n");
     System.out.print("   -pt runs ParserTest\n");
     System.out.print("   -st outputs the syntax tree (like pt without symbol tables)\n");
-    System.out.print("   -pi produces intermediate code output with Quadruple structure.\n");
+    System.out.print("   -pi produces intermediate code output with Quadruple data structure\n");
     System.out.print("   -pa produces MIPS assembly language output\n");
     System.out.print("   -rc runs code (from interpreting intermediate code)\n");
     System.out.print("   -rm runs MIPS assembly code (warning: you must have SPIM installed!)\n");
