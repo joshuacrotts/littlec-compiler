@@ -574,9 +574,15 @@ public class CodeGeneration {
     }
     progState.copyVal(op2Reg, op2);
 
-    // Perform the binary op.
-    sb.append(MIPSInstruction.genBinaryOp(getMIPSBinaryOp(op), "" + resReg, "" + op1Reg, "" + op2Reg));
-
+    // Perform the binary op (power op uses different code).
+    if (!op.equals("**")) 
+      sb.append(MIPSInstruction.genBinaryOp(getMIPSBinaryOp(op), "" + resReg, "" + op1Reg, "" + op2Reg));
+    else {
+      MIPSReg op3Reg = progState.getNextAvailableRegister();
+      sb.append(MIPSInstruction.genPowerBinaryOp("" + resReg, "" + op1Reg, "" + op2Reg, "" + op3Reg));
+      progState.invalidate(op3Reg);
+    }
+    
     // Store the result if we loaded in a new temporary for the destination.
     if (needToStore) {
       sb.append(MIPSInstruction.genStore(getMIPSStoreOp(res), resReg, cRes));

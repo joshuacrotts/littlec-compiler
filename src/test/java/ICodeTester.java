@@ -67,152 +67,128 @@ public class ICodeTester {
     ICode.cleanup();
   }
 
-  /**
-   * Instructor-provided test - Stage 4.
-   */
   @Test
-  public void phase4TestA() {
+  public void icTestA() {
     runICTest("test3a");
   }
 
-  /**
-   * Instructor-provided test - Stage 4.
-   */
   @Test
-  public void phase4TestB() {
+  public void icTestB() {
     runICTest("test3b");
   }
 
-  /**
-   * Instructor-provided test - Stage 4.
-   */
   @Test
-  public void phase4TestC() {
+  public void icTestC() {
     runICTest("test3c");
   }
 
-  /**
-   * Instructor-provided test - Stage 4.
-   */
   @Test
-  public void phase4TestD() {
+  public void icTestD() {
     runICTest("test3d");
   }
 
-  /**
-   * Instructor-provided test - Stage 4.
-   */
   @Test
-  public void phase4TestE() {
+  public void icTestE() {
     runICTest("test3e");
   }
 
-  /**
-   * Instructor-provided test - Stage 4.
-   */
   @Test
-  public void phase4TestF() {
+  public void icTestF() {
     runICTest("test3f");
   }
 
-  /**
-   * Instructor-provided test - Stage 4.
-   */
   @Test
-  public void phase4TestG() {
+  public void icTestG() {
     runICTest("test3g");
   }
 
-  /**
-   * Instructor-provided test - Stage 4.
-   */
   @Test
-  public void phase4TestH() {
+  public void icTestH() {
     runICTest("test3h");
   }
 
-  /**
-   * Instructor-provided test - Stage 4.
-   */
   @Test
-  public void phase4TestI() {
+  public void icTestI() {
     runICTest("test3i");
   }
 
-  /**
-   * Instructor-provided test - Stage 4.
-   */
   @Test
-  public void phase4TestJ() {
+  public void icTestJ() {
     runICTest("test3j");
   }
 
-  /**
-   * Instructor-provided test - Stage 4.
-   */
   @Test
-  public void phase4TestK() {
+  public void icTestK() {
     runICTest("test3k");
   }
 
-  /**
-   * Instructor-provided test - Stage 4.
-   */
   @Test
-  public void phase4TestL() {
+  public void icTestL() {
     runICTest("test3l");
   }
 
-  /**
-   * Instructor-provided test - Stage 4.
-   */
   @Test
-  public void phase4TestM() {
+  public void icTestM() {
     runICTest("test3m");
   }
 
-  /**
-   * Batch tests so that it's more efficient on a GitHub push
-   */
   @Test
-  public void phase4Batch1() {
-    runICTest("test3a");
-    runICTest("test3b");
-    runICTest("test3c");
-    runICTest("test3d");
-    runICTest("test3e");
+  public void icTestN() {
+    runICTest("test3n");
   }
 
-  /**
-   * Batch tests so that it's more efficient on a GitHub push
-   */
   @Test
-  public void phase4Batch2() {
-    runICTest("test3f");
-    runICTest("test3g");
-    runICTest("test3h");
-    runICTest("test3i");
-    runICTest("test3j");
+  public void icTestO() {
+    runICTest("test3o");
   }
-
-  /**
-   * Batch tests so that it's more efficient on a GitHub push
-   */
+  
   @Test
-  public void phase4Batch3() {
-    runICTest("test3k");
+  public void icTestP() {
+    runICTest("test3p");
   }
-
-  /**
-   * Student-provided test. You make as many methods as you want for different
-   * tests, as long as you don't use the "doTestX" naming.
-   */
+  
   @Test
-  public void doUserTest() {
+  public void icTestQ() {
+    runICTest("test3q");
+  }
+  
+  @Test
+  public void myTest1() {
+    runICTest("test_joshuacrotts_1");
+  }
+  
+  @Test
+  public void myTest2() {
     runICTest("test_joshuacrotts_2");
+  }
+  
+  @Test
+  public void myTest3() {
     runICTest("test_joshuacrotts_3");
+  }
+  
+  @Test
+  public void myTest4() {
     runICTest("test_joshuacrotts_4");
+  }
+  
+  @Test
+  public void myTest5() {
     runICTest("test_joshuacrotts_5");
+  }
+  
+  @Test
+  public void myTest6() {
+    runICTest("test_joshuacrotts_6");
+  }
+  
+  @Test
+  public void myTest7() {
     runICTest("test_joshuacrotts_7");
+  }
+  
+  @Test
+  public void myTest8() {
+    runICTest("test_joshuacrotts_8");
   }
 }

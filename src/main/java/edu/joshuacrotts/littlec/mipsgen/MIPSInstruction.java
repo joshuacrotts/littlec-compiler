@@ -15,6 +15,11 @@ public class MIPSInstruction {
   private enum MIPS {
     sw, sb, move, lw, li, lb, la, ld, sll, b, j, addu, subu, div, mul, jal, jr;
   }
+  
+  /**
+   * 
+   */
+  private static int compilerLabelCount = 0;
 
   /**
    * Tab character.
@@ -150,6 +155,35 @@ public class MIPSInstruction {
     sb.append(op2);
     sb.append(NEWLINE);
 
+    return sb.toString();
+  }
+  
+  /**
+   * Generates the power binary operator - since this is a separate operation,
+   * requiring multiple instructions, we need to generate separate code for it.
+   * 
+   * @param dest - location of exponent result.
+   * @param op1 - first operand, base of exponent.
+   * @param op2 - second operand, power to raise to.
+   * @param tmpOp3 - counting register.
+   * 
+   * @return string representation of power instructions.
+   */
+  protected static String genPowerBinaryOp(String dest, String op1, String op2, String tmpOp3) {
+    StringBuilder sb = new StringBuilder();
+    String cl1 = "CL" + compilerLabelCount++;
+    String cl2 = "CL" + compilerLabelCount++;
+    
+    // Move 0 into the counting register.
+    sb.append("\tmove" + " " + tmpOp3 + ", $zero\n"); 
+    // Store one into the destination register.
+    sb.append("\taddi" + " " + dest + ", " + dest + ", 1\n");
+    // If our count >= op2, then break.
+    sb.append(cl1 + ":\n" + "\tbge" + " " + tmpOp3 + ", " + op2 + ", " + cl2 + "\n");
+    sb.append("\tmul" + " " + dest + ", " + dest + ", " + op1 + "\n");
+    sb.append("\taddi" + " " + tmpOp3 + ", " + tmpOp3 + ", 1\n");
+    sb.append(genBranch(cl1));
+    sb.append(cl2 + ":\n");
     return sb.toString();
   }
 
