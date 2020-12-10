@@ -174,6 +174,8 @@ public class Quadruple {
    * @param castOp     - type of casting operator.
    */
   public void addCast(String resAddr, String castRValue, String castOp) {
+    if (castRValue.isEmpty())
+      return;
     this.addLine(resAddr, castRValue, castOp);
   }
 

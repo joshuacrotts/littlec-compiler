@@ -412,6 +412,8 @@ public class ICInterp {
             return new SimValue(1, (byte) (val1.cVal / val2.cVal));
           else if (parts[si + 1].equals("%"))
             return new SimValue(1, (byte) (val1.cVal % val2.cVal));
+          else if (parts[si + 1].equals("**"))
+            return new SimValue(1, (byte) (Math.pow(val1.cVal, val2.cVal)));
           else if (parts[si + 1].equals("^"))
             return new SimValue(1, (byte) (val1.cVal ^ val2.cVal));
           else if (parts[si + 1].equals("^"))
@@ -451,6 +453,8 @@ public class ICInterp {
             return new SimValue(4, val1.iVal / val2.iVal);
           else if (parts[si + 1].equals("%"))
             return new SimValue(4, val1.iVal % val2.iVal);
+          else if (parts[si + 1].equals("**"))
+            return new SimValue(4, (int) Math.pow(val1.iVal, val2.iVal));
           else if (parts[si + 1].equals("^"))
             return new SimValue(4, val1.iVal ^ val2.iVal);
           else if (parts[si + 1].equals("&"))

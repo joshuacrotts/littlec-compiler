@@ -1,0 +1,21 @@
+void printlnd(int i) {
+	printd(i);
+	printc('\n');
+}
+
+void main() {
+	int i;
+	int j;
+	int k;
+	
+	i = 2 ** 3 ** 2; // 512
+	printlnd(i);
+	i = i >> 9; 
+	printlnd(i);
+	i++;
+	j = (i << 4 & 0x67) ** 3;
+	printlnd(j / (i<<1));
+	printlnd(j);
+	k = (j << i);
+	printlnd(~(-k ^ 0xffff));
+}

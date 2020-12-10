@@ -1,0 +1,11 @@
+int ptr = 0;
+char tape[1000];
+char input[1000];
+int d[1000];
+
+void main() {
+	d[ptr] = d[ptr] + 1;
+	printd(d[ptr]);
+	d[ptr]++;
+	printd(d[ptr]);
+}
