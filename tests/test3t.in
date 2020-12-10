@@ -1,0 +1,38 @@
+//
+// Testing issue #3 bug.
+//
+
+void printlnd(int n) {
+	printd(n);
+	printc('\n');
+}
+
+void modify(int[] arr) {
+	int i;
+	int j = 2;
+	int k;
+	k = ++arr[j];
+	arr[i] = ++arr[j] + arr[0];
+	arr[0] = --arr[1];
+	arr[1] = arr[2]++;
+	arr[2] = arr[1]++ << (2 ** 3);
+}
+
+void main() {
+	int arr[10];
+	int i;
+	for(i=0;i<#arr;i++)
+		arr[i] = i;
+	
+	arr[0] = ++arr[1];
+	arr[1] = arr[2]++ * 3;
+	arr[1] = arr[0] + ++arr[1] + arr[0]++;
+	
+	for(i=0;i<#arr;i++)
+		printlnd(--arr[i]);
+	
+	modify(arr);
+	
+	for(i=0;i<#arr;i++)
+		printlnd(++arr[i] * arr[i]--);
+}

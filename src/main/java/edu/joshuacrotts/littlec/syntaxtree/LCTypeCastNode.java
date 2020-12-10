@@ -37,9 +37,8 @@ public class LCTypeCastNode extends LCSyntaxTree {
     String rvalType = this.getChildren().get(0).getType();
     String castType = "";
 
-    // This is a VERY ugly solution for now and doesn't handle array refs or
-    // declarations,
-    // but it's alright for this point in time (NOT for final ass4 but still).
+    // This is a VERY ugly solution for now and doesn't handle adding new
+    // types... but it's okay for now.
     if (rvalType.equals("char") && this.getType().equals("int")) {
       castType = "widen";
     } else if (rvalType.equals("int") && this.getType().equals("char")) {

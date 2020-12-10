@@ -1,0 +1,23 @@
+//
+// Fizzbuzz
+//
+
+void main() {
+	
+	int f = 20;
+	int i;
+	
+	for (i=1;i<=f;i++) {
+		if (i%3==0&&i%5==0)
+			prints("FizzBuzz\n");
+		else if (i%3==0)
+			prints("Fizz\n");
+		else if(i%5==0)
+			prints("Buzz\n");
+		else {
+			printd(i);
+			prints("\n");
+		}
+	}	
+	
+}

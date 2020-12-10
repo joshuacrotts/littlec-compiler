@@ -153,6 +153,21 @@ public class ICodeTester {
   }
   
   @Test
+  public void icTestR() {
+    runICTest("test3r");
+  }
+  
+  @Test
+  public void icTestS() {
+    runICTest("test3s");
+  }
+  
+  @Test
+  public void icTestT() {
+    runICTest("test3t");
+  }
+  
+  @Test
   public void myTest1() {
     runICTest("test_joshuacrotts_1");
   }

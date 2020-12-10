@@ -60,12 +60,11 @@ public class LCUnaryOperatorNode extends LCSyntaxTree {
     int dataWidth = LCUtilities.getDataWidth(this.getType());
     e.ADDR = ICode.getTopAR().addTemporaryVariable(dataWidth);
 
-    // E1
+    // E1.
     ICInhAttr e1 = new ICInhAttr();
     e1.TYPE = e.TYPE; // Pass down the inherited type.
 
-    // If the operator is a negation, go ahead and apply the
-    // flips.
+    // If the operator is a negation, go ahead and apply the flips.
     if (op.equals("!")) {
       e1.TRUE = e.FALSE;
       e1.FALSE = e.TRUE;

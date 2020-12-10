@@ -148,6 +148,21 @@ public class MIPSTester {
   }
   
   @Test
+  public void mipsTestR() {
+    runMIPSTest("test3r");
+  }
+  
+  @Test
+  public void mipsTestS() {
+    runMIPSTest("test3s");
+  }
+  
+  @Test
+  public void mipsTestT() {
+    runMIPSTest("test3t");
+  }
+  
+  @Test
   public void myTest1() {
     runMIPSTest("test_joshuacrotts_1");
   }

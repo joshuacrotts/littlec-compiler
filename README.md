@@ -33,15 +33,17 @@ Most standard programming language concepts are present. These include
 - Recursion
 - Conditionals (Short-Circuiting)
 - Loops
-- Bitwise XOR, OR, AND, Negation, and Shifting.
+- Array "size of" (#) operator
+- Power (**) operator
+- Bitwise XOR, OR, AND, Negation, and Shifting
 
 ## Planned Features
 The following is a list of planned features:
 - Single & Double Floating-Point Precision Variables
-- Power (double asterisk) operator as in Python
 - Standard API
-- Terminal argument support.
+- Terminal argument support
 - Support for compiling down to "MARS MIPS"
+- Random numbers (only for MARS)
 - ...?
 
 

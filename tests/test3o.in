@@ -1,3 +1,7 @@
+//
+// Power and bitwise operator testing
+//
+
 void printlnd(int i) {
 	printd(i);
 	printc('\n');

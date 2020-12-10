@@ -39,18 +39,7 @@ public class LCPrePostOperatorNode extends LCSyntaxTree {
     if (super.isCalled)
       return;
     super.isCalled = true;
-
-    String op = "";
-
-    switch (this.getLabel()) {
-    case "PRE-INC":
-    case "POST-INC":
-      op = "+";
-      break;
-    case "PRE-DEC":
-    case "POST-DEC":
-      op = "-";
-    }
+    String op = this.getPrePostOp(this.getLabel());
 
     // Get the width of the l-address type and
     // generate a temp variable if necessary.
@@ -63,14 +52,34 @@ public class LCPrePostOperatorNode extends LCSyntaxTree {
     // If we have a post operator, then we generate a temporary variable.
     if (this.getLabel().startsWith("POST")) {
       String tempVar = ICode.getTopAR().addTemporaryVariable(dataWidth);
-      // gen(...)
       ICode.quad.addLine(tempVar, e1.ADDR, "=");
       ICode.quad.addLine(e1.ADDR, e1.ADDR, "1", op);
       e.ADDR = tempVar;
     } else {
-      // gen(...).
       ICode.quad.addLine(e1.ADDR, e1.ADDR, "1", op);
       e.ADDR = e1.ADDR;
+    }
+    
+    // If our l-value is an array, we need to save the changed value.
+    if (this.getChildren().get(0) instanceof LCArrayIndexNode) {
+      ICode.quad.addLine(e1.A_ADDR, e1.A_IDX, e1.ADDR, "stidx" + dataWidth);
+    }
+  }
+
+  /**
+   * 
+   * @param label
+   */
+  private String getPrePostOp(String label) {
+    switch (this.getLabel()) {
+    case "PRE-INC":
+    case "POST-INC":
+      return "+";
+    case "PRE-DEC":
+    case "POST-DEC":
+      return "-";
+    default:
+      throw new IllegalArgumentException(label + " is an invalid pre/post operator label.");
     }
   }
 

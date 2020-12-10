@@ -8,29 +8,35 @@ package edu.joshuacrotts.littlec.icode;
  */
 public class ICInhAttr {
 
-  /* */
+  /** */
   public static String SUCC = ""; // Next label in line if we break.
 
-  /* */
+  /** */
   public String TYPE = "";
 
-  /* */
+  /** */
   public String REL_TYPE = "";
 
-  /* */
+  /** */
   public String ADDR = "";
 
-  /* */
+  /** */
   public String CODE = "";
 
-  /* */
+  /** */
   public String TRUE = ""; // Label to jump to if expr is true.
 
-  /* */
+  /** */
   public String FALSE = ""; // Label to jump to if expr is false.
 
-  /* */
+  /** */
   public String NEXT = "";
+  
+  /** */
+  public String A_IDX = "";
+  
+  /** */
+  public String A_ADDR = "";
 
   public ICInhAttr() {
   }

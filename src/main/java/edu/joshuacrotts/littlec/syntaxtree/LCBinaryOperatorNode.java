@@ -38,16 +38,14 @@ public class LCBinaryOperatorNode extends LCSyntaxTree {
       LCSyntaxTree rOperand) {
     super("BINOP(\'" + op + "\')", null);
     this.op = op;
-    
+
     boolean isComparisonOp = LCUtilities.isComparisonOp(this.op);
 
     // If one operand is a char, we promote it to an int.
     // If both are chars, the binary operator returns an int.
     // If only one is a char, then it's casted to an integer.
-    if (lOperand.isChar() && rOperand.isChar()) {
-      this.setType("char");
-    } else if (lOperand.isInteger() && rOperand.isInteger()) {
-      this.setType("int");
+    if (lOperand.getType().equals(rOperand.getType())) {
+      this.setType(lOperand.getType());
     } else {
       if (lOperand.isChar()) {
         lOperand = new LCTypeCastNode(ctx, lOperand, "int");

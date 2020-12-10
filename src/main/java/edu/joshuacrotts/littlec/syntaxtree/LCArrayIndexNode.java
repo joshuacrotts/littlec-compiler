@@ -69,6 +69,8 @@ public class LCArrayIndexNode extends LCSyntaxTree {
       tmpAddr = ICode.getTopAR().addTemporaryVariable(width);
       info.CODE = e2.ADDR + " ldidx" + width + " ";
       info.ADDR = tmpAddr;
+      info.A_ADDR = oldTmp; // Save the location and idx for lookup later.
+      info.A_IDX = e2.ADDR;
       ICode.quad.addLine(info.ADDR, oldTmp, e2.ADDR, "ldidx" + width);
     } else {
       info.CODE = e2.ADDR + " stidx" + width + " ";

@@ -1,4 +1,6 @@
-// parameter passing test...
+//
+// Parameter passing test...
+//
 
 void printlnd(int d) {
 	prints("\n");
