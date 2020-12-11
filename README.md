@@ -46,6 +46,59 @@ The following is a list of planned features:
 - Random numbers (only for MARS)
 - ...?
 
+## LittleC Example
+```
+char gStr[100] = "Hi there!";
+int gInt = 2;
+
+void strcpy(char[] dst, char[] src) {
+    int i;
+    for (i=0; i<#src && i<#dst; i++) {
+        dst[i] = src[i];
+        if (dst[i] == '\0')
+            break;
+    }
+}
+
+void main() {
+	char lArray[100];
+	int i;
+	int j;
+	int k; 
+	
+	j = 5;
+	strcpy(lArray, gStr);
+	prints(lArray);
+	printc('\n');
+	
+	for (i = 0; i < j; i++) {
+		k = ++k | (0b11 ** i) << (j - i + 1);
+		k = i ^ j & 0xffff;
+		printd(k);
+		printc('\n');
+	}
+	
+	j = 0xffffff >> 16 & 0xff;
+	i = j | ((2 ** 4) ^ (i + j - (j * 24 % 2)));
+	printd(j);
+	prints("\n");
+	printd(i);
+}
+
+```
+The above code outputs
+
+```
+Hi there!
+5
+4
+7
+6
+1
+255
+511
+
+```
 
 ## Dependencies
 
