@@ -163,6 +163,11 @@ public class MIPSTester {
   }
   
   @Test
+  public void mipsTestU() {
+    runMIPSTest("test3u");
+  }
+  
+  @Test
   public void myTest1() {
     runMIPSTest("test_joshuacrotts_1");
   }

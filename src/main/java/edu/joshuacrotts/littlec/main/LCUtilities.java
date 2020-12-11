@@ -83,6 +83,7 @@ public class LCUtilities {
    * declarations.
    * 
    * @param varType - string variable type.
+   * 
    * @return true if varType is an array reference or declaration; false
    *         otherwise.
    */
@@ -111,6 +112,9 @@ public class LCUtilities {
    * @return integer representation of the literal.
    */
   public static int getDecodedIntLiteral(String intVal) {
+    if (intVal.startsWith("0b")) {
+      return (int) Long.parseLong(intVal.substring(2), 2);
+    }
     return Long.decode(intVal).intValue();
   }
 
@@ -124,12 +128,21 @@ public class LCUtilities {
    *         otherwise.
    */
   public static boolean isValidIntLiteral(String intVal) {
+    int value; 
+    
+    // Binary has to be parsed differently than hex.
     try {
-      int v = Long.decode(intVal).intValue();
-      if (v < Integer.MIN_VALUE || v > Integer.MAX_VALUE) {
-        return false;
+      if (intVal.startsWith("0b")) {
+        value = (int) Long.parseLong(intVal.substring(2), 2);
+      } else {
+        // For hex, we can use the decode method.
+        value = Long.decode(intVal).intValue();
       }
     } catch (NumberFormatException ex) {
+      return false;
+    }
+    
+    if (value < Integer.MIN_VALUE || value > Integer.MAX_VALUE) {
       return false;
     }
 

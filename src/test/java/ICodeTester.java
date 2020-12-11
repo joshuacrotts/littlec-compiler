@@ -168,6 +168,11 @@ public class ICodeTester {
   }
   
   @Test
+  public void icTestU() {
+    runICTest("test3u");
+  }
+  
+  @Test
   public void myTest1() {
     runICTest("test_joshuacrotts_1");
   }

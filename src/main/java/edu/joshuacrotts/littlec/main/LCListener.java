@@ -1538,7 +1538,6 @@ public class LCListener extends LittleCBaseListener {
         if (LCUtilities.isValidIntLiteral(ctx.INTLIT().getText())) {
           literalValue = LCUtilities.getDecodedIntLiteral(ctx.INTLIT().getText());  
         } else {
-          System.out.println(ctx.INTLIT().getText());
           this.syntaxTree.printError(ctx, "cannot create an int literal.");
           return;
         }
