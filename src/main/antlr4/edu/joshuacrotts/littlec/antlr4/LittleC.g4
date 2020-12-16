@@ -36,13 +36,14 @@ FLOAT		   : 'float'  ;
 CHAR           : 'char'   ;
 VOID           : 'void'   ;
 
-// Keywords (6).
-IF             : 'if'     ;
-ELSE           : 'else'   ;
-WHILE          : 'while'  ;
-FOR            : 'for'    ;
-RETURN         : 'return' ;
-BREAK          : 'break'  ;
+// Keywords (7).
+IF             	: 'if'     	;
+ELSE           	: 'else'   	;
+WHILE          	: 'while'  	;
+FOR            	: 'for'    	;
+RETURN         	: 'return' 	;
+BREAK          	: 'break'  	;
+CONTINUE 		: 'continue';
 
 /* Rule tokens. */
 CHARLIT		   : (SINGLE_QUOTE (ESCAPED_CHAR | ~ ['\\] ) '\'');
@@ -54,7 +55,7 @@ ID             : (ANY_CASE_LTR | UNDERSCORE)(ANY_CASE_LTR | DIGIT | UNDERSCORE)*
 // Assignment operator (1).
 ASSIGN           : '='    ;
 
-// Integer/array operations (8).
+// Integer/array operations (15).
 SIZE_OP          : '#'    ;
 PLUS_OP          : '+'    ;
 MINUS_OP         : '-'    ;
@@ -72,7 +73,7 @@ BIT_SHIFT_LEFT   : '<<'   ;
 BIT_SHIFT_RIGHT  : '>>'   ;
 
 
-// Comparison operators (12).
+// Comparison operators (6).
 EQUAL_CMP        		: '=='   	;
 LESS_THAN_CMP    		: '<'    	;
 LESS_EQ_CMP      		: '<='   	;
@@ -80,12 +81,12 @@ GREATER_THAN_CMP 		: '>'    	;
 GREATER_EQ_CMP   		: '>='   	;
 NOT_EQUAL_CMP    		: '!='   	;
  
-// Boolean operators (6).
+// Boolean operators (3).
 NOT : '!'  ;
 AND : '&&' ;
 OR  : '||' ;
 
-// Punctuation (8).
+// Punctuation (10).
 OPEN_PAREN    : '('  ;
 CLOSE_PAREN   :  ')' ;
 OPEN_BRACE    : '{'  ;
@@ -93,6 +94,8 @@ CLOSE_BRACE   : '}'  ;
 OPEN_BRACKET  : '['  ;
 CLOSE_BRACKET : ']'  ;
 SEMICOLON     : ';'  ;
+TERNARY_COND  : '?'  ;
+TERNARY_ELSE  : ':'  ;
 COMMA 	      : ','  ;
 
 //=========== Grammar starts here ==============
@@ -167,6 +170,7 @@ expr					: term #exprTerm  // General term (literal or var.)
 						| expr (BIT_OR) expr #exprBinaryOp // Bitwise OR
 						| expr AND expr #exprBinaryOp // Comparison of AND.
 						| expr OR expr #exprBinaryOp // Comparison of OR.
+						| <assoc=right> expr TERNARY_COND expr TERNARY_ELSE expr #exprTernaryOp // Ternary operator. 
 						| ruleAssignStatement #exprAssign
 						; 
                           
