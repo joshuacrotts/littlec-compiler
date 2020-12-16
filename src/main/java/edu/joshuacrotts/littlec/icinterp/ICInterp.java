@@ -23,7 +23,7 @@ import java.util.Vector;
  */
 public class ICInterp {
   private static void debugPrint(String m) {
-//        System.out.println(m);
+        // System.out.println(m);
   }
 
   private Map<String, Integer> labels;
@@ -135,11 +135,12 @@ public class ICInterp {
       }
     }
 
+    // THIS METHOD IS THE PROBLEM
     public SimValue getVal(int width, int offset) {
       if (width == 1)
         return new SimValue(1, getByte(offset));
       else
-        return new SimValue(4, getInt(offset));
+        return new SimValue(4, getInt(offset)); // HERE IS THE BUG
     }
 
     public void setVal(int offset, SimValue val) {
@@ -156,6 +157,7 @@ public class ICInterp {
       System.err.println("Internal sim error: Bad segment number");
       System.exit(1);
     }
+    AddrSegment s = segments.get(segID);
     return segments.get(segID);
   }
 
@@ -340,7 +342,9 @@ public class ICInterp {
         return pSegment.getVal(getTWidth(name), Integer.parseInt(name.substring(3)));
       } else if (name.startsWith("g") || (name.startsWith("m"))) {
         int ptr = globals[labels.get(name)];
-        return ptrToSeg(ptr).getVal(getTWidth(name), 0);
+        //AddrSegment s = ptrToSeg(ptr);
+        //return ptrToSeg(ptr).getVal(getTWidth(name), 0);
+        return ptrToSeg(ptr).getVal(getTWidth(name), ptr - globals[0]);
       } else if (name.startsWith("S")) {
         return new SimValue(4, globals[labels.get(name)]);
       } else if (name.startsWith("t")) {
@@ -753,10 +757,10 @@ public class ICInterp {
       System.err.println("Error in executing intermediate code: Unknown function " + fname);
       return SimValue.errVal;
     }
+    
     LocalEnv env = new LocalEnv(startLine, params);
 
-    while (env.execLine())
-      ;
+    while (env.execLine());
 
     SimValue retVal = env.getRetVal();
     env.freeSpace();

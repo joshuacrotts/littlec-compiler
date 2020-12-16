@@ -1,80 +1,23 @@
 //
-// Brainf*** testing...
+// Fizzbuzz
 //
-
-// ============= STRING FUNCTIONS ============== //
-
-int strlen(char[] str1);
-
-//
-// Computes the length of a string.
-//
-int strlen(char[] str) {
-	int i;
-	for (i = 0; i < #str; i++) {
-		if (str[i] == '\0')
-			break;
-	}
-	return i;
-}
-
-
-// ============== MAIN PROGRAM ===================== //
-
-int ptr = 0;
-int LENGTH = 250;
-char mem[250];
-char code[250] = "++++++++++[>+++++++>++++++++++>+++>+<<<<-]>++.>+.+++++++..+++.>++.<<+++++++++++++++.>.+++.------.--------.>+.>.";
 
 void main() {
-	int l = 0;
+	
+	int f = 20;
 	int i;
-	char c;
-	for(i = 0; i < strlen(code); i++) {
-		if (code[i]== '>') {
-			if (ptr == LENGTH - 1)
-				ptr = 0;
-			else 
-				ptr++;
-		} 
-		else if (code[i] == '<') {
-			if (ptr == 0) 
-				ptr = LENGTH - 1;
-			else 
-				ptr--;
+	
+	for (i=1;i<=f;i++) {
+		if (i%3==0&&i%5==0)
+			prints("FizzBuzz\n");
+		else if (i%3==0)
+			prints("Fizz\n");
+		else if(i%5==0)
+			prints("Buzz\n");
+		else {
+			printd(i);
+			prints("\n");
 		}
-		else if (code[i] == '+') {
-			mem[ptr] = mem[ptr] + 1;
-		}
-		else if (code[i] == '-') {
-			mem[ptr] = mem[ptr] - 1;
-		}
-		else if (code[i] == '.') {
-			printc(mem[ptr]);
-		}
-		else if (code[i] == ',') {
-			mem[ptr] = readc();
-		}
-		else if (code[i] == '[') {
-			if (mem[ptr] == 0) {
-				i++;
-				while (l>0||code[i]!=']') {
-					if (code[i]=='[')l++;
-					if (code[i]==']')l--;
-					i++;
-				}
-			}
-		}
-		else if (code[i] == ']') {
-			if (mem[ptr] != 0) {
-				i--;
-				while(l>0||code[i]!='[') {
-					if(code[i]==']')l++;
-					if(code[i]=='[')l--;
-					i--;
-				}
-				i--;
-			}
-		}
-	}
+	}	
+	
 }

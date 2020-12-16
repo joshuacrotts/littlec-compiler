@@ -1,17 +1,27 @@
+//
+// Tests global/local variables and mixed assignments.
+//
+// (NOTE: This does NOT work with Dr. Tate's interpreter - my modified one fixes the issue).
+//
 
-// Basic array test - both reading and writing, and using length operator
+int x;
+int y;
 
-void main() {
-    int i;
-    int a[20];
-    int sum = 0;
+void printlnd(int d) {
+	printd(d);
+	prints("\n");
+}
+
+void main()
+{
+	int i = 753;
+	int j = 444;
+
+    x = 753;
+    y = 444;
+    printlnd(--x);
+    printlnd(x = y--);
     
-    for (i=0; i<20; i++)
-        a[i] = i;
-
-    for (i=0; i<#a; i++)
-        sum = sum + a[i];
-
-    prints("Sum is ");
-    printd(sum);
+	printlnd(--i);
+	printlnd(i = j--);
 }

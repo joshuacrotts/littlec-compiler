@@ -1,15 +1,21 @@
 
-// This tests out function definitions with parameters and resturn statements
+// Passing array reference to a function to use
 
-int pow(int a, int b) {
-    int res = 1;
-    while (b > 0) {
-        res = res * a;
-        b--;
-    }
-    return res;
+int fsum(int[] d) {
+    int i;
+    int sum = 0;
+    for (i=0; i<#d; i++)
+        sum = sum + d[i];
+    return sum;
 }
 
 void main() {
-    printd(pow(2, 6));
+    int i;
+    int a[20];
+    
+    for (i=0; i<20; i++)
+        a[i] = i;
+
+    prints("Sum is ");
+    printd(fsum(a));
 }

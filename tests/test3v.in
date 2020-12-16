@@ -1,16 +1,15 @@
 
-// This tests just a basic program with a while loop and calls to printd
-// and prints
+// This tests out function definitions with parameters and resturn statements
 
-int gvar = 12;
+int pow(int a, int b) {
+    int res = 1;
+    while (b > 0) {
+        res = res * a;
+        b--;
+    }
+    return res;
+}
 
 void main() {
-    int i = 10;
-    prints("T ");
-    printd(-i);
-    while (i > 0) {
-        printd(i);
-        i--;
-    }
-    prints("Blast off!");
+    printd(pow(2, 6));
 }
