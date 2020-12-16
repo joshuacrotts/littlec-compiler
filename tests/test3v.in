@@ -1,0 +1,16 @@
+
+// This tests just a basic program with a while loop and calls to printd
+// and prints
+
+int gvar = 12;
+
+void main() {
+    int i = 10;
+    prints("T ");
+    printd(-i);
+    while (i > 0) {
+        printd(i);
+        i--;
+    }
+    prints("Blast off!");
+}

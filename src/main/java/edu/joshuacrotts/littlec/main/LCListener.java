@@ -505,7 +505,9 @@ public class LCListener extends LittleCBaseListener {
       // Similarly to the way we removed the first two children in the above
       // condition, the last two in this version (without braces) has the same issue.
       this.syntaxTree.getChildren().remove(this.syntaxTree.getChildren().size() - 1);
-      this.syntaxTree.getChildren().remove(this.syntaxTree.getChildren().size() - 1);
+      if (this.syntaxTree.getChildren().size() > 0) {
+        this.syntaxTree.getChildren().remove(this.syntaxTree.getChildren().size() - 1);
+      }
     }
     
     // The outer body of the loop has the inner body as a seq and the update expr.

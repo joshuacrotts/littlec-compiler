@@ -171,6 +171,26 @@ public class ICodeTester {
   public void icTestU() {
     runICTest("test3u");
   }
+
+  @Test
+  public void icTestV() {
+    runICTest("test3v");
+  }
+  
+  @Test
+  public void icTestW() {
+    runICTest("test3w");
+  }
+  
+  @Test
+  public void icTestX() {
+    runICTest("test3x");
+  }
+  
+  @Test
+  public void icTestY() {
+    runICTest("test3y");
+  }
   
   @Test
   public void myTest1() {

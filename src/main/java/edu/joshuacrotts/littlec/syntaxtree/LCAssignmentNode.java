@@ -107,7 +107,7 @@ public class LCAssignmentNode extends LCSyntaxTree {
     } else {
       ICode.quad.addLine(s.ADDR, e.ADDR, "=");
     }
-    info.ADDR = e.ADDR;
+    info.ADDR = s.ADDR;
   }
 
   @Override

@@ -167,7 +167,7 @@ expr					: term #exprTerm  // General term (literal or var.)
 						| expr (BIT_OR) expr #exprBinaryOp // Bitwise OR
 						| expr AND expr #exprBinaryOp // Comparison of AND.
 						| expr OR expr #exprBinaryOp // Comparison of OR.
-						| (OPEN_PAREN ruleAssignStatement CLOSE_PAREN) #exprAssign
+						| ruleAssignStatement #exprAssign
 						; 
                           
 
