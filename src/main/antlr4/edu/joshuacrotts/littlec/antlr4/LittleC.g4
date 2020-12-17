@@ -26,9 +26,10 @@ fragment ESCAPED_CHAR   : ('\\' .)                                         ;
 fragment ANYCHAR_MOD    : (.+?) ; // Requires at least ONE character, whether it's special or not. If it's an empty char, that's the parser's problem.
 
 /* Fixed string tokens. */
-// Storage classes (2).
+// Storage classes (3).
 STATIC         : 'static' ;
 EXTERN         : 'extern' ;
+AUTO		   : 'auto'   ;
 
 // Core types (4).
 INT            : 'int'    ;
@@ -43,6 +44,7 @@ WHILE          	: 'while'  	;
 FOR            	: 'for'    	;
 RETURN         	: 'return' 	;
 BREAK          	: 'break'  	;
+TO				: 'to'		;
 
 /* Rule tokens. */
 CHARLIT		   : (SINGLE_QUOTE (ESCAPED_CHAR | ~ ['\\] ) '\'');
@@ -62,6 +64,7 @@ MULTIPLY_OP      : '*'    ;
 POW_OP			 : '**'   ;
 DIVIDE_OP        : '/'    ;
 MODULO_OP        : '%'    ;
+ABS_OP			 : '@'	  ;
 INC_OP           : '++'   ;
 DEC_OP           : '--'   ;
 BIT_AND		     : '&'    ;
@@ -70,6 +73,8 @@ BIT_NEG   		 : '~'    ;
 BIT_XOR			 : '^'    ;
 BIT_SHIFT_LEFT   : '<<'   ;
 BIT_SHIFT_RIGHT  : '>>'   ;
+BIT_ROTATE_LEFT  : '<<<'  ;
+BIT_ROTATE_RIGHT : '>>>'  ;
 
 
 // Comparison operators (6).
@@ -80,10 +85,12 @@ GREATER_THAN_CMP 		: '>'    	;
 GREATER_EQ_CMP   		: '>='   	;
 NOT_EQUAL_CMP    		: '!='   	;
  
-// Boolean operators (3).
+// Boolean operators (5).
 NOT : '!'  ;
 AND : '&&' ;
 OR  : '||' ;
+BI  : '<>' ;
+IMP : '->' ;
 
 // Punctuation (10).
 OPEN_PAREN    : '('  ;
@@ -128,15 +135,15 @@ ruleVariableDeclaration		 : ruleIntDeclaration
 							 | ruleStringDeclaration 
 							 | ruleStringRefDeclaration
 							 ;
-ruleIntDeclaration			 : (EXTERN|STATIC)? INT ID (ASSIGN (INTLIT | CHARLIT))? #IntDeclaration;
-ruleIntArrayDeclaration		 : (EXTERN|STATIC)? INT ID OPEN_BRACKET INTLIT CLOSE_BRACKET #IntArrayDeclaration;
-ruleIntArrayRefDeclaration	 : (EXTERN|STATIC)? INT OPEN_BRACKET CLOSE_BRACKET ID #IntArrayRefDeclaration;
-ruleFloatDeclaration		 : (EXTERN|STATIC)? FLOAT ID (ASSIGN (INTLIT | CHARLIT))? #FloatDeclaration;
-ruleFloatArrayDeclaration	 : (EXTERN|STATIC)? FLOAT ID OPEN_BRACKET INTLIT CLOSE_BRACKET #FloatArrayDeclaration;
-ruleFloatArrayRefDeclaration : (EXTERN|STATIC)? FLOAT OPEN_BRACKET CLOSE_BRACKET ID #FloatArrayRefDeclaration;
-ruleCharDeclaration			 : (EXTERN|STATIC)? CHAR ID (ASSIGN (INTLIT | CHARLIT))? #CharDeclaration;
-ruleStringDeclaration		 : (EXTERN|STATIC)? CHAR ID OPEN_BRACKET INTLIT CLOSE_BRACKET (ASSIGN STRINGLIT)? #StringDeclaration;
-ruleStringRefDeclaration     : (EXTERN|STATIC)? CHAR OPEN_BRACKET CLOSE_BRACKET ID #StringRefDeclaration;
+ruleIntDeclaration			 : (EXTERN|STATIC|AUTO)? INT ID (ASSIGN (INTLIT | CHARLIT))? #IntDeclaration;
+ruleIntArrayDeclaration		 : (EXTERN|STATIC|AUTO)? INT ID OPEN_BRACKET INTLIT CLOSE_BRACKET #IntArrayDeclaration;
+ruleIntArrayRefDeclaration	 : (EXTERN|STATIC|AUTO)? INT OPEN_BRACKET CLOSE_BRACKET ID #IntArrayRefDeclaration;
+ruleFloatDeclaration		 : (EXTERN|STATIC|AUTO)? FLOAT ID (ASSIGN (INTLIT | CHARLIT))? #FloatDeclaration;
+ruleFloatArrayDeclaration	 : (EXTERN|STATIC|AUTO)? FLOAT ID OPEN_BRACKET INTLIT CLOSE_BRACKET #FloatArrayDeclaration;
+ruleFloatArrayRefDeclaration : (EXTERN|STATIC|AUTO)? FLOAT OPEN_BRACKET CLOSE_BRACKET ID #FloatArrayRefDeclaration;
+ruleCharDeclaration			 : (EXTERN|STATIC|AUTO)? CHAR ID (ASSIGN (INTLIT | CHARLIT))? #CharDeclaration;
+ruleStringDeclaration		 : (EXTERN|STATIC|AUTO)? CHAR ID OPEN_BRACKET INTLIT CLOSE_BRACKET (ASSIGN STRINGLIT)? #StringDeclaration;
+ruleStringRefDeclaration     : (EXTERN|STATIC|AUTO)? CHAR OPEN_BRACKET CLOSE_BRACKET ID #StringRefDeclaration;
 
 
 // Term-related rules.
@@ -157,11 +164,11 @@ expr					: term #exprTerm  // General term (literal or var.)
 						| ID OPEN_BRACKET expr CLOSE_BRACKET #exprArray // Array dereference.        
 						| (INC_OP|DEC_OP) ID (OPEN_BRACKET expr CLOSE_BRACKET)? #exprPreOp	// Pre operators.
 						| ID (OPEN_BRACKET expr CLOSE_BRACKET)? (INC_OP|DEC_OP) #exprPostOp // Post operators.
-						| (PLUS_OP|MINUS_OP|NOT|BIT_NEG|SIZE_OP) expr #exprUnary // Unary operators.
+						| (PLUS_OP|MINUS_OP|NOT|BIT_NEG|SIZE_OP|ABS_OP) expr #exprUnary // Unary operators.
 						| <assoc=right> expr (POW_OP) expr #exprBinaryOp // Power operator.
 						| expr (MULTIPLY_OP | DIVIDE_OP | MODULO_OP) expr #exprBinaryOp // Multiply, divide, modulo.
 						| expr (PLUS_OP | MINUS_OP) expr #exprBinaryOp // Addition & subtraction.
-						| expr (BIT_SHIFT_LEFT | BIT_SHIFT_RIGHT) expr #exprBinaryOp // Bitwise shift left/right.
+						| expr (BIT_SHIFT_LEFT | BIT_SHIFT_RIGHT | BIT_ROTATE_LEFT | BIT_ROTATE_RIGHT) expr #exprBinaryOp // Bitwise shift/rotate left/right.
 						| expr (LESS_THAN_CMP | LESS_EQ_CMP | GREATER_THAN_CMP | GREATER_EQ_CMP) expr #exprBinaryOp // Comparison operators.
 						| expr (EQUAL_CMP | NOT_EQUAL_CMP) expr #exprBinaryOp // Comparison of equality.
 						| expr (BIT_AND) expr #exprBinaryOp // Bitwise AND
@@ -169,7 +176,7 @@ expr					: term #exprTerm  // General term (literal or var.)
 						| expr (BIT_OR) expr #exprBinaryOp // Bitwise OR
 						| expr (AND) expr #exprBinaryOp // Comparison of AND.
 						| expr (OR) expr #exprBinaryOp // Comparison of OR.
-						| <assoc=right> expr TERNARY_COND expr TERNARY_ELSE expr #exprTernaryOp // Ternary operator. 
+						| expr (BI|IMP) expr #exprBinaryOp // Comparison of BI/IMP.
 						| ruleAssignStatement #exprAssign
 						; 
                           

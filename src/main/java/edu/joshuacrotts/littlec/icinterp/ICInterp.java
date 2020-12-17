@@ -430,6 +430,10 @@ public class ICInterp {
             return new SimValue(1, (byte) (val1.cVal << val2.cVal));
           else if (parts[si + 1].equals(">>"))
             return new SimValue(1, (byte) (val1.cVal >> val2.cVal));
+          else if (parts[si + 1].equals("<<<"))
+            return new SimValue(4, (val1.cVal << val2.cVal) | (val1.cVal >> (Character.BYTES * 4 - val2.cVal)));
+          else if (parts[si + 1].equals(">>>"))
+            return new SimValue(4, (val1.cVal >> val2.cVal) | (val1.cVal << (Character.BYTES * 4 - val2.cVal)));
           else if (parts[si + 1].equals("<"))
             return new SimValue(4, (val1.cVal < val2.cVal) ? 1 : 0);
           else if (parts[si + 1].equals("<="))
@@ -442,6 +446,10 @@ public class ICInterp {
             return new SimValue(4, (val1.cVal == val2.cVal) ? 1 : 0);
           else if (parts[si + 1].equals("!="))
             return new SimValue(4, (val1.cVal != val2.cVal) ? 1 : 0);
+          else if (parts[si + 1].equals("<>"))
+            return new SimValue(4, (~(val1.cVal ^ val2.cVal) > 0) ? 1 : 0);
+          else if (parts[si + 1].equals("->"))
+            return new SimValue(4, ((~val1.cVal | val2.cVal) > 0) ? 1 : 0);
           else if (parts[si + 1].equals("ldidx1"))
             return new SimValue(1, ptrGetByte(val1.iVal, 4 + val2.iVal));
           else
@@ -469,6 +477,10 @@ public class ICInterp {
             return new SimValue(4, val1.iVal << val2.iVal);
           else if (parts[si + 1].equals(">>"))
             return new SimValue(4, val1.iVal >> val2.iVal);
+          else if (parts[si + 1].equals("<<<"))
+            return new SimValue(4, (val1.iVal << val2.iVal) | (val1.iVal >> (Integer.BYTES * 8 - val2.iVal)));
+          else if (parts[si + 1].equals(">>>"))
+            return new SimValue(4, (val1.iVal >> val2.iVal) | (val1.iVal << (Integer.BYTES * 8 - val2.iVal)));
           else if (parts[si + 1].equals("<"))
             return new SimValue(4, (val1.iVal < val2.iVal) ? 1 : 0);
           else if (parts[si + 1].equals("<="))
@@ -481,6 +493,10 @@ public class ICInterp {
             return new SimValue(4, (val1.iVal == val2.iVal) ? 1 : 0);
           else if (parts[si + 1].equals("!="))
             return new SimValue(4, (val1.iVal != val2.iVal) ? 1 : 0);
+          else if (parts[si + 1].equals("<>"))
+            return new SimValue(4, (~(val1.iVal ^ val2.iVal) > 0) ? 1 : 0);
+          else if (parts[si + 1].equals("->"))
+            return new SimValue(4, ((~val1.iVal | val2.iVal) > 0) ? 1 : 0);
           else if (parts[si + 1].equals("ldidx4")) {
             return new SimValue(4, ptrGetInt(val1.iVal, 4 + 4 * val2.iVal));
           } else if (parts[si + 1].equals("ldidx1")) {
@@ -507,6 +523,12 @@ public class ICInterp {
             return new SimValue(1, ~((byte) val1.cVal));
           else
             return new SimValue(4, ~val1.iVal);
+        }
+        else if (parts[si].equals("@")) {
+          if ((tWidth == 1) || (val1.width == 1))
+            return new SimValue(1, Math.abs((byte) val1.cVal));
+          else
+            return new SimValue(4, Math.abs(val1.iVal));
         }
         else if (parts[si].equals("&")) {
           return new SimValue(4, getAddr(parts[si + 1]));

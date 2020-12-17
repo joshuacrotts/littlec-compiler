@@ -1188,36 +1188,6 @@ public class LCListener extends LittleCBaseListener {
 
     this.values.put(ctx, binaryOpNode);
   }
-  
-  /**
-   * 
-   */
-  @Override
-  public void enterExprTernaryOp(LittleCParser.ExprTernaryOpContext ctx) {
-    if (this.syntaxTree.hasError()) {
-      return;
-    }
-
-    this.syntaxTree.setFlags(LCMasks.IF_MASK);
-    
-  }
-
-  /**
-   * 
-   */
-  @Override
-  public void exitExprTernaryOp(LittleCParser.ExprTernaryOpContext ctx) {
-    if (this.syntaxTree.hasError()) {
-      return;
-    }
-    
-    LCSyntaxTree condPortion = this.values.get(ctx.expr(0));
-    LCSyntaxTree thenPortion = this.values.get(ctx.expr(1));
-    LCSyntaxTree elsePortion = this.values.get(ctx.expr(2)); 
-
-    this.syntaxTree.addChild(new LCIfStatementNode(ctx, condPortion, thenPortion, elsePortion));
-    this.syntaxTree.turnOffFlags(LCMasks.IF_MASK);
-  }
 
   /**
    * Term enter context listener. A term is defined as a literal or an identifier
