@@ -200,9 +200,6 @@ public class LCListener extends LittleCBaseListener {
     if (this.syntaxTree.hasError()) {
       return;
     }
-    // The last-added child is whatever comes directly after the conditional part so
-    // we can just remove it from the main tree and add it to the cond tree if it's
-    // a one-line if statement (i.e. no braces are used).
     LCSyntaxTree condPortion = this.values.get(ctx.ruleIfStatementCond());
     LCSyntaxTree thenPortion = this.syntaxTree.getChildren().remove(this.syntaxTree.getChildren().size() - 1);
     LCSyntaxTree elsePortion = this.values.get(ctx.ruleElseStatement()); 
@@ -1190,6 +1187,36 @@ public class LCListener extends LittleCBaseListener {
     LCBinaryOperatorNode binaryOpNode = new LCBinaryOperatorNode(ctx, this.symbolTable, op, lexpr, rexpr);
 
     this.values.put(ctx, binaryOpNode);
+  }
+  
+  /**
+   * 
+   */
+  @Override
+  public void enterExprTernaryOp(LittleCParser.ExprTernaryOpContext ctx) {
+    if (this.syntaxTree.hasError()) {
+      return;
+    }
+
+    this.syntaxTree.setFlags(LCMasks.IF_MASK);
+    
+  }
+
+  /**
+   * 
+   */
+  @Override
+  public void exitExprTernaryOp(LittleCParser.ExprTernaryOpContext ctx) {
+    if (this.syntaxTree.hasError()) {
+      return;
+    }
+    
+    LCSyntaxTree condPortion = this.values.get(ctx.expr(0));
+    LCSyntaxTree thenPortion = this.values.get(ctx.expr(1));
+    LCSyntaxTree elsePortion = this.values.get(ctx.expr(2)); 
+
+    this.syntaxTree.addChild(new LCIfStatementNode(ctx, condPortion, thenPortion, elsePortion));
+    this.syntaxTree.turnOffFlags(LCMasks.IF_MASK);
   }
 
   /**
