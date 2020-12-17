@@ -43,7 +43,6 @@ WHILE          	: 'while'  	;
 FOR            	: 'for'    	;
 RETURN         	: 'return' 	;
 BREAK          	: 'break'  	;
-CONTINUE 		: 'continue';
 
 /* Rule tokens. */
 CHARLIT		   : (SINGLE_QUOTE (ESCAPED_CHAR | ~ ['\\] ) '\'');
@@ -168,8 +167,8 @@ expr					: term #exprTerm  // General term (literal or var.)
 						| expr (BIT_AND) expr #exprBinaryOp // Bitwise AND
 						| expr (BIT_XOR) expr #exprBinaryOp // Bitwise XOR
 						| expr (BIT_OR) expr #exprBinaryOp // Bitwise OR
-						| expr AND expr #exprBinaryOp // Comparison of AND.
-						| expr OR expr #exprBinaryOp // Comparison of OR.
+						| expr (AND) expr #exprBinaryOp // Comparison of AND.
+						| expr (OR) expr #exprBinaryOp // Comparison of OR.
 						| <assoc=right> expr TERNARY_COND expr TERNARY_ELSE expr #exprTernaryOp // Ternary operator. 
 						| ruleAssignStatement #exprAssign
 						; 
@@ -189,20 +188,20 @@ ruleNewBlock 			: (OPEN_BRACE declaration* stmt* CLOSE_BRACE) #newBlock;
 
 // Assignment. While it's not a direct "statement", it's used as a statement rule to
 // make conditionals easier.
-ruleAssignStatement		: <assoc=right> ID (OPEN_BRACKET expr CLOSE_BRACKET)? ASSIGN (expr | term | ruleAssignStatement) #assignStatement;
+ruleAssignStatement		: <assoc=right> ID (OPEN_BRACKET expr CLOSE_BRACKET)? ASSIGN (expr | term) #assignStatement;
 
 // If statement with else.
 ruleIfStatement			: IF OPEN_PAREN ruleIfStatementCond CLOSE_PAREN (stmt | (OPEN_BRACE stmt* CLOSE_BRACE)) ruleElseStatement? #ifStatement;
-ruleIfStatementCond		: (ruleAssignStatement | expr) #ifStatementConditional;
+ruleIfStatementCond		: expr #ifStatementConditional;
 ruleElseStatement		: ELSE (stmt | (OPEN_BRACE stmt* CLOSE_BRACE)) #elseStatement;
 
 // While statement.
 ruleWhileStatement		: WHILE OPEN_PAREN ruleWhileStatementCond CLOSE_PAREN (stmt | (OPEN_BRACE stmt* CLOSE_BRACE)) #whileStatement;
-ruleWhileStatementCond	: (ruleAssignStatement | expr) #whileStatementConditional;
+ruleWhileStatementCond	: expr #whileStatementConditional;
 
 // For statement (same as while semantically).
-ruleForStatement		: FOR OPEN_PAREN (ruleAssignStatement SEMICOLON) ruleForStatementCond SEMICOLON (expr | ruleAssignStatement) CLOSE_PAREN (stmt | (OPEN_BRACE stmt* CLOSE_BRACE)) #forStatement;
-ruleForStatementCond	: (ruleAssignStatement | expr) #forStatementConditional;
+ruleForStatement		: FOR OPEN_PAREN (expr SEMICOLON) (ruleForStatementCond SEMICOLON) (expr) CLOSE_PAREN (stmt | (OPEN_BRACE stmt* CLOSE_BRACE)) #forStatement;
+ruleForStatementCond	: expr #forStatementConditional;
 
 // Return statement.
 ruleReturnStatement		: RETURN expr? #returnStatement;

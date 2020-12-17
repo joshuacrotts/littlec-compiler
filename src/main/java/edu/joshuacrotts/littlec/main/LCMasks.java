@@ -30,12 +30,6 @@ public class LCMasks {
   public static final int EXPR_ASSIGN_MASK = 0x00000020;
 
   /**
-   * Multi-line mask is toggled if we enter a statement (if/for/while) with braces
-   * (i.e. it has multiple lines).
-   */
-  public static final int MULTI_LINE_MASK = 0x00001000;
-
-  /**
    * Cond mask is toggled if we enter the conditional of an if/for/while
    * statement.
    */
