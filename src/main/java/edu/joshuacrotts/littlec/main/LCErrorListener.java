@@ -141,7 +141,7 @@ public class LCErrorListener extends BaseErrorListener {
    * @return true if a warning was seen.
    */
   public static boolean sawWarning() {
-    return gotError;
+    return gotWarning;
   }
 
   /**

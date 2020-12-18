@@ -1,0 +1,24 @@
+char g;
+char h[10];
+
+int dog(int a, int[] b)
+{
+      a = 444;
+      b[9] = 555;
+
+      return #b;
+}
+
+void main()
+{
+      int x;
+      int y[10];
+
+      g = 1;
+      h[9] = 0;
+
+      x = 111;
+      y[9] = 222;
+
+      printd(333 + dog(x, y));
+}

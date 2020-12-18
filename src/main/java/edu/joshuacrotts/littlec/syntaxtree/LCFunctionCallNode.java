@@ -12,7 +12,9 @@ import edu.joshuacrotts.littlec.main.SymbolTable;
 
 public class LCFunctionCallNode extends LCSyntaxTree {
 
-  /* Identifier of function. */
+  /**
+   * Identifier of function. 
+   */
   private String id;
 
   /**

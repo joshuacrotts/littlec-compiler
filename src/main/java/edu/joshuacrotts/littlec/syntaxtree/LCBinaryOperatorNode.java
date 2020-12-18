@@ -10,7 +10,9 @@ import edu.joshuacrotts.littlec.main.SymbolTable;
 
 public class LCBinaryOperatorNode extends LCSyntaxTree {
 
-  /** Binary operator that we're using. */
+  /** 
+   * Binary operator that we're using. 
+   */
   private String op;
 
   /**

@@ -41,14 +41,12 @@ public class LCReturnStatementNode extends LCSyntaxTree {
     String returnStr = "return";
 
     // If there is a return expression, then we have to append a data width to it.
-    // Otherwise,
     if (!this.getChildren().isEmpty()) {
       this.getChildren().get(0).genCode(info);
       int retWidth = LCUtilities.getDataWidth(this.getChildren().get(0).getType());
       returnStr += retWidth;
     }
 
-    // addLine(resAddr, op1, op2, op), "return" is the op, return val is op1.
     ICode.quad.addLine("", (!this.getChildren().isEmpty() ? info.ADDR : ""), "", returnStr);
   }
 

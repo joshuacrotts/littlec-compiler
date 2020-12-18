@@ -5,6 +5,7 @@ import org.antlr.v4.runtime.ParserRuleContext;
 import edu.joshuacrotts.littlec.icode.ActivationRecord;
 import edu.joshuacrotts.littlec.icode.ICInhAttr;
 import edu.joshuacrotts.littlec.icode.ICode;
+import edu.joshuacrotts.littlec.main.LCErrorListener;
 
 public class LCIfStatementNode extends LCSyntaxTree {
 
@@ -28,14 +29,15 @@ public class LCIfStatementNode extends LCSyntaxTree {
   public LCIfStatementNode(ParserRuleContext ctx, LCSyntaxTree ifPart, LCSyntaxTree thenPart, LCSyntaxTree elsePart) {
     super("IF", "void");// No third parameter.
 
-    /* Two or three children. */
-    /* Child 1 is the conditions. */
+    // Child 1 is the conditions.
     super.addChild(ifPart);
 
-    /* Child 2 is the "then" portion of the condition. */
+    this.testConditional(ctx, ifPart);
+
+    // Child 2 is the "then" portion of the condition.
     super.addChild(thenPart);
 
-    /* Child 3 is the "else" part. */
+    // Child 3 is the "else" part.
     if (elsePart != null) {
       super.addChild(elsePart);
     }
@@ -80,7 +82,18 @@ public class LCIfStatementNode extends LCSyntaxTree {
       this.getChildren().get(2).genCode(s2);
     }
     ICode.quad.addLabel(b.NEXT + ":");
-
+  }
+  
+  /**
+   * Since using terms, literals, or array indexing may not evaluate correctly (to be honest,
+   * it DOESN'T evalutate correctly, we can display a warning if the user attempts to. 
+   */
+  private void testConditional(ParserRuleContext ctx, LCSyntaxTree cond) {
+    if (cond instanceof LCVariableIdentifierNode || cond instanceof LCConstantLiteralNode
+        || cond instanceof LCArrayIndexNode) {
+      LCErrorListener.syntaxWarning(ctx,
+          "using only an identifier or literal in the condition may not evaluate correctly.");
+    }
   }
 
   @Override

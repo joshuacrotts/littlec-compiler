@@ -11,13 +11,19 @@ import edu.joshuacrotts.littlec.main.SymbolTable;
 
 public class LCVariableDeclarationNode extends LCSyntaxTree {
 
-  /** Name of the variable for later reference. */
+  /** 
+   * Name of the variable for later reference. 
+   */
   private String id;
 
-  /** Type of variable that we're declaring. */
+  /** 
+   * Type of variable that we're declaring. 
+   */
   private String varType;
 
-  /** The literal value that we're assigning. Null if no lit. */
+  /** 
+   * The literal value that we're assigning. Null if no lit. 
+   */
   private Object literalValue;
 
   /**
@@ -38,7 +44,6 @@ public class LCVariableDeclarationNode extends LCSyntaxTree {
     this.id = id;
     this.varType = varType;
     this.literalValue = literalValue;
-
     // If we don't have the symbol in the current environment table (which defines
     // the current scope, then we're good to add it (we can shadow it). 
     if (!symbolTable.hasSymbolInCurrentEnvironment(this.id)) {
@@ -111,7 +116,7 @@ public class LCVariableDeclarationNode extends LCSyntaxTree {
         info.ADDR = lLabel;
       }
     }
-    /* Otherwise, we insert the value as normal. */
+    // Otherwise, we insert the value as normal.
     else {
       int dataWidth = LCUtilities.getDataWidth(this.varType);
       String lit = this.literalValue == null ? "0" : this.literalValue.toString();

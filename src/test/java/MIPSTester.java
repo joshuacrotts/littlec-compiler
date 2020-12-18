@@ -170,6 +170,86 @@ public class MIPSTester {
   }
   
   @Test
+  public void mipsTestV() {
+    runMIPSTest("test3v");
+  }
+  
+  @Test
+  public void mipsTestW() {
+    runMIPSTest("test3w");
+  }
+  
+  @Test
+  public void mipsTestX() {
+    runMIPSTest("test3x");
+  }
+  
+  @Test
+  public void mipsTestY() {
+    runMIPSTest("test3y");
+  }
+  
+  @Test
+  public void mipsTestZ() {
+    runMIPSTest("test3z");
+  }
+  
+  @Test
+  public void mipsTestAA() {
+    runMIPSTest("test3aa");
+  }
+  
+  @Test
+  public void mipsTestAB() {
+    runMIPSTest("test3ab");
+  }
+  
+  @Test
+  public void mipsTestAC() {
+    runMIPSTest("test3ac");
+  }
+  
+  @Test
+  public void mipsTestAD() {
+    runMIPSTest("test3ad");
+  }
+  
+  @Test
+  public void mipsTestAE() {
+    runMIPSTest("test3ae");
+  }
+  
+  @Test
+  public void mipsTestAF() {
+    runMIPSTest("test3af");
+  }
+  
+  @Test
+  public void mipsTestAG() {
+    runMIPSTest("test3ag");
+  }
+  
+  @Test
+  public void mipsTestAH() {
+    runMIPSTest("test3ah");
+  }
+  
+  @Test
+  public void mipsTestAI() {
+    runMIPSTest("test3ai");
+  }
+  
+  @Test
+  public void mipsTestAJ() {
+    runMIPSTest("test3aj");
+  }
+  
+  @Test
+  public void mipsTestAK() {
+    runMIPSTest("test3ak");
+  }
+  
+  @Test
   public void myTest1() {
     runMIPSTest("test_joshuacrotts_1");
   }

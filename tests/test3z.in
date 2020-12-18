@@ -1,0 +1,27 @@
+void printlnd(int d) {
+	printd(d);
+	prints("\n");
+}
+
+void main() {
+	printlnd(1->1);
+	printlnd(1->0);
+	printlnd(0->1);
+	printlnd(0->0);
+	printlnd(1<>1);
+	printlnd(1<>0);
+	printlnd(0<>1);
+	printlnd(0<>0);
+	printlnd(1^1);
+	printlnd(1^0);
+	printlnd(0^1);
+	printlnd(0^0);
+	printlnd(1|1);
+	printlnd(1|0);
+	printlnd(0|1);
+	printlnd(0|0);
+	printlnd(1&1);
+	printlnd(1&0);
+	printlnd(0&1);
+	printlnd(0&0);
+}

@@ -195,6 +195,66 @@ public class ICodeTester {
   }
   
   @Test
+  public void icTestZ() {
+    runICTest("test3z");
+  }
+  
+  @Test
+  public void icTestAA() {
+    runICTest("test3aa");
+  }
+  
+  @Test
+  public void icTestAB() {
+    runICTest("test3ab");
+  }
+  
+  @Test
+  public void icTestAC() {
+    runICTest("test3ac");
+  }
+  
+  @Test
+  public void icTestAD() {
+    runICTest("test3ad");
+  }
+  
+  @Test
+  public void icTestAE() {
+    runICTest("test3ae");
+  }
+  
+  @Test
+  public void icTestAF() {
+    runICTest("test3af");
+  }
+  
+  @Test
+  public void icTestAG() {
+    runICTest("test3ag");
+  }
+  
+  @Test
+  public void icTestAH() {
+    runICTest("test3ah");
+  }
+  
+  @Test
+  public void icTestAI() {
+    runICTest("test3ai");
+  }
+  
+  @Test
+  public void icTestAJ() {
+    runICTest("test3aj");
+  }
+  
+  @Test
+  public void icTestAK() {
+    runICTest("test3ak");
+  }
+  
+  @Test
   public void myTest1() {
     runICTest("test_joshuacrotts_1");
   }

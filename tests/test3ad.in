@@ -1,0 +1,38 @@
+// C-F20
+//
+// Yes, this outputs nothing!
+void output(int d) {
+	printd(d);
+	prints(" ");
+}
+
+void outnl() {
+	prints("\n");
+}
+
+void main()
+{
+    int x;
+
+    if (0>0) if (1>0) output(13);
+    if (0>0) if (1>0) output(23);
+
+    x = 0;
+    if (0>0) if (x>0) output(44);
+    if (0>0) if ( x==0) output(55);
+
+    if (0>0) if (3>1) output(987);
+    if (0>0) if (3<1) output(211);
+
+    if (0>0) if (1>0) output(13); else output(51);
+    if (0>0) if (0>0) output(23); else output(451);
+
+    x = 0;
+    if (0>0) if (x>0) output(44); else output(514);
+    if (0>0) if ( x==0) output(55); else output(1514);
+
+    if (0>0) if (3>1) output(987); else output(114);
+    if (0>0) if (3<1) output(211); else output(1614);
+
+    output(0);
+}

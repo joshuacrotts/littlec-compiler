@@ -145,6 +145,8 @@ public class LCListener extends LittleCBaseListener {
    */
   @Override
   public void exitIfStatement(LittleCParser.IfStatementContext ctx) {
+    if (LCErrorListener.sawError())
+      return;
     LCSyntaxTree condPortion = this.values.get(ctx.ruleIfStatementCond());
     LCSyntaxTree thenPortion = this.syntaxTree.getChildren().remove(this.syntaxTree.getChildren().size() - 1);
     LCSyntaxTree elsePortion = this.values.get(ctx.ruleElseStatement());
@@ -189,7 +191,7 @@ public class LCListener extends LittleCBaseListener {
     if (this.syntaxTree.getChildren().isEmpty()) {
       return;
     }
-    
+
     LCSyntaxTree lastChild = this.syntaxTree.getChildren().remove(this.syntaxTree.getChildren().size() - 1);
     this.values.put(ctx, lastChild);
   }
@@ -218,7 +220,6 @@ public class LCListener extends LittleCBaseListener {
     // we can just remove it from the main tree and add it to the cond tree.
     LCSyntaxTree loopBody = this.syntaxTree.getChildren().remove(this.syntaxTree.getChildren().size() - 1);
     LCSyntaxTree condPortion = this.values.get(ctx.ruleWhileStatementCond());
-
     this.syntaxTree.addChild(new LCLoopStatementNode(ctx, condPortion, loopBody));
 
     // Turn off the flag for being in a loop.
@@ -592,6 +593,10 @@ public class LCListener extends LittleCBaseListener {
    */
   @Override
   public void exitReturnStatement(LittleCParser.ReturnStatementContext ctx) {
+    if (LCErrorListener.sawError()) {
+      return;
+    }
+
     LCSyntaxTree retExpr = this.values.get(ctx.expr());
     String fnRetType = "";
 
@@ -844,6 +849,7 @@ public class LCListener extends LittleCBaseListener {
    */
   @Override
   public void exitExprPostOp(LittleCParser.ExprPostOpContext ctx) {
+    if (LCErrorListener.sawError()) return;
     // First check if the symbol exists.
     String id = ctx.ID().getText();
     String idType = this.symbolTable.getSymbolEntry(id).getVarType();
@@ -1033,8 +1039,11 @@ public class LCListener extends LittleCBaseListener {
    */
   @Override
   public void exitExprArray(LittleCParser.ExprArrayContext ctx) {
-    String id = ctx.ID().getText();
+    if (LCErrorListener.sawError()) {
+      return;
+    }
 
+    String id = ctx.ID().getText();
     if (!this.symbolTable.hasSymbol(id)) {
       LCErrorListener.syntaxError(ctx, "array object was not previously declared.");
       return;
@@ -1236,6 +1245,10 @@ public class LCListener extends LittleCBaseListener {
    * @return a syntax tree, or null if an error was detected.
    */
   public LCSyntaxTree getSyntaxTree() {
+    if (LCErrorListener.sawWarning()) {
+      LCErrorListener.printWarnings();
+    }
+
     if (LCErrorListener.sawError()) {
       LCErrorListener.printErrors();
       return null;

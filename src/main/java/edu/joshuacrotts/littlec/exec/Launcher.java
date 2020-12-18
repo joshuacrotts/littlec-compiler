@@ -16,6 +16,8 @@ public class Launcher {
     System.out.print("where [optinfile] is a .lc file or standard input (leave blank)\n\n");
     System.out.print("where \"flags\" is zero or more of the following:\n");
     System.out.print("   -o enables optimizations (in progress)\n");
+    System.out.print("   -w enables warnings (displayed even if none exist) (in progress)\n");
+    System.out.print("   -e enables errors (displayed even if none exist) (in progress)\n");
     System.out.print("   -d enables comments in assembly code generation (in progress)\n\n");
     System.out.print("where \"mode\" is one of the following:\n");
     System.out.print("   -lt runs LexerTest\n");

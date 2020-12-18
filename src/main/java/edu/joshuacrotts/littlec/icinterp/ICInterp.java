@@ -494,9 +494,9 @@ public class ICInterp {
           else if (parts[si + 1].equals("!="))
             return new SimValue(4, (val1.iVal != val2.iVal) ? 1 : 0);
           else if (parts[si + 1].equals("<>"))
-            return new SimValue(4, (~(val1.iVal ^ val2.iVal) > 0) ? 1 : 0);
+            return new SimValue(4, (val1.iVal == val2.iVal) ? 1 : 0);
           else if (parts[si + 1].equals("->"))
-            return new SimValue(4, ((~val1.iVal | val2.iVal) > 0) ? 1 : 0);
+            return new SimValue(4, (!(val1.iVal !=0) || (val2.iVal!=0)) ? 1 : 0);
           else if (parts[si + 1].equals("ldidx4")) {
             return new SimValue(4, ptrGetInt(val1.iVal, 4 + 4 * val2.iVal));
           } else if (parts[si + 1].equals("ldidx1")) {

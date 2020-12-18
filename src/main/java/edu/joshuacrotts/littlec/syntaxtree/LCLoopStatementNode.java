@@ -57,6 +57,7 @@ public class LCLoopStatementNode extends LCSyntaxTree {
 
     // ...then the conditional.
     this.getChildren().get(0).genCode(b);
+    
     // The label to go to if it's true.
     ICode.quad.addLabel(b.TRUE + ":");
     this.getChildren().get(1).genCode(s);

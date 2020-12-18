@@ -186,6 +186,38 @@ public class MIPSInstruction {
     sb.append(cl2 + ":\n");
     return sb.toString();
   }
+  
+  /**
+   * 
+   * @param dest
+   * @param op1
+   * @param op2
+   * @param tmpOp3
+   * @return
+   */
+  protected static String genImplicationBinaryOp(String dest, String op1, String op2, String tmpOp3) {
+    StringBuilder sb = new StringBuilder();
+    sb.append(MIPSInstruction.genUnaryOp("not", tmpOp3, op1));
+    sb.append(MIPSInstruction.genBinaryOp("addi", tmpOp3, tmpOp3, "2"));
+    sb.append(MIPSInstruction.genBinaryOp("or", dest, tmpOp3, op2));
+    return sb.toString();
+  }
+  
+  /**
+   * 
+   * @param dest
+   * @param op1
+   * @param op2
+   * @param tmpOp3
+   * @return
+   */
+  protected static String genBiconditionalBinaryOp(String dest, String op1, String op2, String tmpOp3) {
+    StringBuilder sb = new StringBuilder();
+    sb.append(MIPSInstruction.genBinaryOp("xor", tmpOp3, op1, op2));
+    sb.append(MIPSInstruction.genUnaryOp("not", dest, tmpOp3));
+    sb.append(MIPSInstruction.genBinaryOp("addi", dest, dest, "2"));
+    return sb.toString();
+  }
 
   /**
    * Generates a binary operator in MIPS.

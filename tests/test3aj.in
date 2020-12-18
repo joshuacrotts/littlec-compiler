@@ -1,0 +1,99 @@
+void convert(int num) {
+	
+        if (num >= 1000)       // 1000 - m
+        {
+           prints("m");
+           num = num- 1000;
+        }
+
+        else if (num >= 900)   // 900 -  cm
+        {
+           prints("cm");
+           num =num- 900;
+        }        
+
+        else if (num >= 500)   // 500 - d
+        {           
+           prints("d");
+           num = num-500;
+        }
+
+        else if (num >= 400)   // 400 -  cd
+        {
+           prints("cd");
+           num = num-400;
+        }
+
+        else if (num >= 100)   // 100 - c
+        {
+           prints("c");
+           num =num- 100;                       
+        }
+
+        else if (num >= 90)    // 90 - xc
+        {
+           prints("xc");
+           num =num- 90;                                              
+        }
+
+        else if (num >= 50)    // 50 - l
+        {
+           prints("l");
+           num = num-50;                                                                     
+        }
+
+        else if (num >= 40)    // 40 - xl
+        {
+           prints("xl");           
+           num = num-40;
+        }
+
+        else if (num >= 10)    // 10 - x
+        {
+           prints("x");
+           num = num-10;           
+        }
+
+        else if (num >= 9)     // 9 - ix
+        {
+           prints("ix");
+           num =num- 9;                         
+        }
+
+        else if (num >= 5)     // 5 - v
+        {
+           prints("v");
+           num = num-5;                                     
+        }
+
+        else if (num >= 4)     // 4 - iv
+        {
+           prints("iv");
+           num =num- 4;                                                            
+        }
+
+        else if (num >= 1)     // 1 - i
+        {
+           prints("i");
+           num =num- 1;                                                                                   
+        } else {
+        return;
+        }
+	
+	convert(num);
+}
+
+void main() {
+	convert(1087);
+	prints("\n");
+	convert(54);
+	prints("\n");
+	convert(51);
+	prints("\n");
+	convert(243);
+	prints("\n");
+	convert(6);
+	prints("\n");
+	convert(27);
+}
+
