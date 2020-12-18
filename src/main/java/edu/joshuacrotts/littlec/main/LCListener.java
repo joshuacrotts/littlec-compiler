@@ -106,7 +106,7 @@ public class LCListener extends LittleCBaseListener {
    */
   @Override
   public void enterProgram(LittleCParser.ProgramContext ctx) {
-    if (this.syntaxTree.hasError()) {
+    if (LCErrorListener.sawError()) {
       return;
     }
   }
@@ -116,7 +116,7 @@ public class LCListener extends LittleCBaseListener {
    */
   @Override
   public void exitProgram(LittleCParser.ProgramContext ctx) {
-    if (this.syntaxTree.hasError()) {
+    if (LCErrorListener.sawError()) {
       return;
     }
   }
@@ -126,7 +126,7 @@ public class LCListener extends LittleCBaseListener {
    */
   @Override
   public void enterStmt(LittleCParser.StmtContext ctx) {
-    if (this.syntaxTree.hasError()) {
+    if (LCErrorListener.sawError()) {
       return;
     }
   }
@@ -136,7 +136,7 @@ public class LCListener extends LittleCBaseListener {
    */
   @Override
   public void exitStmt(LittleCParser.StmtContext ctx) {
-    if (this.syntaxTree.hasError()) {
+    if (LCErrorListener.sawError()) {
       return;
     }
   }
@@ -147,7 +147,7 @@ public class LCListener extends LittleCBaseListener {
    */
   @Override
   public void enterNewBlock(LittleCParser.NewBlockContext ctx) {
-    if (this.syntaxTree.hasError()) {
+    if (LCErrorListener.sawError()) {
       return;
     }
 
@@ -170,7 +170,7 @@ public class LCListener extends LittleCBaseListener {
    * Exiting a new block scope. Similar to leaving an if/while/for loop context.
    */
   public void exitNewBlock(LittleCParser.NewBlockContext ctx) {
-    if (this.syntaxTree.hasError()) {
+    if (LCErrorListener.sawError()) {
       return;
     }
 
@@ -185,7 +185,7 @@ public class LCListener extends LittleCBaseListener {
    */
   @Override
   public void enterIfStatement(LittleCParser.IfStatementContext ctx) {
-    if (this.syntaxTree.hasError()) {
+    if (LCErrorListener.sawError()) {
       return;
     }
 
@@ -197,7 +197,7 @@ public class LCListener extends LittleCBaseListener {
    */
   @Override
   public void exitIfStatement(LittleCParser.IfStatementContext ctx) {
-    if (this.syntaxTree.hasError()) {
+    if (LCErrorListener.sawError()) {
       return;
     }
     LCSyntaxTree condPortion = this.values.get(ctx.ruleIfStatementCond());
@@ -213,7 +213,7 @@ public class LCListener extends LittleCBaseListener {
    */
   @Override
   public void enterIfStatementConditional(LittleCParser.IfStatementConditionalContext ctx) {
-    if (this.syntaxTree.hasError()) {
+    if (LCErrorListener.sawError()) {
       return;
     }
 
@@ -238,7 +238,7 @@ public class LCListener extends LittleCBaseListener {
    */
   @Override
   public void enterElseStatement(LittleCParser.ElseStatementContext ctx) {
-    if (this.syntaxTree.hasError()) {
+    if (LCErrorListener.sawError()) {
       return;
     }
   }
@@ -248,7 +248,7 @@ public class LCListener extends LittleCBaseListener {
    */
   @Override
   public void exitElseStatement(LittleCParser.ElseStatementContext ctx) {
-    if (this.syntaxTree.hasError()) {
+    if (LCErrorListener.sawError()) {
       return;
     }
 
@@ -262,7 +262,7 @@ public class LCListener extends LittleCBaseListener {
    */
   @Override
   public void enterWhileStatement(LittleCParser.WhileStatementContext ctx) {
-    if (this.syntaxTree.hasError()) {
+    if (LCErrorListener.sawError()) {
       return;
     }
 
@@ -276,7 +276,7 @@ public class LCListener extends LittleCBaseListener {
    */
   @Override
   public void exitWhileStatement(LittleCParser.WhileStatementContext ctx) {
-    if (this.syntaxTree.hasError()) {
+    if (LCErrorListener.sawError()) {
       return;
     }
 
@@ -297,7 +297,7 @@ public class LCListener extends LittleCBaseListener {
    */
   @Override
   public void enterWhileStatementConditional(LittleCParser.WhileStatementConditionalContext ctx) {
-    if (this.syntaxTree.hasError()) {
+    if (LCErrorListener.sawError()) {
       return;
     }
 
@@ -310,7 +310,7 @@ public class LCListener extends LittleCBaseListener {
    */
   @Override
   public void exitWhileStatementConditional(LittleCParser.WhileStatementConditionalContext ctx) {
-    if (this.syntaxTree.hasError()) {
+    if (LCErrorListener.sawError()) {
       return;
     }
 
@@ -324,7 +324,7 @@ public class LCListener extends LittleCBaseListener {
    */
   @Override
   public void enterForStatement(LittleCParser.ForStatementContext ctx) {
-    if (this.syntaxTree.hasError()) {
+    if (LCErrorListener.sawError()) {
       return;
     }
 
@@ -340,7 +340,7 @@ public class LCListener extends LittleCBaseListener {
    */
   @Override
   public void exitForStatement(LittleCParser.ForStatementContext ctx) {
-    if (this.syntaxTree.hasError()) {
+    if (LCErrorListener.sawError()) {
       return;
     }
 
@@ -386,7 +386,7 @@ public class LCListener extends LittleCBaseListener {
    */
   @Override
   public void enterForStatementConditional(LittleCParser.ForStatementConditionalContext ctx) {
-    if (this.syntaxTree.hasError()) {
+    if (LCErrorListener.sawError()) {
       return;
     }
 
@@ -399,7 +399,7 @@ public class LCListener extends LittleCBaseListener {
    */
   @Override
   public void exitForStatementConditional(LittleCParser.ForStatementConditionalContext ctx) {
-    if (this.syntaxTree.hasError()) {
+    if (LCErrorListener.sawError()) {
       return;
     }
 
@@ -412,7 +412,7 @@ public class LCListener extends LittleCBaseListener {
    */
   @Override
   public void enterBreakStatement(LittleCParser.BreakStatementContext ctx) {
-    if (this.syntaxTree.hasError()) {
+    if (LCErrorListener.sawError()) {
       return;
     }
   }
@@ -423,7 +423,7 @@ public class LCListener extends LittleCBaseListener {
    */
   @Override
   public void exitBreakStatement(LittleCParser.BreakStatementContext ctx) {
-    if (this.syntaxTree.hasError()) {
+    if (LCErrorListener.sawError()) {
       return;
     }
 
@@ -434,7 +434,7 @@ public class LCListener extends LittleCBaseListener {
       this.syntaxTree.addChild(breakStmt);
       this.values.put(ctx, breakStmt);
     } else {
-      this.syntaxTree.printError(ctx, "break statement cannot be used outside a loop.");
+      LCErrorListener.syntaxError(ctx, "break statement cannot be used outside a loop.");
     }
   }
 
@@ -443,7 +443,7 @@ public class LCListener extends LittleCBaseListener {
    */
   @Override
   public void enterFunctionPrototype(LittleCParser.FunctionPrototypeContext ctx) {
-    if (this.syntaxTree.hasError()) {
+    if (LCErrorListener.sawError()) {
       return;
     }
   }
@@ -455,7 +455,7 @@ public class LCListener extends LittleCBaseListener {
    */
   @Override
   public void exitFunctionPrototype(LittleCParser.FunctionPrototypeContext ctx) {
-    if (this.syntaxTree.hasError()) {
+    if (LCErrorListener.sawError()) {
       return;
     }
 
@@ -474,7 +474,7 @@ public class LCListener extends LittleCBaseListener {
         retType = "void";
         this.syntaxTree.setFlags(LCMasks.RETURN_VOID_MASK);
       } else {
-        this.syntaxTree.printError(ctx, "required return type is unspecified.");
+        LCErrorListener.syntaxError(ctx, "required return type is unspecified.");
         return;
       }
 
@@ -506,7 +506,7 @@ public class LCListener extends LittleCBaseListener {
    */
   @Override
   public void exitFunctionCallParameters(LittleCParser.FunctionCallParametersContext ctx) {
-    if (this.syntaxTree.hasError()) {
+    if (LCErrorListener.sawError()) {
       return;
     }
     // Build the list, then pass it to the arg node.
@@ -527,7 +527,7 @@ public class LCListener extends LittleCBaseListener {
    */
   @Override
   public void enterFunctionDeclaration(LittleCParser.FunctionDeclarationContext ctx) {
-    if (this.syntaxTree.hasError()) {
+    if (LCErrorListener.sawError()) {
       return;
     }
 
@@ -546,7 +546,7 @@ public class LCListener extends LittleCBaseListener {
         retType = "void";
         this.syntaxTree.setFlags(LCMasks.RETURN_VOID_MASK);
       } else {
-        this.syntaxTree.printError(ctx, "required return type is unspecified.");
+        LCErrorListener.syntaxError(ctx, "required return type is unspecified.");
         return;
       }
 
@@ -589,7 +589,7 @@ public class LCListener extends LittleCBaseListener {
    */
   @Override
   public void exitFunctionDeclaration(LittleCParser.FunctionDeclarationContext ctx) {
-    if (this.syntaxTree.hasError()) {
+    if (LCErrorListener.sawError()) {
       return;
     }
 
@@ -600,7 +600,7 @@ public class LCListener extends LittleCBaseListener {
       // If we don't have any children in the tree and we have a return type,
       // we throw an error.
       if (this.syntaxTree.getChildren().isEmpty()) {
-        this.syntaxTree.printError(ctx, "missing required return statement at end of function " + ctx.ID() + ".");
+        LCErrorListener.syntaxError(ctx, "missing required return statement at end of function " + ctx.ID() + ".");
         return;
       }
 
@@ -612,7 +612,7 @@ public class LCListener extends LittleCBaseListener {
 
         // If it's two then we have no else chain and we're already screwed.
         if (ifSize == 2) {
-          this.syntaxTree.printError(ctx, "missing required return statement outside if in function " + ctx.ID() + ".");
+          LCErrorListener.syntaxError(ctx, "missing required return statement outside if in function " + ctx.ID() + ".");
           return;
         }
 
@@ -626,14 +626,14 @@ public class LCListener extends LittleCBaseListener {
         // Now we can check if BOTH the if and else bodies have returns everywhere.
         boolean hasReturn = LCUtilities.hasReturn(ifChild) && LCUtilities.hasReturn(elseChild);
         if (!hasReturn) {
-          this.syntaxTree.printError(ctx,
+          LCErrorListener.syntaxError(ctx,
               "missing required return statement in if/else block in function " + ctx.ID() + ".");
         }
 
       }
       // Case 2: In this event, the last statement HAS to be a return.
       else if (!lastChild.getLabel().equals("RETURN")) {
-        this.syntaxTree.printError(ctx, "missing required return statement at end of function " + ctx.ID() + ".");
+        LCErrorListener.syntaxError(ctx, "missing required return statement at end of function " + ctx.ID() + ".");
       }
     }
 
@@ -649,7 +649,7 @@ public class LCListener extends LittleCBaseListener {
    */
   @Override
   public void enterFunctionCall(LittleCParser.FunctionCallContext ctx) {
-    if (this.syntaxTree.hasError()) {
+    if (LCErrorListener.sawError()) {
       return;
     }
 
@@ -657,13 +657,13 @@ public class LCListener extends LittleCBaseListener {
 
     // If the function call is undefined.
     if (!symbolTable.hasSymbol(id)) {
-      this.syntaxTree.printError(ctx, "function " + id + " definition not found; forward declaration not found.");
+      LCErrorListener.syntaxError(ctx, "function " + id + " definition not found; forward declaration not found.");
       return;
     }
 
     // If the symbol itself is defined but it's a variable then we can't use it.
     else if (symbolTable.hasSymbol(id) && symbolTable.getSymbolEntry(id).getType().equals("VAR")) {
-      this.syntaxTree.printError(ctx, id + " is a variable and cannot be used as a function identifier.");
+      LCErrorListener.syntaxError(ctx, id + " is a variable and cannot be used as a function identifier.");
       return;
     }
 
@@ -676,7 +676,7 @@ public class LCListener extends LittleCBaseListener {
    */
   @Override
   public void exitFunctionCall(LittleCParser.FunctionCallContext ctx) {
-    if (this.syntaxTree.hasError()) {
+    if (LCErrorListener.sawError()) {
       return;
     }
 
@@ -708,7 +708,7 @@ public class LCListener extends LittleCBaseListener {
    */
   @Override
   public void enterReturnStatement(LittleCParser.ReturnStatementContext ctx) {
-    if (this.syntaxTree.hasError()) {
+    if (LCErrorListener.sawError()) {
       return;
     }
 
@@ -721,7 +721,7 @@ public class LCListener extends LittleCBaseListener {
    */
   @Override
   public void exitReturnStatement(LittleCParser.ReturnStatementContext ctx) {
-    if (this.syntaxTree.hasError()) {
+    if (LCErrorListener.sawError()) {
       return;
     }
 
@@ -744,11 +744,11 @@ public class LCListener extends LittleCBaseListener {
     if (ctx.expr() != null) {
       if (!retExpr.getType().equals(fnRetType)) {
         if (!fnRetType.equals("void")) {
-          this.syntaxTree.printError(ctx,
+          LCErrorListener.syntaxError(ctx,
               "function expects return type of " + fnRetType + " but got " + retExpr.getType() + ".");
           return;
         } else {
-          this.syntaxTree.printError(ctx, "cannot return value in void function.");
+          LCErrorListener.syntaxError(ctx, "cannot return value in void function.");
           return;
         }
       }
@@ -758,7 +758,7 @@ public class LCListener extends LittleCBaseListener {
     // throw an error.
     else {
       if (!fnRetType.equals("void")) {
-        this.syntaxTree.printError(ctx, "cannot have a blank return expression in non-void function.");
+        LCErrorListener.syntaxError(ctx, "cannot have a blank return expression in non-void function.");
         return;
       }
     }
@@ -776,7 +776,7 @@ public class LCListener extends LittleCBaseListener {
    */
   @Override
   public void enterAssignStatement(LittleCParser.AssignStatementContext ctx) {
-    if (this.syntaxTree.hasError()) {
+    if (LCErrorListener.sawError()) {
       return;
     }
 
@@ -791,7 +791,7 @@ public class LCListener extends LittleCBaseListener {
    */
   @Override
   public void exitAssignStatement(LittleCParser.AssignStatementContext ctx) {
-    if (this.syntaxTree.hasError()) {
+    if (LCErrorListener.sawError()) {
       return;
     }
 
@@ -803,7 +803,7 @@ public class LCListener extends LittleCBaseListener {
     // Fortunately, there are only five possibilities of how to assign something to
     // a node and they're all previously declared things in the map!
     if (!this.symbolTable.hasSymbol(id)) {
-      this.syntaxTree.printError(ctx, "variable " + id + " is not previously declared.");
+      LCErrorListener.syntaxError(ctx, "variable " + id + " is not previously declared.");
       return;
     }
 
@@ -817,7 +817,7 @@ public class LCListener extends LittleCBaseListener {
       // But we can do x[0] = 5;
       if (!this.symbolTable.getSymbolEntry(id).getVarType().contains("[")
           && !this.symbolTable.getSymbolEntry(id).getVarType().contains("]")) {
-        this.syntaxTree.printError(ctx, "cannot treat non-array " + id + " as array.");
+        LCErrorListener.syntaxError(ctx, "cannot treat non-array " + id + " as array.");
         return;
       }
 
@@ -869,7 +869,7 @@ public class LCListener extends LittleCBaseListener {
    */
   @Override
   public void enterExprTerm(LittleCParser.ExprTermContext ctx) {
-    if (this.syntaxTree.hasError()) {
+    if (LCErrorListener.sawError()) {
       return;
     }
     // We either have an ID or a literal. We first check for an ID.
@@ -882,7 +882,7 @@ public class LCListener extends LittleCBaseListener {
               ctx.term().ID().getText(), varType);
           this.values.put(ctx, varIdentifier);
         } else {
-          this.syntaxTree.printError(ctx, "variable " + id + " was not previously declared.");
+          LCErrorListener.syntaxError(ctx, "variable " + id + " was not previously declared.");
           return;
         }
       }
@@ -894,7 +894,7 @@ public class LCListener extends LittleCBaseListener {
           if (LCUtilities.isValidIntLiteral(ctx.term().INTLIT().getText())) {
             intLit = "" + LCUtilities.getDecodedIntLiteral(ctx.term().INTLIT().getText());
           } else {
-            this.syntaxTree.printError(ctx, "cannot create an int literal.");
+            LCErrorListener.syntaxError(ctx, "cannot create an int literal.");
             return;
           }
           constantLiteral = new LCConstantLiteralNode(ctx, intLit, "int");
@@ -916,7 +916,7 @@ public class LCListener extends LittleCBaseListener {
    */
   @Override
   public void exitExprTerm(LittleCParser.ExprTermContext ctx) {
-    if (this.syntaxTree.hasError()) {
+    if (LCErrorListener.sawError()) {
       return;
     }
   }
@@ -926,7 +926,7 @@ public class LCListener extends LittleCBaseListener {
    */
   @Override
   public void enterExprFunctionCall(LittleCParser.ExprFunctionCallContext ctx) {
-    if (this.syntaxTree.hasError()) {
+    if (LCErrorListener.sawError()) {
       return;
     }
   }
@@ -936,14 +936,14 @@ public class LCListener extends LittleCBaseListener {
    */
   @Override
   public void exitExprFunctionCall(LittleCParser.ExprFunctionCallContext ctx) {
-    if (this.syntaxTree.hasError()) {
+    if (LCErrorListener.sawError()) {
       return;
     }
 
     if (this.values.get(ctx.ruleFunctionCall()) != null) {
       this.values.put(ctx, this.values.get(ctx.ruleFunctionCall()));
     } else {
-      this.syntaxTree.printError(ctx, "cannot save parameters, did you call the function incorrectly?");
+      LCErrorListener.syntaxError(ctx, "cannot save parameters, did you call the function incorrectly?");
       return;
     }
   }
@@ -953,7 +953,7 @@ public class LCListener extends LittleCBaseListener {
    */
   @Override
   public void enterExprPreOp(LittleCParser.ExprPreOpContext ctx) {
-    if (this.syntaxTree.hasError()) {
+    if (LCErrorListener.sawError()) {
       return;
     }
   }
@@ -963,7 +963,7 @@ public class LCListener extends LittleCBaseListener {
    */
   @Override
   public void exitExprPreOp(LittleCParser.ExprPreOpContext ctx) {
-    if (this.syntaxTree.hasError()) {
+    if (LCErrorListener.sawError()) {
       return;
     }
 
@@ -972,7 +972,7 @@ public class LCListener extends LittleCBaseListener {
     String idType = this.symbolTable.getSymbolEntry(id).getVarType();
     String op = "";
     if (!this.symbolTable.hasSymbol(id)) {
-      this.syntaxTree.printError(ctx, "variable " + id + " was not previously declared.");
+      LCErrorListener.syntaxError(ctx, "variable " + id + " was not previously declared.");
       return;
     }
 
@@ -982,7 +982,7 @@ public class LCListener extends LittleCBaseListener {
     } else if (ctx.DEC_OP() != null) {
       op = "PRE-DEC";
     } else {
-      this.syntaxTree.printError(ctx, op + " is an invalid pre-expression operator.");
+      LCErrorListener.syntaxError(ctx, op + " is an invalid pre-expression operator.");
       return;
     }
 
@@ -999,7 +999,7 @@ public class LCListener extends LittleCBaseListener {
       // If the expression is null and we're on an array, that means we're
       // not using an AIDX node.
       if (lvar.isArray()) {
-        this.syntaxTree.printError(ctx, "cannot use " + id + " as an array l-value for this prefix unary operator.");
+        LCErrorListener.syntaxError(ctx, "cannot use " + id + " as an array l-value for this prefix unary operator.");
         return;
       }
     }
@@ -1021,7 +1021,7 @@ public class LCListener extends LittleCBaseListener {
    */
   @Override
   public void enterExprPostOp(LittleCParser.ExprPostOpContext ctx) {
-    if (this.syntaxTree.hasError()) {
+    if (LCErrorListener.sawError()) {
       return;
     }
   }
@@ -1032,7 +1032,7 @@ public class LCListener extends LittleCBaseListener {
    */
   @Override
   public void exitExprPostOp(LittleCParser.ExprPostOpContext ctx) {
-    if (this.syntaxTree.hasError()) {
+    if (LCErrorListener.sawError()) {
       return;
     }
 
@@ -1041,7 +1041,7 @@ public class LCListener extends LittleCBaseListener {
     String idType = this.symbolTable.getSymbolEntry(id).getVarType();
     String op = "";
     if (!this.symbolTable.hasSymbol(id)) {
-      this.syntaxTree.printError(ctx, "variable " + id + " was not previously declared.");
+      LCErrorListener.syntaxError(ctx, "variable " + id + " was not previously declared.");
       return;
     }
 
@@ -1051,7 +1051,7 @@ public class LCListener extends LittleCBaseListener {
     } else if (ctx.DEC_OP() != null) {
       op = "POST-DEC";
     } else {
-      this.syntaxTree.printError(ctx, op + " is an invalid post-expression operator.");
+      LCErrorListener.syntaxError(ctx, op + " is an invalid post-expression operator.");
       return;
     }
 
@@ -1068,7 +1068,7 @@ public class LCListener extends LittleCBaseListener {
       // If the expression is null and we're on an array, that means we're
       // not using an AIDX node.
       if (lvar.isArray()) {
-        this.syntaxTree.printError(ctx, "cannot use " + id + " as an array l-value for this postfix unary operator.");
+        LCErrorListener.syntaxError(ctx, "cannot use " + id + " as an array l-value for this postfix unary operator.");
         return;
       }
     }
@@ -1091,7 +1091,7 @@ public class LCListener extends LittleCBaseListener {
    */
   @Override
   public void enterExprUnary(LittleCParser.ExprUnaryContext ctx) {
-    if (this.syntaxTree.hasError()) {
+    if (LCErrorListener.sawError()) {
       return;
     }
   }
@@ -1103,7 +1103,7 @@ public class LCListener extends LittleCBaseListener {
    */
   @Override
   public void exitExprUnary(LittleCParser.ExprUnaryContext ctx) {
-    if (this.syntaxTree.hasError()) {
+    if (LCErrorListener.sawError()) {
       return;
     }
 
@@ -1119,7 +1119,7 @@ public class LCListener extends LittleCBaseListener {
       if (opNode != null) {
         op = ((TerminalNode) opNode).getSymbol().getText();
       } else {
-        this.syntaxTree.printError(ctx, "invalid unary operator for r-value expression of type " + type + ".");
+        LCErrorListener.syntaxError(ctx, "invalid unary operator for r-value expression of type " + type + ".");
         return;
       }
     } else if (rexpr.isArray()) {
@@ -1127,7 +1127,7 @@ public class LCListener extends LittleCBaseListener {
         op = "#";
         type = "int"; // We have to change the type since it's different here.
       } else {
-        this.syntaxTree.printError(ctx, "invalid unary operator for r-value expression of type " + type + ".");
+        LCErrorListener.syntaxError(ctx, "invalid unary operator for r-value expression of type " + type + ".");
         return;
       }
     }
@@ -1142,7 +1142,7 @@ public class LCListener extends LittleCBaseListener {
    */
   @Override
   public void enterExprBinaryOp(LittleCParser.ExprBinaryOpContext ctx) {
-    if (this.syntaxTree.hasError()) {
+    if (LCErrorListener.sawError()) {
       return;
     }
   }
@@ -1155,7 +1155,7 @@ public class LCListener extends LittleCBaseListener {
    */
   @Override
   public void exitExprBinaryOp(LittleCParser.ExprBinaryOpContext ctx) {
-    if (this.syntaxTree.hasError()) {
+    if (LCErrorListener.sawError()) {
       return;
     }
 
@@ -1171,15 +1171,14 @@ public class LCListener extends LittleCBaseListener {
       boolean rStr = rexpr.isArray();
 
       if (lStr || rStr) {
-        this.syntaxTree.printError(ctx, "cannot use binary operator on array datatype.");
-        this.syntaxTree.setFlags(LCMasks.ERROR_MASK);
+        LCErrorListener.syntaxError(ctx, "cannot use binary operator on array datatype.");
         return;
       }
 
       // Now actually get the flags and set the operator.
       op = ((TerminalNode) opNode).getSymbol().getText();
       if (op == null) {
-        this.syntaxTree.printError(ctx, "invalid binary operator.");
+        LCErrorListener.syntaxError(ctx, "invalid binary operator.");
         return;
       }
     }
@@ -1195,7 +1194,7 @@ public class LCListener extends LittleCBaseListener {
    */
   @Override
   public void enterTerm(LittleCParser.TermContext ctx) {
-    if (this.syntaxTree.hasError()) {
+    if (LCErrorListener.sawError()) {
       return;
     }
   }
@@ -1206,7 +1205,7 @@ public class LCListener extends LittleCBaseListener {
    */
   @Override
   public void exitTerm(LittleCParser.TermContext ctx) {
-    if (this.syntaxTree.hasError()) {
+    if (LCErrorListener.sawError()) {
       return;
     }
 
@@ -1219,7 +1218,7 @@ public class LCListener extends LittleCBaseListener {
             varType);
         this.values.put(ctx, varIdentifier);
       } else {
-        this.syntaxTree.printError(ctx, "variable " + id + " was not previously declared.");
+        LCErrorListener.syntaxError(ctx, "variable " + id + " was not previously declared.");
         return;
       }
     }
@@ -1231,7 +1230,7 @@ public class LCListener extends LittleCBaseListener {
         if (LCUtilities.isValidIntLiteral(ctx.INTLIT().getText())) {
           intLit = "" + LCUtilities.getDecodedIntLiteral(ctx.INTLIT().getText());
         } else {
-          this.syntaxTree.printError(ctx, "cannot create an int literal.");
+          LCErrorListener.syntaxError(ctx, "cannot create an int literal.");
           return;
         }
 
@@ -1251,7 +1250,7 @@ public class LCListener extends LittleCBaseListener {
    * Expression parenthesis enter listener "(" <expr> ")".
    */
   public void enterExprParen(LittleCParser.ExprParenContext ctx) {
-    if (this.syntaxTree.hasError()) {
+    if (LCErrorListener.sawError()) {
       return;
     }
   }
@@ -1260,7 +1259,7 @@ public class LCListener extends LittleCBaseListener {
    * Expression parenthesis exit listener "(" <expr> ")".
    */
   public void exitExprParen(LittleCParser.ExprParenContext ctx) {
-    if (this.syntaxTree.hasError()) {
+    if (LCErrorListener.sawError()) {
       return;
     }
 
@@ -1273,7 +1272,7 @@ public class LCListener extends LittleCBaseListener {
    */
   @Override
   public void enterExprArray(LittleCParser.ExprArrayContext ctx) {
-    if (this.syntaxTree.hasError()) {
+    if (LCErrorListener.sawError()) {
       return;
     }
   }
@@ -1287,14 +1286,14 @@ public class LCListener extends LittleCBaseListener {
    */
   @Override
   public void exitExprArray(LittleCParser.ExprArrayContext ctx) {
-    if (this.syntaxTree.hasError()) {
+    if (LCErrorListener.sawError()) {
       return;
     }
 
     String id = ctx.ID().getText();
 
     if (!this.symbolTable.hasSymbol(id)) {
-      this.syntaxTree.printError(ctx, "array object was not previously declared.");
+      LCErrorListener.syntaxError(ctx, "array object was not previously declared.");
       return;
     }
 
@@ -1317,7 +1316,7 @@ public class LCListener extends LittleCBaseListener {
    */
   @Override
   public void enterExprAssign(LittleCParser.ExprAssignContext ctx) {
-    if (this.syntaxTree.hasError()) {
+    if (LCErrorListener.sawError()) {
       return;
     }
 
@@ -1329,7 +1328,7 @@ public class LCListener extends LittleCBaseListener {
    */
   @Override
   public void exitExprAssign(LittleCParser.ExprAssignContext ctx) {
-    if (this.syntaxTree.hasError()) {
+    if (LCErrorListener.sawError()) {
       return;
     }
 
@@ -1346,7 +1345,7 @@ public class LCListener extends LittleCBaseListener {
    */
   @Override
   public void enterIntDeclaration(LittleCParser.IntDeclarationContext ctx) {
-    if (this.syntaxTree.hasError()) {
+    if (LCErrorListener.sawError()) {
       return;
     }
   }
@@ -1356,7 +1355,7 @@ public class LCListener extends LittleCBaseListener {
    */
   @Override
   public void exitIntDeclaration(LittleCParser.IntDeclarationContext ctx) {
-    if (this.syntaxTree.hasError()) {
+    if (LCErrorListener.sawError()) {
       return;
     }
 
@@ -1370,7 +1369,7 @@ public class LCListener extends LittleCBaseListener {
         if (LCUtilities.isValidIntLiteral(ctx.INTLIT().getText())) {
           literalValue = LCUtilities.getDecodedIntLiteral(ctx.INTLIT().getText());
         } else {
-          this.syntaxTree.printError(ctx, "cannot create an int literal.");
+          LCErrorListener.syntaxError(ctx, "cannot create an int literal.");
           return;
         }
       } else if (ctx.CHARLIT() != null) {
@@ -1391,7 +1390,7 @@ public class LCListener extends LittleCBaseListener {
    */
   @Override
   public void enterIntArrayDeclaration(LittleCParser.IntArrayDeclarationContext ctx) {
-    if (this.syntaxTree.hasError()) {
+    if (LCErrorListener.sawError()) {
       return;
     }
   }
@@ -1401,7 +1400,7 @@ public class LCListener extends LittleCBaseListener {
    */
   @Override
   public void exitIntArrayDeclaration(LittleCParser.IntArrayDeclarationContext ctx) {
-    if (this.syntaxTree.hasError()) {
+    if (LCErrorListener.sawError()) {
       return;
     }
 
@@ -1414,7 +1413,7 @@ public class LCListener extends LittleCBaseListener {
       // We need to test to see if the size is valid or not. It doesn't matter where
       // we store it; it just needs to be valid.
       if (!LCUtilities.isValidIntLiteral(ctx.INTLIT().getText())) {
-        this.syntaxTree.printError(ctx, "cannot create an int literal for array index.");
+        LCErrorListener.syntaxError(ctx, "cannot create an int literal for array index.");
         return;
       }
 
@@ -1431,7 +1430,7 @@ public class LCListener extends LittleCBaseListener {
    */
   @Override
   public void enterIntArrayRefDeclaration(LittleCParser.IntArrayRefDeclarationContext ctx) {
-    if (this.syntaxTree.hasError()) {
+    if (LCErrorListener.sawError()) {
       return;
     }
   }
@@ -1441,7 +1440,7 @@ public class LCListener extends LittleCBaseListener {
    */
   @Override
   public void exitIntArrayRefDeclaration(LittleCParser.IntArrayRefDeclarationContext ctx) {
-    if (this.syntaxTree.hasError()) {
+    if (LCErrorListener.sawError()) {
       return;
     }
 
@@ -1468,7 +1467,7 @@ public class LCListener extends LittleCBaseListener {
    */
   @Override
   public void enterCharDeclaration(LittleCParser.CharDeclarationContext ctx) {
-    if (this.syntaxTree.hasError()) {
+    if (LCErrorListener.sawError()) {
       return;
     }
   }
@@ -1478,7 +1477,7 @@ public class LCListener extends LittleCBaseListener {
    */
   @Override
   public void exitCharDeclaration(LittleCParser.CharDeclarationContext ctx) {
-    if (this.syntaxTree.hasError()) {
+    if (LCErrorListener.sawError()) {
       return;
     }
 
@@ -1497,7 +1496,7 @@ public class LCListener extends LittleCBaseListener {
         if (LCUtilities.isValidIntLiteral(ctx.INTLIT().getText())) {
           literalValue = LCUtilities.getDecodedIntLiteral(ctx.INTLIT().getText());
         } else {
-          this.syntaxTree.printError(ctx, "cannot create an int literal.");
+          LCErrorListener.syntaxError(ctx, "cannot create an int literal.");
           return;
         }
       }
@@ -1515,7 +1514,7 @@ public class LCListener extends LittleCBaseListener {
    */
   @Override
   public void enterStringDeclaration(LittleCParser.StringDeclarationContext ctx) {
-    if (this.syntaxTree.hasError()) {
+    if (LCErrorListener.sawError()) {
       return;
     }
   }
@@ -1525,7 +1524,7 @@ public class LCListener extends LittleCBaseListener {
    */
   @Override
   public void exitStringDeclaration(LittleCParser.StringDeclarationContext ctx) {
-    if (this.syntaxTree.hasError()) {
+    if (LCErrorListener.sawError()) {
       return;
     }
 
@@ -1543,7 +1542,7 @@ public class LCListener extends LittleCBaseListener {
       // We need to test to see if the size is valid or not. It doesn't matter where
       // we store it; it just needs to be valid.
       if (!LCUtilities.isValidIntLiteral(ctx.INTLIT().getText())) {
-        this.syntaxTree.printError(ctx, "cannot create an int literal for array index.");
+        LCErrorListener.syntaxError(ctx, "cannot create an int literal for array index.");
         return;
       }
 
@@ -1560,7 +1559,7 @@ public class LCListener extends LittleCBaseListener {
    */
   @Override
   public void enterStringRefDeclaration(LittleCParser.StringRefDeclarationContext ctx) {
-    if (this.syntaxTree.hasError()) {
+    if (LCErrorListener.sawError()) {
       return;
     }
   }
@@ -1570,7 +1569,7 @@ public class LCListener extends LittleCBaseListener {
    */
   @Override
   public void exitStringRefDeclaration(LittleCParser.StringRefDeclarationContext ctx) {
-    if (this.syntaxTree.hasError()) {
+    if (LCErrorListener.sawError()) {
       return;
     }
 
@@ -1596,7 +1595,7 @@ public class LCListener extends LittleCBaseListener {
    * @return a syntax tree, or null if an error was detected.
    */
   public LCSyntaxTree getSyntaxTree() {
-    if (this.syntaxTree.hasError()) {
+    if (LCErrorListener.sawError()) {
       return null;
     }
 
@@ -1604,7 +1603,7 @@ public class LCListener extends LittleCBaseListener {
     if (this.symbolTable.hasSymbol("main") && this.symbolTable.getSymbolEntry("main").getVarType().equals("void")) {
       return this.syntaxTree;
     } else {
-      this.syntaxTree.printError(null, "Parsing error: void main function definition not found.");
+      LCErrorListener.syntaxError(null, "Parsing error: void main function definition not found.");
       return null;
     }
   }

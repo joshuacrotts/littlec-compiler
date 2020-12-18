@@ -46,10 +46,4 @@ public class LCMasks {
 
   /** */
   public static final int WARNING_MASK = 0x40000000;
-  
-  /**
-   * Error mask is toggled whenever an error is encountered by the semantic
-   * checks. If this flag is set, then all other listeners terminate immediately.
-   */
-  public static final int ERROR_MASK = 0x80000000;
 }

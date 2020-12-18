@@ -35,6 +35,7 @@ public class OutputSTree {
     // "input" is the character-by-character input - connect to lexer
     LittleCLexer lexer = new LittleCLexer(input);
     LCErrorListener catchErrs = new LCErrorListener();
+    lexer.removeErrorListeners();
     lexer.addErrorListener(catchErrs);
 
     // Connect token stream to lexer
@@ -42,10 +43,9 @@ public class OutputSTree {
 
     // Connect parser to token stream
     LittleCParser parser = new LittleCParser(tokens);
+    parser.removeErrorListeners();
     parser.addErrorListener(catchErrs);
     ParseTree tree = parser.program();
-    if (catchErrs.sawError())
-      return null;
 
     // Now do the parsing, and walk the parse tree with our listeners
     ParseTreeWalker walker = new ParseTreeWalker();

@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.antlr.v4.runtime.ParserRuleContext;
 
+import edu.joshuacrotts.littlec.main.LCErrorListener;
 import edu.joshuacrotts.littlec.main.SymbolEntry;
 import edu.joshuacrotts.littlec.main.SymbolTable;
 
@@ -38,7 +39,7 @@ public class LCFunctionPrototypeNode extends LCSyntaxTree {
 
       symbolTable.addSymbol(id, new SymbolEntry("FNPROTOTYPE", retType, storageClass, argsList));
     } else {
-      this.printError(ctx, id + " has already been declared in this scope.");
+      LCErrorListener.syntaxError(ctx, id + " has already been declared in this scope.");
     }
   }
 
