@@ -1,8 +1,10 @@
 package edu.joshuacrotts.littlec.syntaxtree;
 
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 import org.antlr.v4.runtime.ParserRuleContext;
 
@@ -19,18 +21,18 @@ import edu.joshuacrotts.littlec.main.LCMasks;
 public class LCSyntaxTree implements Generatable {
 
   /**
+   * Flag keeping track of when a genCode() method has been called. Once
+   * generated, we shouldn't call it again in the tree traversal.
+   */
+  protected boolean isCalled = false;
+  
+  /**
    * Flags for the LCSyntaxTree. We share this one instance across the entire
    * syntax tree so we don't assign flags to part of the tree. If one part fails,
    * the entire tree fails.
    */
   private static int flags = 0;
-
-  /**
-   * Flag keeping track of when a genCode() method has been called. Once
-   * generated, we shouldn't call it again in the tree traversal.
-   */
-  protected boolean isCalled = false;
-
+  
   /** 
    * Label specified by the syntax tree documentation. 
    */
@@ -102,49 +104,6 @@ public class LCSyntaxTree implements Generatable {
   }
 
   /**
-   * Prints an error message to the console with the line and column number
-   * specified by the ParserRuleContext. The error flag is also set.
-   * 
-   * @param ctx
-   * @param errorMsg
-   */
-  public void printError(ParserRuleContext ctx, String errorMsg) {
-    int lineNo = 0;
-    int colNo = 0;
-
-    if (ctx != null) {
-      lineNo = ctx.start.getLine();
-      colNo = ctx.start.getCharPositionInLine();
-    }
-
-    System.err.println("line " + lineNo + ":" + colNo + " " + errorMsg + "\n\n");
-    this.setFlags(LCMasks.ERROR_MASK);
-  }
-  
-  /**
-   * Prints an warning message to the console with the line and column number
-   * specified by the ParserRuleContext.
-   * 
-   * @param ctx
-   * @param errorMsg
-   */
-  public void printWarning(ParserRuleContext ctx, String warningMsg) {
-    if ((this.getFlags() & LCMasks.WARNING_MASK) == 0) {
-      return;
-    }
-    
-    int lineNo = 0;
-    int colNo = 0;
-
-    if (ctx != null) {
-      lineNo = ctx.start.getLine();
-      colNo = ctx.start.getCharPositionInLine();
-    }
-
-    System.out.println("warning on line " + lineNo + ":" + colNo + " - " + warningMsg);
-  }
-
-  /**
    * A method which will print this syntax tree. Since you need to print the top
    * node, it's children, their children, their children, ... this is obviously
    * going to have to be recursive, probably through a recursive helper function.
@@ -187,7 +146,7 @@ public class LCSyntaxTree implements Generatable {
     }
     System.out.print(")");
   }
-
+  
   /**
    * Adds a predefined LCSyntaxTree node to the current LinkedList of children.
    * 
@@ -210,7 +169,7 @@ public class LCSyntaxTree implements Generatable {
    * Resets all flags to 0 except the error mask; if it's enabled, we leave it be.
    */
   public void clearFlags() {
-    LCSyntaxTree.flags &= LCMasks.ERROR_MASK;
+    LCSyntaxTree.flags &= 0;
   }
 
   public String getLabel() {
@@ -255,10 +214,6 @@ public class LCSyntaxTree implements Generatable {
 
   public boolean isArray() {
     return this.getType().endsWith("[]") || (this.getType().indexOf("[") < this.getType().indexOf("]"));
-  }
-
-  public boolean hasError() {
-    return (this.getFlags() & LCMasks.ERROR_MASK) != 0;
   }
 
   public List<LCSyntaxTree> getChildren() {

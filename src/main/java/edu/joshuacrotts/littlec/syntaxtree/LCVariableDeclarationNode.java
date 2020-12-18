@@ -4,6 +4,7 @@ import org.antlr.v4.runtime.ParserRuleContext;
 
 import edu.joshuacrotts.littlec.icode.ICInhAttr;
 import edu.joshuacrotts.littlec.icode.ICode;
+import edu.joshuacrotts.littlec.main.LCErrorListener;
 import edu.joshuacrotts.littlec.main.LCUtilities;
 import edu.joshuacrotts.littlec.main.SymbolEntry;
 import edu.joshuacrotts.littlec.main.SymbolTable;
@@ -48,7 +49,7 @@ public class LCVariableDeclarationNode extends LCSyntaxTree {
       if (symbolTable.hasSymbol(this.id)) {
         String symbolEntry = symbolTable.getSymbolEntry(this.id).getType();
         if (symbolEntry.equals("FNDEF")) {
-          this.printError(ctx, this.id + " was previously declared as a function.");
+          LCErrorListener.syntaxError(ctx, this.id + " was previously declared as a function.");
           return;
         }
       }
@@ -56,7 +57,7 @@ public class LCVariableDeclarationNode extends LCSyntaxTree {
       symbolTable.addSymbol(this.id, new SymbolEntry("VAR", varType, storageClass));
       return;
     } else {
-      this.printError(ctx, this.id + " has already been declared in this scope.");
+      LCErrorListener.syntaxError(ctx, this.id + " has already been declared in this scope.");
     }
   }
 

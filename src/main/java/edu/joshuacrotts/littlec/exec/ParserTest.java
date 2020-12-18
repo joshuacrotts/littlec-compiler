@@ -42,6 +42,7 @@ public class ParserTest {
     // "input" is the character-by-character input - connect to lexer
     LittleCLexer lexer = new LittleCLexer(input);
     LCErrorListener catchErrs = new LCErrorListener();
+    lexer.removeErrorListeners();
     lexer.addErrorListener(catchErrs);
 
     // Connect token stream to lexer
@@ -49,10 +50,9 @@ public class ParserTest {
 
     // Connect parser to token stream
     LittleCParser parser = new LittleCParser(tokens);
+    parser.removeErrorListeners();
     parser.addErrorListener(catchErrs);
     ParseTree tree = parser.program();
-    if (catchErrs.sawError())
-      return null;
 
     // Now do the parsing, and walk the parse tree with our listeners
     ParseTreeWalker walker = new ParseTreeWalker();
@@ -116,9 +116,7 @@ public class ParserTest {
     if (parser != null)
       result = parser.getSyntaxTree();
 
-    if (result == null) {
-      System.out.println("Error in compiling -- invalid LittleC program.");
-    } else {
+    if (result != null) {
       SymbolTable symbolTable = parser.getSymbolTable();
       System.out.println("Global Variables:\n");
       symbolTable.printGlobalVars();

@@ -128,7 +128,7 @@ public class LCUtilities {
    *         otherwise.
    */
   public static boolean isValidIntLiteral(String intVal) {
-    int value; 
+    long value; 
     
     // Binary has to be parsed differently than hex.
     try {
@@ -136,7 +136,7 @@ public class LCUtilities {
         value = (int) Long.parseLong(intVal.substring(2), 2);
       } else {
         // For hex, we can use the decode method.
-        value = Long.decode(intVal).intValue();
+        value = Long.decode(intVal);
       }
     } catch (NumberFormatException ex) {
       return false;

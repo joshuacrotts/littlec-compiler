@@ -4,6 +4,7 @@ import org.antlr.v4.runtime.ParserRuleContext;
 
 import edu.joshuacrotts.littlec.icode.ICInhAttr;
 import edu.joshuacrotts.littlec.icode.ICode;
+import edu.joshuacrotts.littlec.main.LCErrorListener;
 import edu.joshuacrotts.littlec.main.LCUtilities;
 import edu.joshuacrotts.littlec.main.SymbolTable;
 
@@ -29,7 +30,7 @@ public class LCAssignmentNode extends LCSyntaxTree {
     // l-value.
     if (!expr.getType().equals(idVarType)) {
       if (!LCUtilities.isCastable(expr.getType(), idVarType)) {
-        this.printError(ctx, "cannot assign " + expr.getType() + " to " + idVarType + ".");
+        LCErrorListener.syntaxError(ctx, "cannot assign " + expr.getType() + " to " + idVarType + ".");
         return;
       } else {
         // If we're trying to assign a char to an int, we need to up-cast the
@@ -68,7 +69,7 @@ public class LCAssignmentNode extends LCSyntaxTree {
     // Cast it if we can.
     if (!expr.getType().equals(elementType)) {
       if (!LCUtilities.isCastable(expr.getType(), arrayIdxNode.getType())) {
-        this.printError(ctx, "cannot assign " + expr.getType() + " to " + idVarType + ".");
+        LCErrorListener.syntaxError(ctx, "cannot assign " + expr.getType() + " to " + idVarType + ".");
       } else {
         LCTypeCastNode cast = new LCTypeCastNode(ctx, expr, arrayIdxNode.getType());
         this.addChild(cast);

@@ -11,6 +11,7 @@ import edu.joshuacrotts.littlec.icode.ActivationRecord;
 import edu.joshuacrotts.littlec.icode.ICInhAttr;
 import edu.joshuacrotts.littlec.icode.ICode;
 import edu.joshuacrotts.littlec.main.Environment;
+import edu.joshuacrotts.littlec.main.LCErrorListener;
 import edu.joshuacrotts.littlec.main.LCMasks;
 import edu.joshuacrotts.littlec.main.LCUtilities;
 import edu.joshuacrotts.littlec.main.SymbolEntry;
@@ -132,18 +133,16 @@ public class LCFunctionDefinitionNode extends LCSyntaxTree {
       // We first need to check if the return types match.
       String prototypeReturnType = symbolTable.getSymbolEntry(id).getVarType();
       if (!prototypeReturnType.equals(retType)) {
-        this.printError(ctx, "prototype function " + id + " expects return type " + prototypeReturnType
+        LCErrorListener.syntaxError(ctx, "prototype function " + id + " expects return type " + prototypeReturnType
             + ", but the declaration expects " + retType + ".");
-        this.setFlags(LCMasks.ERROR_MASK);
         return false;
       }
 
       // Next, we need to check that the storage classes match.
       String prototypeStorageClass = symbolTable.getSymbolEntry(id).getStorageClass();
       if (!prototypeStorageClass.equals(storageClass)) {
-        this.printError(ctx, "prototype function " + id + " expects a storage class of " + prototypeStorageClass
+        LCErrorListener.syntaxError(ctx, "prototype function " + id + " expects a storage class of " + prototypeStorageClass
             + ", but the declaration expects " + storageClass + ".");
-        this.setFlags(LCMasks.ERROR_MASK);
         return false;
       }
 
@@ -154,9 +153,8 @@ public class LCFunctionDefinitionNode extends LCSyntaxTree {
       // If the two parameter declarations aren't the same size, then there's no point
       // of continuing.
       if (prototypeArgs.size() != argsList.size()) {
-        this.printError(ctx, "prototype function " + id + " expects " + prototypeArgs.size()
+        LCErrorListener.syntaxError(ctx, "prototype function " + id + " expects " + prototypeArgs.size()
             + " arguments, but the declaration expects " + argsList.size() + " arguments.");
-        this.setFlags(LCMasks.ERROR_MASK);
         return false;
       }
 
@@ -167,7 +165,7 @@ public class LCFunctionDefinitionNode extends LCSyntaxTree {
 
         // Here we run into a small problem with arrays but it's easily solvable.
         if (!fnArg.equals(param)) {
-          this.printError(ctx, "declaration for function " + id + " parameter " + (i + 1) + " expects " + fnArg
+          LCErrorListener.syntaxError(ctx, "declaration for function " + id + " parameter " + (i + 1) + " expects " + fnArg
               + " but function expects " + param + ".");
           return false;
         }
@@ -175,7 +173,7 @@ public class LCFunctionDefinitionNode extends LCSyntaxTree {
 
       symbolTable.addSymbol(id, new SymbolEntry("FNDEF", retType, storageClass, argsList));
     } else {
-      this.printError(ctx, id + " has already been declared in this scope.");
+      LCErrorListener.syntaxError(ctx, id + " has already been declared in this scope.");
       return false;
     }
 
