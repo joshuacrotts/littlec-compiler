@@ -1,4 +1,6 @@
 import edu.joshuacrotts.littlec.exec.ParserTest;
+import edu.joshuacrotts.littlec.icode.ICode;
+import edu.joshuacrotts.littlec.main.LCErrorListener;
 import edu.joshuacrotts.littlec.main.LCListener;
 import edu.joshuacrotts.littlec.syntaxtree.LCSyntaxTree;
 
@@ -133,6 +135,7 @@ public class ParserTester {
             throw new AssertionFailedError("Missing expected output file " + expName);
         }
         compare(actual, expected);
+        ParserTester.cleanup();
     }
 
     /**
@@ -162,6 +165,19 @@ public class ParserTester {
         System.setOut(origOut);
         if (result != null)
             throw new AssertionFailedError("Did not catch the error in input "+inName);
+        
+        ParserTester.cleanup();
+    }
+    
+    /**
+     * Cleanup function. I originally used this with the @AfterEach tag, but because
+     * there are group tests that rely on a cleanup, I had to force this into a
+     * function and call it before the assertion in runICTest(...).
+     * 
+     * Removes the errors.
+     */
+    private static void cleanup() {
+      LCErrorListener.reset();
     }
 
     /**
@@ -403,47 +419,6 @@ public class ParserTester {
     public void doErrTest2H() {
         errorFileTest("bad2h");
     }
-
-    /**
-     * Instructor-provided test.  Bad files - probs not involving functions
-     */
-    @Test
-    public void doGroupTest1() {
-        errorFileTest("bad1a");
-        errorFileTest("bad1b");
-        errorFileTest("bad1e");
-        errorFileTest("bad1g");
-        errorFileTest("bad1k");
-    }
-
-    /**
-     * Instructor-provided test.  Bad files - these probs involve functions
-     */
-    @Test
-    public void doGroupTest2() {
-        errorFileTest("bad1c");
-        errorFileTest("bad1d");
-        errorFileTest("bad1f");
-        errorFileTest("bad1h");
-        errorFileTest("bad1i");
-        errorFileTest("bad1j");
-    }
-
-    /**
-     * Instructor-provided test.  Bad files - probs involving arrays
-     */
-    @Test
-    public void doGroupTest3() {
-        errorFileTest("bad2a");
-        errorFileTest("bad2b");
-        errorFileTest("bad2c");
-        errorFileTest("bad2d");
-        errorFileTest("bad2e");
-        errorFileTest("bad2f");
-        errorFileTest("bad2g");
-        errorFileTest("bad2h");
-    }
-
 
     /**
      * Student-provided test. You make as many methods as you want for

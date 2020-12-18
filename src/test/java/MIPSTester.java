@@ -11,6 +11,7 @@ import org.opentest4j.AssertionFailedError;
 
 import edu.joshuacrotts.littlec.exec.RunMIPS;
 import edu.joshuacrotts.littlec.icode.ICode;
+import edu.joshuacrotts.littlec.main.LCErrorListener;
 
 /**
  * Testing file for the MIPS generation of the project.
@@ -44,7 +45,7 @@ public class MIPSTester {
       System.setOut(origOut);
       String[] actual = captureOut.toString().split("\\r?\\n");
       String[] expected = Files.readAllLines(Paths.get(expName)).toArray(new String[0]);
-      ICodeTester.cleanup();
+      MIPSTester.cleanup();
       assertArrayEquals(expected, actual, "Files differ");
     } catch (IOException e) {
       throw new AssertionFailedError("Missing test case: " + testName);
@@ -58,8 +59,9 @@ public class MIPSTester {
    * 
    * Removes the global [static] stack storage.
    */
-  public static void cleanup() {
+  private static void cleanup() {
     ICode.cleanup();
+    LCErrorListener.reset();
   }
 
   @Test

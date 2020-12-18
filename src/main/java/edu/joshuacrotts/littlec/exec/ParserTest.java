@@ -1,4 +1,5 @@
 package edu.joshuacrotts.littlec.exec;
+
 import java.io.IOException;
 import java.nio.file.NoSuchFileException;
 
@@ -21,22 +22,22 @@ import edu.joshuacrotts.littlec.syntaxtree.LCSyntaxTree;
  * for input. Otherwise, input is taken from standard input. More importantly,
  * the parseFromFile and parseFromStdin methods are public static methods and
  * can be called from automated tests. They return the
- * edu.joshuacrotts.littlec.LCListener object that was used in parsing, giving access to
- * both the final syntax tree and the final symbol table.
+ * edu.joshuacrotts.littlec.LCListener object that was used in parsing, giving
+ * access to both the final syntax tree and the final symbol table.
  *
  * @author Steve Tate (srtate@uncg.edu)
  */
 public class ParserTest {
-  
+
   /**
-   * Runs the parser and edu.joshuacrotts.littlec.LCListener syntax tree constructor for
-   * the provided input stream. The returned object can be used to access the
-   * syntax tree and the symbol table for either futher processing or for checking
-   * results in automated tests.
+   * Runs the parser and edu.joshuacrotts.littlec.LCListener syntax tree
+   * constructor for the provided input stream. The returned object can be used to
+   * access the syntax tree and the symbol table for either futher processing or
+   * for checking results in automated tests.
    *
    * @param input an initialized CharStream
-   * @return the edu.joshuacrotts.littlec.LCListener object that processed the parsed input
-   *         or null if an error was encountered
+   * @return the edu.joshuacrotts.littlec.LCListener object that processed the
+   *         parsed input or null if an error was encountered
    */
   private static LCListener parseStream(CharStream input) {
     // "input" is the character-by-character input - connect to lexer
@@ -66,7 +67,8 @@ public class ParserTest {
    * Public static method to run the parser on an input file.
    *
    * @param fileName the name of the file to use for input
-   * @return the edu.joshuacrotts.littlec.LCListener object that processed the parsed input
+   * @return the edu.joshuacrotts.littlec.LCListener object that processed the
+   *         parsed input
    */
   public static LCListener parseFromFile(String fileName) {
     try {
@@ -84,7 +86,8 @@ public class ParserTest {
   /**
    * Public static method to run the parser on the standard input stream.
    *
-   * @return the edu.joshuacrotts.littlec.LCListener object that processed the parsed input
+   * @return the edu.joshuacrotts.littlec.LCListener object that processed the
+   *         parsed input
    */
   public static LCListener parseFromStdin() {
     try {
@@ -116,9 +119,7 @@ public class ParserTest {
     if (parser != null)
       result = parser.getSyntaxTree();
 
-    if (result == null) {
-      System.out.println("Error in compiling -- invalid LittleC program.");
-    } else {
+    if (result != null) {
       SymbolTable symbolTable = parser.getSymbolTable();
       System.out.println("Global Variables:\n");
       symbolTable.printGlobalVars();

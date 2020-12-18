@@ -1,6 +1,9 @@
 package edu.joshuacrotts.littlec.main;
 
-import java.util.LinkedHashSet;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.antlr.v4.runtime.BaseErrorListener;
@@ -17,10 +20,24 @@ import org.antlr.v4.runtime.Recognizer;
  */
 public class LCErrorListener extends BaseErrorListener {
 
-  private static Set<String> errors = new LinkedHashSet<>();
-  private static Set<String> warnings= new LinkedHashSet<>();
+  /**
+   * 
+   */
+  private static Set<Message> errors = new HashSet<>();
+  
+  /**
+   * 
+   */
+  private static Set<Message> warnings = new HashSet<>();
 
+  /**
+   * 
+   */
   private static boolean gotError = false;
+ 
+  /**
+   * 
+   */
   private static boolean gotWarning = false;
 
   public LCErrorListener() {
@@ -38,15 +55,16 @@ public class LCErrorListener extends BaseErrorListener {
     LCErrorListener.gotError = true;
     int lineNo = -1;
     int colNo = -1;
-    
+
     if (ctx != null) {
       lineNo = ctx.start.getLine();
       colNo = ctx.start.getCharPositionInLine();
     } else {
-      throw new IllegalArgumentException("Internal compiler error - ParserRuleContext cannot be null in ErrorListener.");
+      throw new IllegalArgumentException(
+          "Internal compiler error - ParserRuleContext cannot be null in ErrorListener.");
     }
-    
-    LCErrorListener.errors.add("line " + lineNo + ":" + colNo + " " + errorMsg);
+
+    LCErrorListener.errors.add(new Message(errorMsg, lineNo, colNo));
   }
 
   /**
@@ -62,43 +80,48 @@ public class LCErrorListener extends BaseErrorListener {
     LCErrorListener.gotWarning = true;
     int lineNo = -1;
     int colNo = -1;
-    
+
     if (ctx != null) {
       lineNo = ctx.start.getLine();
       colNo = ctx.start.getCharPositionInLine();
     } else {
-      throw new IllegalArgumentException("Internal compiler error - ParserRuleContext cannot be null in ErrorListener.");
+      throw new IllegalArgumentException(
+          "Internal compiler error - ParserRuleContext cannot be null in ErrorListener.");
     }
-    
-    LCErrorListener.errors.add("line " + lineNo + ":" + colNo + " " + warningMsg);
+
+    LCErrorListener.warnings.add(new Message(warningMsg, lineNo, colNo));
   }
-  
+
   /**
-   * Prints error messages generated through parsing the syntax tree to
-   * standard error.
+   * Prints error messages generated through parsing the syntax tree to standard
+   * error.
    * 
    * @param void.
    * 
    * @return void.
    */
   public static void printErrors() {
+    List<Message> errorList = new ArrayList<Message>(LCErrorListener.errors);
+    errorList.sort(Comparator.comparing(Message::getLineNo).thenComparing(Message::getColNo));
     System.err.print("ERRORS(" + LCErrorListener.errors.size() + "):\n");
-    for (String error : LCErrorListener.errors) {
+    for (Message error : errorList) {
       System.err.println(error);
     }
   }
 
   /**
-   * Prints warning messages generated through parsing the syntax tree to
-   * standard out.
+   * Prints warning messages generated through parsing the syntax tree to standard
+   * out.
    * 
    * @param void.
    * 
    * @return void.
    */
   public static void printWarnings() {
+    List<Message> warningList = new ArrayList<Message>(LCErrorListener.warnings);
+    warningList.sort(Comparator.comparing(Message::getLineNo).thenComparing(Message::getColNo));
     System.out.print("WARNINGS(" + LCErrorListener.warnings.size() + "):\n");
-    for (String warning : LCErrorListener.warnings) {
+    for (Message warning : warningList) {
       System.out.println(warning);
     }
   }
@@ -111,7 +134,7 @@ public class LCErrorListener extends BaseErrorListener {
   public static boolean sawError() {
     return gotError;
   }
-  
+
   /**
    * Was a warning encountered? This probably serves little use.
    * 
@@ -120,14 +143,68 @@ public class LCErrorListener extends BaseErrorListener {
   public static boolean sawWarning() {
     return gotError;
   }
-  
+
   /**
-   * 
+   * Since this is a static error listener, we need to reset the warnings and
+   * errors each time we use this in a unit testing environment or we'll have
+   * false positives.
+   */
+  public static void reset() {
+    LCErrorListener.warnings.clear();
+    LCErrorListener.errors.clear();
+    LCErrorListener.gotError = false;
+    LCErrorListener.gotWarning = false;
+  }
+
+  /**
+   * This is the syntaxError method from the BaseErrorListener ANTLR class. We have
+   * overridden it to set the error flag and add a new Message to our running set of
+   * objects.
    */
   @Override
-  public void syntaxError(Recognizer<?, ?> recognizer, Object offendingSymbol, int line, int charPositionInLine,
-      String errorMsg, RecognitionException e) {
+  public void syntaxError(Recognizer<?, ?> recognizer, Object offendingSymbol, int line, int col, String errorMsg,
+      RecognitionException e) {
     gotError = true;
-    LCErrorListener.errors.add("line " + line + ":" + charPositionInLine + " " + errorMsg);
+    LCErrorListener.errors.add(new Message(errorMsg, line, col));
+  }
+
+  /**
+   * 
+   * @author joshuacrotts
+   */
+  private static class Message {
+    private final String text;
+    private final int lineNo;
+    private final int colNo;
+
+    public Message(String text, int lineNo, int colNo) {
+      this.text = text;
+      this.lineNo = lineNo;
+      this.colNo = colNo;
+    }
+
+    @Override
+    public boolean equals(Object msg) {
+      Message oMsg = (Message) msg;
+      return this.text.equals(oMsg.text) && this.lineNo == oMsg.lineNo && this.colNo == oMsg.colNo;
+    }
+
+    @Override
+    public int hashCode() {
+      return this.text.hashCode() + lineNo + colNo;
+    }
+
+    public int getLineNo() {
+      return this.lineNo;
+    }
+
+    public int getColNo() {
+      return this.colNo;
+    }
+
+    @Override
+    public String toString() {
+      return "line " + lineNo + ":" + colNo + " " + text;
+    }
   }
 }

@@ -11,6 +11,7 @@ import org.opentest4j.AssertionFailedError;
 
 import edu.joshuacrotts.littlec.exec.RunCode;
 import edu.joshuacrotts.littlec.icode.ICode;
+import edu.joshuacrotts.littlec.main.LCErrorListener;
 
 /**
  * Testing file for intermediate code generation (phase 4 of the
@@ -63,8 +64,9 @@ public class ICodeTester {
    * 
    * Removes the global [static] stack storage.
    */
-  public static void cleanup() {
+  private static void cleanup() {
     ICode.cleanup();
+    LCErrorListener.reset();
   }
 
   @Test
