@@ -383,16 +383,16 @@ public class LCUtilities {
    * 
    * @return string representation of storage class.
    */
-  public static String getStorageClassType(OptStorageClassContext ctx) {
+  public static StorageClass getStorageClassType(OptStorageClassContext ctx) {
     if (ctx != null) {
       if (ctx.EXTERN() != null) {
-        return "extern";
+        return StorageClass.EXTERN;
       } else {
-        return "static";
+        return StorageClass.STATIC;
       }
     }
 
-    return "auto";
+    return StorageClass.DEFAULT;
   }
 
   /**

@@ -17,7 +17,7 @@ public class SymbolEntry {
   /** 
    * Type of symbol (variable, function). 
    */
-  private final String TYPE;
+  private final SymbolType TYPE;
 
   /*
    * Data type associated with the symbol (e.g. for a variable, it's the data
@@ -29,7 +29,7 @@ public class SymbolEntry {
    * Storage class for the entry into the table. If this is not set in the
    * listener, then it is the default type. Types are default, static, and extern.
    */
-  private final String STORAGE_CLASS;
+  private final StorageClass STORAGE_CLASS;
 
   /*
    * Other info about the symbol, generally for parameters of a fn. When a
@@ -46,7 +46,7 @@ public class SymbolEntry {
    * @param varType
    * @param info
    */
-  public SymbolEntry(String type, String varType, String storageClass, List<LCSyntaxTree> info) {
+  public SymbolEntry(SymbolType type, String varType, StorageClass storageClass, List<LCSyntaxTree> info) {
     this.TYPE = type;
     this.VAR_TYPE = varType;
     this.STORAGE_CLASS = storageClass;
@@ -61,7 +61,7 @@ public class SymbolEntry {
    * @param varType
    * @param storageClass
    */
-  public SymbolEntry(String type, String varType, String storageClass) {
+  public SymbolEntry(SymbolType type, String varType, StorageClass storageClass) {
     this(type, varType, storageClass, null);
   }
 
@@ -72,11 +72,11 @@ public class SymbolEntry {
    * @param type
    * @param varType
    */
-  public SymbolEntry(String type, String varType) {
-    this(type, varType, "", null);
+  public SymbolEntry(SymbolType type, String varType) {
+    this(type, varType, StorageClass.DEFAULT, null);
   }
 
-  public String getType() {
+  public SymbolType getType() {
     return this.TYPE;
   }
 
@@ -84,7 +84,7 @@ public class SymbolEntry {
     return this.VAR_TYPE;
   }
 
-  public String getStorageClass() {
+  public StorageClass getStorageClass() {
     return this.STORAGE_CLASS;
   }
 

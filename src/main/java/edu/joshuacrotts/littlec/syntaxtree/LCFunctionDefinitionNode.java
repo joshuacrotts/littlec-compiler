@@ -13,8 +13,10 @@ import edu.joshuacrotts.littlec.icode.ICode;
 import edu.joshuacrotts.littlec.main.Environment;
 import edu.joshuacrotts.littlec.main.LCErrorListener;
 import edu.joshuacrotts.littlec.main.LCUtilities;
+import edu.joshuacrotts.littlec.main.StorageClass;
 import edu.joshuacrotts.littlec.main.SymbolEntry;
 import edu.joshuacrotts.littlec.main.SymbolTable;
+import edu.joshuacrotts.littlec.main.SymbolType;
 
 public class LCFunctionDefinitionNode extends LCSyntaxTree {
 
@@ -43,7 +45,7 @@ public class LCFunctionDefinitionNode extends LCSyntaxTree {
    * @param newScope     - Scope of this function call, the current LCSyntaxTree
    */
   public LCFunctionDefinitionNode(ParserRuleContext ctx, SymbolTable symbolTable, String id, String retType,
-      String storageClass, LinkedHashMap<String, String> args, LCSyntaxTree newScope) {
+      StorageClass storageClass, LinkedHashMap<String, String> args, LCSyntaxTree newScope) {
     super("FNDEF", retType, id);
     super.addChild(newScope);
 
@@ -58,7 +60,7 @@ public class LCFunctionDefinitionNode extends LCSyntaxTree {
     // If we don't have the symbol in the table, then we're good to add it. The
     // scope of a functions is always global.
     if (!symbolTable.hasSymbol(id)) {
-      symbolTable.addSymbol(id, new SymbolEntry("FNDEF", retType, storageClass, argsList));
+      symbolTable.addSymbol(id, new SymbolEntry(SymbolType.FNDEF, retType, storageClass, argsList));
     } else {
       // If the definition already exists, then it has to be a function prototype or
       // it's invalid.
@@ -127,8 +129,8 @@ public class LCFunctionDefinitionNode extends LCSyntaxTree {
    * @return true if parameters were matched without error, false otherwise.
    */
   private boolean checkParameterMatching(ParserRuleContext ctx, SymbolTable symbolTable, List<LCSyntaxTree> argsList,
-      String id, String retType, String storageClass) {
-    if (symbolTable.getSymbolEntry(id).getType().equals("FNPROTOTYPE")) {
+      String id, String retType, StorageClass storageClass) {
+    if (symbolTable.getSymbolEntry(id).getType() == SymbolType.FNPROTOTYPE) {
       // We first need to check if the return types match.
       String prototypeReturnType = symbolTable.getSymbolEntry(id).getVarType();
       if (!prototypeReturnType.equals(retType)) {
@@ -138,8 +140,8 @@ public class LCFunctionDefinitionNode extends LCSyntaxTree {
       }
 
       // Next, we need to check that the storage classes match.
-      String prototypeStorageClass = symbolTable.getSymbolEntry(id).getStorageClass();
-      if (!prototypeStorageClass.equals(storageClass)) {
+      StorageClass prototypeStorageClass = symbolTable.getSymbolEntry(id).getStorageClass();
+      if (prototypeStorageClass != storageClass) {
         LCErrorListener.syntaxError(ctx, "prototype function " + id + " expects a storage class of " + prototypeStorageClass
             + ", but the declaration expects " + storageClass + ".");
         return false;
@@ -170,7 +172,7 @@ public class LCFunctionDefinitionNode extends LCSyntaxTree {
         }
       }
 
-      symbolTable.addSymbol(id, new SymbolEntry("FNDEF", retType, storageClass, argsList));
+      symbolTable.addSymbol(id, new SymbolEntry(SymbolType.FNDEF, retType, storageClass, argsList));
     } else {
       LCErrorListener.syntaxError(ctx, id + " has already been declared in this scope.");
       return false;
@@ -208,7 +210,7 @@ public class LCFunctionDefinitionNode extends LCSyntaxTree {
         LCParameterDeclarationNode paramNode = new LCParameterDeclarationNode(ctx, varID, varDatatype);
 
         newScope.addChild(paramNode); // Creates the child
-        environment.addSymbol(varID, new SymbolEntry("VAR", varDatatype)); // Adds it to the local symbol table.
+        environment.addSymbol(varID, new SymbolEntry(SymbolType.VAR, varDatatype)); // Adds it to the local symbol table.
         info.append(varDatatype + ",");
       }
       info.setCharAt(info.length() - 1, ')');

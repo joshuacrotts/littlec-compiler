@@ -93,13 +93,12 @@ public class LCAssignmentNode extends LCSyntaxTree {
 
     ICInhAttr s = new ICInhAttr();
     ICInhAttr e = new ICInhAttr();
-
     s.TYPE = "LVAL";
-
+    
     // S = id + E
     this.getChildren().get(0).genCode(s);
     this.getChildren().get(1).genCode(e);
-
+    
     // Generate the assignment. If our lvalue is an array
     // then we append the store or load command here.
     if (this.getChildren().get(0) instanceof LCArrayIndexNode) {

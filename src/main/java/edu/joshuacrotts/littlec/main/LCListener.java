@@ -348,8 +348,8 @@ public class LCListener extends LittleCBaseListener {
   @Override
   public void exitFunctionPrototype(LittleCParser.FunctionPrototypeContext ctx) {
     String id = ctx.ID().getText();
-    String storageClass = LCUtilities.getStorageClassType(ctx.optStorageClass());
-    int tokType = storageClass.equals("auto") ? 0 : 1;
+    StorageClass storageClass = LCUtilities.getStorageClassType(ctx.optStorageClass());
+    int tokType = storageClass == StorageClass.DEFAULT ? 0 : 1;
     String retType = ctx.getChild(tokType).getText();
 
     if (!retType.equals("int") && !retType.equals("float") && !retType.equals("void") && !retType.equals("char")) {
@@ -402,8 +402,8 @@ public class LCListener extends LittleCBaseListener {
   @Override
   public void enterFunctionDeclaration(LittleCParser.FunctionDeclarationContext ctx) {
     String id = ctx.ID().getText();
-    String storageClass = LCUtilities.getStorageClassType(ctx.optStorageClass());
-    int tokType = storageClass.equals("auto") ? 0 : 1;
+    StorageClass storageClass = LCUtilities.getStorageClassType(ctx.optStorageClass());
+    int tokType = storageClass == StorageClass.DEFAULT ? 0 : 1;
     String retType = ctx.getChild(tokType).getText();
 
     if (!retType.equals("int") && !retType.equals("float") && !retType.equals("void") && !retType.equals("char")) {
@@ -819,18 +819,16 @@ public class LCListener extends LittleCBaseListener {
    */
   @Override
   public void exitExprPostOp(LittleCParser.ExprPostOpContext ctx) {
-    if (LCErrorListener.sawError()) {
-      return;
-    }
     // First check if the symbol exists.
     String id = ctx.ID().getText();
-    String idType = this.symbolTable.getSymbolEntry(id).getVarType();
-    String op = "";
-
+    
     if (!this.symbolTable.hasSymbol(id)) {
       LCErrorListener.syntaxError(ctx, "variable " + id + " was not previously declared.");
       return;
     }
+    
+    String idType = this.symbolTable.getSymbolEntry(id).getVarType();
+    String op = "";
 
     // Find the post operator symbol that we're using.
     if (ctx.INC_OP() != null) {
@@ -969,7 +967,7 @@ public class LCListener extends LittleCBaseListener {
         constantLiteral = new LCConstantLiteralNode(ctx, intLit, "int");
       } else if (ctx.CHARLIT() != null) {
         String characterStr = ctx.CHARLIT().getText();
-        String literalValue = String.valueOf((int) LCUtilities.getCharFromString(characterStr));
+        String literalValue = String.valueOf((byte) LCUtilities.getCharFromString(characterStr));
         constantLiteral = new LCConstantLiteralNode(ctx, literalValue, "char");
       } else if (ctx.STRINGLIT() != null) {
         constantLiteral = new LCConstantLiteralNode(ctx, ctx.STRINGLIT().getText(), "char[]");
@@ -1045,7 +1043,6 @@ public class LCListener extends LittleCBaseListener {
   @Override
   public void exitIntDeclaration(LittleCParser.IntDeclarationContext ctx) {
     String lValue = ctx.ID().getText();
-    String storageClass = LCUtilities.getStorageClassType(ctx.optStorageClass());
     Object literalValue = null;
 
     // If we're assigning to something, grab the literal value.
@@ -1063,7 +1060,7 @@ public class LCListener extends LittleCBaseListener {
     }
 
     LCVariableDeclarationNode intDeclarationNode = new LCVariableDeclarationNode(ctx, this.symbolTable, lValue, "int",
-        storageClass, literalValue);
+        LCUtilities.getStorageClassType(ctx.optStorageClass()), literalValue);
 
     this.syntaxTree.addChild(intDeclarationNode);
     this.values.put(ctx, intDeclarationNode);
@@ -1076,7 +1073,6 @@ public class LCListener extends LittleCBaseListener {
   public void exitIntArrayDeclaration(LittleCParser.IntArrayDeclarationContext ctx) {
     String lValue = ctx.ID().getText();
     String type = "int[" + ctx.INTLIT().getText() + "]";
-    String storageClass = LCUtilities.getStorageClassType(ctx.optStorageClass());
     Object literalValue = null;
 
     // We need to test to see if the size is valid or not. It doesn't matter where
@@ -1087,7 +1083,7 @@ public class LCListener extends LittleCBaseListener {
     }
 
     LCVariableDeclarationNode intArrayDeclaration = new LCVariableDeclarationNode(ctx, this.symbolTable, lValue, type,
-        storageClass, literalValue);
+        LCUtilities.getStorageClassType(ctx.optStorageClass()), literalValue);
 
     this.syntaxTree.addChild(intArrayDeclaration);
     this.values.put(ctx, intArrayDeclaration);
@@ -1100,11 +1096,10 @@ public class LCListener extends LittleCBaseListener {
   public void exitIntArrayRefDeclaration(LittleCParser.IntArrayRefDeclarationContext ctx) {
     String lValue = ctx.ID().getText();
     String type = "int[]";
-    String storageClass = LCUtilities.getStorageClassType(ctx.optStorageClass());
     Object literalValue = null;
 
     LCVariableDeclarationNode intArrayRef = new LCVariableDeclarationNode(ctx, this.symbolTable, lValue, type,
-        storageClass, literalValue);
+        LCUtilities.getStorageClassType(ctx.optStorageClass()), literalValue);
 
     this.syntaxTree.addChild(intArrayRef);
     this.values.put(ctx, intArrayRef);
@@ -1116,7 +1111,6 @@ public class LCListener extends LittleCBaseListener {
   @Override
   public void exitCharDeclaration(LittleCParser.CharDeclarationContext ctx) {
     String lValue = ctx.ID().getText();
-    String storageClass = LCUtilities.getStorageClassType(ctx.optStorageClass());
     Object literalValue = null;
 
     // If we're assigning to something, grab the literal value.
@@ -1134,7 +1128,7 @@ public class LCListener extends LittleCBaseListener {
     }
 
     LCVariableDeclarationNode charDeclarationNode = new LCVariableDeclarationNode(ctx, this.symbolTable, lValue, "char",
-        storageClass, literalValue);
+        LCUtilities.getStorageClassType(ctx.optStorageClass()), literalValue);
 
     this.syntaxTree.addChild(charDeclarationNode);
     this.values.put(ctx, charDeclarationNode);
@@ -1147,7 +1141,6 @@ public class LCListener extends LittleCBaseListener {
   public void exitStringDeclaration(LittleCParser.StringDeclarationContext ctx) {
     String lValue = ctx.ID().getText();
     String type = "char[" + ctx.INTLIT().getText() + "]";
-    String storageClass = LCUtilities.getStorageClassType(ctx.optStorageClass());
     Object literalValue = null;
 
     // If we're assigning to something, grab the literal value.
@@ -1163,7 +1156,7 @@ public class LCListener extends LittleCBaseListener {
     }
 
     LCVariableDeclarationNode stringDeclarationNode = new LCVariableDeclarationNode(ctx, this.symbolTable, lValue, type,
-        storageClass, literalValue);
+        LCUtilities.getStorageClassType(ctx.optStorageClass()), literalValue);
 
     this.syntaxTree.addChild(stringDeclarationNode);
     this.values.put(ctx, stringDeclarationNode);
@@ -1176,11 +1169,10 @@ public class LCListener extends LittleCBaseListener {
   public void exitStringRefDeclaration(LittleCParser.StringRefDeclarationContext ctx) {
     String lValue = ctx.ID().getText();
     String type = "char[]";
-    String storageClass = LCUtilities.getStorageClassType(ctx.optStorageClass());
     Object literalValue = null;
 
     LCVariableDeclarationNode stringRef = new LCVariableDeclarationNode(ctx, this.symbolTable, lValue, type,
-        storageClass, literalValue);
+        LCUtilities.getStorageClassType(ctx.optStorageClass()), literalValue);
 
     this.syntaxTree.addChild(stringRef);
     this.values.put(ctx, stringRef);
@@ -1194,10 +1186,6 @@ public class LCListener extends LittleCBaseListener {
    * @return a syntax tree, or null if an error was detected.
    */
   public LCSyntaxTree getSyntaxTree() {
-//    if (LCErrorListener.sawWarning()) {
-//      LCErrorListener.printWarnings();
-//    }
-
     if (LCErrorListener.sawError()) {
       LCErrorListener.printErrors();
       return null;
@@ -1224,39 +1212,39 @@ public class LCListener extends LittleCBaseListener {
     /* Adds the prints function. */
     LinkedList<LCSyntaxTree> args = new LinkedList<>();
     args.add(new LCVariableIdentifierNode(null, symbolTable, "str", "char[]"));
-    this.symbolTable.addSymbol("prints", new SymbolEntry("FNDEF", "void", "extern", args));
+    this.symbolTable.addSymbol("prints", new SymbolEntry(SymbolType.FNDEF, "void", StorageClass.EXTERN, args));
     args = new LinkedList<>();
 
     /* Adds the printd function. */
-    args.add(new LCVariableIdentifierNode(null, symbolTable, "number", "int"));
-    this.symbolTable.addSymbol("printd", new SymbolEntry("FNDEF", "void", "extern", args));
+    args.add(new LCVariableIdentifierNode(null, symbolTable, "n", "int"));
+    this.symbolTable.addSymbol("printd", new SymbolEntry(SymbolType.FNDEF, "void", StorageClass.EXTERN, args));
     args = new LinkedList<>();
 
     /* Adds the printc function. */
-    args.add(new LCVariableIdentifierNode(null, symbolTable, "number", "char"));
-    this.symbolTable.addSymbol("printc", new SymbolEntry("FNDEF", "void", "extern", args));
+    args.add(new LCVariableIdentifierNode(null, symbolTable, "n", "char"));
+    this.symbolTable.addSymbol("printc", new SymbolEntry(SymbolType.FNDEF, "void", StorageClass.EXTERN, args));
     args = new LinkedList<>();
 
     /* Adds the printf function. */
-    args.add(new LCVariableIdentifierNode(null, symbolTable, "number", "float"));
-    this.symbolTable.addSymbol("printf", new SymbolEntry("FNDEF", "void", "extern", args));
+    args.add(new LCVariableIdentifierNode(null, symbolTable, "n", "float"));
+    this.symbolTable.addSymbol("printf", new SymbolEntry(SymbolType.FNDEF, "void", StorageClass.EXTERN, args));
     args = new LinkedList<>();
 
     /* Adds the read() function. */
-    this.symbolTable.addSymbol("read", new SymbolEntry("FNDEF", "int", "extern", args));
+    this.symbolTable.addSymbol("read", new SymbolEntry(SymbolType.FNDEF, "int", StorageClass.EXTERN, args));
     args = new LinkedList<>();
 
     /* Adds the readc() function. */
-    this.symbolTable.addSymbol("readc", new SymbolEntry("FNDEF", "char", "extern", args));
+    this.symbolTable.addSymbol("readc", new SymbolEntry(SymbolType.FNDEF, "char", StorageClass.EXTERN, args));
     args = new LinkedList<>();
 
     /* Adds the readf() function. */
-    this.symbolTable.addSymbol("readf", new SymbolEntry("FNDEF", "float", "extern", args));
+    this.symbolTable.addSymbol("readf", new SymbolEntry(SymbolType.FNDEF, "float", StorageClass.EXTERN, args));
     args = new LinkedList<>();
 
     /* Add the readline() function. */
     args.add(new LCVariableIdentifierNode(null, symbolTable, "str", "char[]"));
-    this.symbolTable.addSymbol("readline", new SymbolEntry("FNDEF", "void", "extern", args));
+    this.symbolTable.addSymbol("readline", new SymbolEntry(SymbolType.FNDEF, "void", StorageClass.EXTERN, args));
   }
 }
 //Why is Dr. Tate so evilllllllllllllllllllllllll

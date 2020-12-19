@@ -7,8 +7,10 @@ import java.util.List;
 import org.antlr.v4.runtime.ParserRuleContext;
 
 import edu.joshuacrotts.littlec.main.LCErrorListener;
+import edu.joshuacrotts.littlec.main.StorageClass;
 import edu.joshuacrotts.littlec.main.SymbolEntry;
 import edu.joshuacrotts.littlec.main.SymbolTable;
+import edu.joshuacrotts.littlec.main.SymbolType;
 
 public class LCFunctionPrototypeNode extends LCSyntaxTree {
 
@@ -25,19 +27,18 @@ public class LCFunctionPrototypeNode extends LCSyntaxTree {
    * @param args
    */
   public LCFunctionPrototypeNode(ParserRuleContext ctx, SymbolTable symbolTable, String id, String retType,
-      String storageClass, LinkedHashMap<String, String> args) {
+      StorageClass storageClass, LinkedHashMap<String, String> args) {
     super("FNPROTOTYPE", retType, id);
 
     // If we don't have the symbol in the table, then we're good to add it. The
     // scope of a functions is always global.
     if (!symbolTable.hasSymbol(id)) {
       List<LCSyntaxTree> argsList = new LinkedList<>();
-
+      
       for (String key : args.keySet()) {
         argsList.add(new LCVariableIdentifierNode(ctx, symbolTable, key, args.get(key)));
       }
-
-      symbolTable.addSymbol(id, new SymbolEntry("FNPROTOTYPE", retType, storageClass, argsList));
+      symbolTable.addSymbol(id, new SymbolEntry(SymbolType.FNPROTOTYPE, retType, storageClass, argsList));
     } else {
       LCErrorListener.syntaxError(ctx, id + " has already been declared in this scope.");
     }

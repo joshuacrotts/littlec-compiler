@@ -6,8 +6,10 @@ import edu.joshuacrotts.littlec.icode.ICInhAttr;
 import edu.joshuacrotts.littlec.icode.ICode;
 import edu.joshuacrotts.littlec.main.LCErrorListener;
 import edu.joshuacrotts.littlec.main.LCUtilities;
+import edu.joshuacrotts.littlec.main.StorageClass;
 import edu.joshuacrotts.littlec.main.SymbolEntry;
 import edu.joshuacrotts.littlec.main.SymbolTable;
+import edu.joshuacrotts.littlec.main.SymbolType;
 
 public class LCVariableDeclarationNode extends LCSyntaxTree {
 
@@ -39,7 +41,7 @@ public class LCVariableDeclarationNode extends LCSyntaxTree {
    * @param literalValue - object either of type int, char, or String.
    */
   public LCVariableDeclarationNode(ParserRuleContext ctx, SymbolTable symbolTable, String id, String varType,
-      String storageClass, Object literalValue) {
+      StorageClass storageClass, Object literalValue) {
     super("DECL", "void", id + " " + "(" + varType + ")" + (literalValue != null ? " = " + literalValue : ""));
     this.id = id;
     this.varType = varType;
@@ -52,14 +54,14 @@ public class LCVariableDeclarationNode extends LCSyntaxTree {
       // shadowing a variable or there's a function with the same name declared), then
       // we need to make sure it's not previously declared as a function.
       if (symbolTable.hasSymbol(this.id)) {
-        String symbolEntry = symbolTable.getSymbolEntry(this.id).getType();
-        if (symbolEntry.equals("FNDEF")) {
+        SymbolType symbolEntryType = symbolTable.getSymbolEntry(this.id).getType();
+        if (symbolEntryType == SymbolType.FNDEF) {
           LCErrorListener.syntaxError(ctx, this.id + " was previously declared as a function.");
           return;
         }
       }
 
-      symbolTable.addSymbol(this.id, new SymbolEntry("VAR", varType, storageClass));
+      symbolTable.addSymbol(this.id, new SymbolEntry(SymbolType.VAR, varType, storageClass));
       return;
     } else {
       LCErrorListener.syntaxError(ctx, this.id + " has already been declared in this scope.");
