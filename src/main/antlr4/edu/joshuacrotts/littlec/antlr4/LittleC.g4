@@ -26,10 +26,9 @@ fragment ESCAPED_CHAR   : ('\\' .)                                         ;
 fragment ANYCHAR_MOD    : (.+?) ; // Requires at least ONE character, whether it's special or not. If it's an empty char, that's the parser's problem.
 
 /* Fixed string tokens. */
-// Storage classes (3).
+// Storage classes (2).
 STATIC         : 'static' ;
 EXTERN         : 'extern' ;
-AUTO		   : 'auto'   ;
 
 // Core types (4).
 INT            : 'int'    ;
@@ -115,10 +114,12 @@ declaration         : ((ruleVariableDeclaration | ruleFunctionPrototype) SEMICOL
 					;
 
 
+optStorageClass 					: EXTERN | STATIC;
+
 // Function-related rules.
-ruleFunctionPrototype				: (EXTERN|STATIC)? (INT|CHAR|FLOAT|VOID) ID OPEN_PAREN ruleFunctionDeclarationParameters* CLOSE_PAREN #functionPrototype;
+ruleFunctionPrototype				: optStorageClass? (INT|CHAR|FLOAT|VOID) ID OPEN_PAREN ruleFunctionDeclarationParameters* CLOSE_PAREN #functionPrototype;
 ruleFunctionDeclarationParameters   : (((termDatatype ID COMMA)* (termDatatype ID))) #functionDeclarationParams;
-ruleFunctionDeclaration          	: (EXTERN|STATIC)? ((INT|CHAR|FLOAT|VOID) ID OPEN_PAREN ruleFunctionDeclarationParameters* CLOSE_PAREN ruleFunctionBody) #functionDeclaration;
+ruleFunctionDeclaration          	: optStorageClass? ((INT|CHAR|FLOAT|VOID) ID OPEN_PAREN ruleFunctionDeclarationParameters* CLOSE_PAREN ruleFunctionBody) #functionDeclaration;
 ruleFunctionCallParameters			: ((expr COMMA)* expr) #FunctionCallParameters;
 ruleFunctionCall                 	: ID OPEN_PAREN ruleFunctionCallParameters? CLOSE_PAREN #functionCall;
 ruleFunctionBody                 	: OPEN_BRACE declaration* stmt* CLOSE_BRACE #functionBody;
@@ -135,15 +136,15 @@ ruleVariableDeclaration		 : ruleIntDeclaration
 							 | ruleStringDeclaration 
 							 | ruleStringRefDeclaration
 							 ;
-ruleIntDeclaration			 : (EXTERN|STATIC|AUTO)? INT ID (ASSIGN (INTLIT | CHARLIT))? #IntDeclaration;
-ruleIntArrayDeclaration		 : (EXTERN|STATIC|AUTO)? INT ID OPEN_BRACKET INTLIT CLOSE_BRACKET #IntArrayDeclaration;
-ruleIntArrayRefDeclaration	 : (EXTERN|STATIC|AUTO)? INT OPEN_BRACKET CLOSE_BRACKET ID #IntArrayRefDeclaration;
-ruleFloatDeclaration		 : (EXTERN|STATIC|AUTO)? FLOAT ID (ASSIGN (INTLIT | CHARLIT))? #FloatDeclaration;
-ruleFloatArrayDeclaration	 : (EXTERN|STATIC|AUTO)? FLOAT ID OPEN_BRACKET INTLIT CLOSE_BRACKET #FloatArrayDeclaration;
-ruleFloatArrayRefDeclaration : (EXTERN|STATIC|AUTO)? FLOAT OPEN_BRACKET CLOSE_BRACKET ID #FloatArrayRefDeclaration;
-ruleCharDeclaration			 : (EXTERN|STATIC|AUTO)? CHAR ID (ASSIGN (INTLIT | CHARLIT))? #CharDeclaration;
-ruleStringDeclaration		 : (EXTERN|STATIC|AUTO)? CHAR ID OPEN_BRACKET INTLIT CLOSE_BRACKET (ASSIGN STRINGLIT)? #StringDeclaration;
-ruleStringRefDeclaration     : (EXTERN|STATIC|AUTO)? CHAR OPEN_BRACKET CLOSE_BRACKET ID #StringRefDeclaration;
+ruleIntDeclaration			 : optStorageClass? INT ID (ASSIGN (INTLIT | CHARLIT))? #IntDeclaration;
+ruleIntArrayDeclaration		 : optStorageClass? INT ID OPEN_BRACKET INTLIT CLOSE_BRACKET #IntArrayDeclaration;
+ruleIntArrayRefDeclaration	 : optStorageClass? INT OPEN_BRACKET CLOSE_BRACKET ID #IntArrayRefDeclaration;
+ruleFloatDeclaration		 : optStorageClass? FLOAT ID (ASSIGN (INTLIT | CHARLIT))? #FloatDeclaration;
+ruleFloatArrayDeclaration	 : optStorageClass? FLOAT ID OPEN_BRACKET INTLIT CLOSE_BRACKET #FloatArrayDeclaration;
+ruleFloatArrayRefDeclaration : optStorageClass? FLOAT OPEN_BRACKET CLOSE_BRACKET ID #FloatArrayRefDeclaration;
+ruleCharDeclaration			 : optStorageClass? CHAR ID (ASSIGN (INTLIT | CHARLIT))? #CharDeclaration;
+ruleStringDeclaration		 : optStorageClass? CHAR ID OPEN_BRACKET INTLIT CLOSE_BRACKET (ASSIGN STRINGLIT)? #StringDeclaration;
+ruleStringRefDeclaration     : optStorageClass? CHAR OPEN_BRACKET CLOSE_BRACKET ID #StringRefDeclaration;
 
 
 // Term-related rules.

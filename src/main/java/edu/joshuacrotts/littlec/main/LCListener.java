@@ -69,6 +69,11 @@ public class LCListener extends LittleCBaseListener {
   private Stack<LCSyntaxTree> syntaxTreeScopes;
 
   /**
+   * Keeps track of the current function's return type.
+   */
+  private String functionReturnType;
+
+  /**
    * Keeps track of the current number of nested functions we have.
    */
   private int functionScopeCount = 0;
@@ -342,46 +347,35 @@ public class LCListener extends LittleCBaseListener {
    */
   @Override
   public void exitFunctionPrototype(LittleCParser.FunctionPrototypeContext ctx) {
-    if (ctx.ID() != null) {
-      String id = ctx.ID().getText();
-      String storageClass = LCUtilities.getStorageClassType(ctx.EXTERN(), ctx.STATIC());
-      String retType = null;
+    String id = ctx.ID().getText();
+    String storageClass = LCUtilities.getStorageClassType(ctx.optStorageClass());
+    int tokType = storageClass.equals("auto") ? 0 : 1;
+    String retType = ctx.getChild(tokType).getText();
 
-      if (ctx.INT() != null) {
-        retType = "int";
-        this.syntaxTree.setFlags(LCMasks.RETURN_INT_MASK);
-      } else if (ctx.CHAR() != null) {
-        retType = "char";
-        this.syntaxTree.setFlags(LCMasks.RETURN_CHAR_MASK);
-      } else if (ctx.VOID() != null) {
-        retType = "void";
-        this.syntaxTree.setFlags(LCMasks.RETURN_VOID_MASK);
-      } else {
-        LCErrorListener.syntaxError(ctx, "required return type is unspecified.");
-        return;
-      }
-
-      // We pull in the ID and the datatype of the parameter in the prototype, and
-      // store it in a HashMap.
-      LinkedHashMap<String, String> args = new LinkedHashMap<String, String>();
-      // Kind of a junky way of doing it but I'll keep it this way for now.
-      RuleFunctionDeclarationParametersContext p = ctx.ruleFunctionDeclarationParameters(0);
-      final int SPACE_PER_ARG = 3; // Number of tokens in between arguments.
-      if (p != null) {
-        for (int i = 0; i < p.getChildCount(); i += SPACE_PER_ARG) {
-          String varDatatype = p.getChild(i).getText();
-          String varID = p.getChild(i + 1).getText();
-          args.put(varID, varDatatype);
-        }
-      }
-
-      // We DO NOT add this to the tree since a prototype is just a forward
-      // declaration for the symbol table!
-      LCFunctionPrototypeNode prototypeNode = new LCFunctionPrototypeNode(ctx, this.symbolTable, id, retType,
-          storageClass, args);
-
-      this.syntaxTree.clearFlags();
+    if (!retType.equals("int") && !retType.equals("float") && !retType.equals("void") && !retType.equals("char")) {
+      LCErrorListener.syntaxError(ctx, "return type is unspecified.");
+      return;
     }
+
+    // We pull in the ID and the datatype of the parameter in the prototype, and
+    // store it in a HashMap.
+    LinkedHashMap<String, String> args = new LinkedHashMap<String, String>();
+    RuleFunctionDeclarationParametersContext p = ctx.ruleFunctionDeclarationParameters(0);
+    final int SPACE_PER_ARG = 3; // Number of tokens in between arguments.
+    if (p != null) {
+      for (int i = 0; i < p.getChildCount(); i += SPACE_PER_ARG) {
+        String varDatatype = p.getChild(i).getText();
+        String varID = p.getChild(i + 1).getText();
+        args.put(varID, varDatatype);
+      }
+    }
+
+    // We DO NOT add this to the tree since a prototype is just a forward
+    // declaration for the symbol table!
+    LCFunctionPrototypeNode prototypeNode = new LCFunctionPrototypeNode(ctx, this.symbolTable, id, retType,
+        storageClass, args);
+    this.functionReturnType = retType;
+    this.syntaxTree.clearFlags();
   }
 
   /**
@@ -407,56 +401,47 @@ public class LCListener extends LittleCBaseListener {
    */
   @Override
   public void enterFunctionDeclaration(LittleCParser.FunctionDeclarationContext ctx) {
-    if (ctx.ID() != null) {
-      String id = ctx.ID().getText();
-      String storageClass = LCUtilities.getStorageClassType(ctx.EXTERN(), ctx.STATIC());
-      String retType = null;
+    String id = ctx.ID().getText();
+    String storageClass = LCUtilities.getStorageClassType(ctx.optStorageClass());
+    int tokType = storageClass.equals("auto") ? 0 : 1;
+    String retType = ctx.getChild(tokType).getText();
 
-      if (ctx.INT() != null) {
-        retType = "int";
-        this.syntaxTree.setFlags(LCMasks.RETURN_INT_MASK);
-      } else if (ctx.CHAR() != null) {
-        retType = "char";
-        this.syntaxTree.setFlags(LCMasks.RETURN_CHAR_MASK);
-      } else if (ctx.VOID() != null) {
-        retType = "void";
-        this.syntaxTree.setFlags(LCMasks.RETURN_VOID_MASK);
-      } else {
-        LCErrorListener.syntaxError(ctx, "required return type is unspecified.");
-        return;
-      }
-
-      // The LinkedHashMap contains data types and IDs. Since we really only care
-      // about the data type (but we have to store the IDs for the parse tree), and
-      // the IDs must be unique, IDs are the key, and data types are the value. We use
-      // a LinkedHashMap so the IDs are stored the same as they are entered.
-      LinkedHashMap<String, String> args = new LinkedHashMap<String, String>();
-      RuleFunctionDeclarationParametersContext p = ctx.ruleFunctionDeclarationParameters(0);
-      final int SPACE_PER_ARG = 3; // Number of tokens in between arguments.
-      if (p != null) {
-        for (int i = 0; i < p.getChildCount(); i += SPACE_PER_ARG) {
-          String varDatatype = p.getChild(i).getText();
-          String varID = p.getChild(i + 1).getText();
-          args.put(varID, varDatatype);
-        }
-      }
-
-      // We need to create a new LCSyntaxTree to add to the fnDefNode so it makes a
-      // new scope.
-      LCSyntaxTree newScope = new LCSyntaxTree();
-      LCFunctionDefinitionNode fnDefNode = new LCFunctionDefinitionNode(ctx, this.symbolTable, id, retType,
-          storageClass, args, newScope);
-      this.values.put(ctx, fnDefNode);
-      this.syntaxTree.addChild(fnDefNode);
-
-      // We push the current syntaxtree for traversal to the stack so we can save its
-      // context.
-      this.syntaxTreeScopes.push(this.syntaxTree);
-
-      // Set the scope of the syntax tree to be this new one so variables can easily
-      // add to it.
-      this.syntaxTree = newScope;
+    if (!retType.equals("int") && !retType.equals("float") && !retType.equals("void") && !retType.equals("char")) {
+      LCErrorListener.syntaxError(ctx, "return type is unspecified.");
+      return;
     }
+
+    // The LinkedHashMap contains data types and IDs. Since we really only care
+    // about the data type (but we have to store the IDs for the parse tree), and
+    // the IDs must be unique, IDs are the key, and data types are the value. We use
+    // a LinkedHashMap so the IDs are stored the same as they are entered.
+    LinkedHashMap<String, String> args = new LinkedHashMap<String, String>();
+    RuleFunctionDeclarationParametersContext p = ctx.ruleFunctionDeclarationParameters(0);
+    final int SPACE_PER_ARG = 3; // Number of tokens in between arguments.
+    if (p != null) {
+      for (int i = 0; i < p.getChildCount(); i += SPACE_PER_ARG) {
+        String varDatatype = p.getChild(i).getText();
+        String varID = p.getChild(i + 1).getText();
+        args.put(varID, varDatatype);
+      }
+    }
+
+    // We need to create a new LCSyntaxTree to add to the fnDefNode so it makes a
+    // new scope.
+    LCSyntaxTree newScope = new LCSyntaxTree();
+    LCFunctionDefinitionNode fnDefNode = new LCFunctionDefinitionNode(ctx, this.symbolTable, id, retType, storageClass,
+        args, newScope);
+    this.values.put(ctx, fnDefNode);
+    this.syntaxTree.addChild(fnDefNode);
+    this.functionReturnType = retType;
+
+    // We push the current syntaxtree for traversal to the stack so we can save its
+    // context.
+    this.syntaxTreeScopes.push(this.syntaxTree);
+
+    // Set the scope of the syntax tree to be this new one so variables can easily
+    // add to it.
+    this.syntaxTree = newScope;
   }
 
   /**
@@ -473,7 +458,7 @@ public class LCListener extends LittleCBaseListener {
 
     // Check the return type and verify that it exists if we have a non-void
     // function.
-    if ((this.syntaxTree.getFlags() & LCMasks.RETURN_VOID_MASK) == 0) {
+    if (!this.functionReturnType.equals("void")) {
       int seqSize = this.syntaxTree.getChildren().size();
 
       // If we don't have any children in the tree and we have a return type,
@@ -556,7 +541,6 @@ public class LCListener extends LittleCBaseListener {
     if (LCErrorListener.sawError()) {
       return;
     }
-
     this.functionScopeCount--;
     String fnID = ctx.ID().getText();
 
@@ -596,19 +580,8 @@ public class LCListener extends LittleCBaseListener {
     if (LCErrorListener.sawError()) {
       return;
     }
-
     LCSyntaxTree retExpr = this.values.get(ctx.expr());
-    String fnRetType = "";
-
-    // Check the return type of the function that we're in to make sure it matches
-    // the expression that we want to return.
-    if ((this.syntaxTree.getFlags() & LCMasks.RETURN_INT_MASK) != 0) {
-      fnRetType = "int";
-    } else if ((this.syntaxTree.getFlags() & LCMasks.RETURN_CHAR_MASK) != 0) {
-      fnRetType = "char";
-    } else {
-      fnRetType = "void";
-    }
+    String fnRetType = this.functionReturnType;
 
     // If we have an expression, then we need to check the types. If they match, we
     // create the correct node and send its on its way. Otherwise, we print a type
@@ -681,8 +654,7 @@ public class LCListener extends LittleCBaseListener {
       // If we dereference the array, then it has a "pseudotype" of whatever type of
       // array it is. This suggests that we can't do something like int x[5]; x = 5;
       // But we can do x[0] = 5;
-      if (!this.symbolTable.getSymbolEntry(id).getVarType().contains("[")
-          && !this.symbolTable.getSymbolEntry(id).getVarType().contains("]")) {
+      if (!LCUtilities.isTypeArray(this.symbolTable.getSymbolEntry(id).getVarType())) {
         LCErrorListener.syntaxError(ctx, "cannot treat non-array " + id + " as array.");
         return;
       }
@@ -738,41 +710,39 @@ public class LCListener extends LittleCBaseListener {
   @Override
   public void enterExprTerm(LittleCParser.ExprTermContext ctx) {
     // We either have an ID or a literal. We first check for an ID.
-    if (ctx.term() != null) {
-      if (ctx.term().ID() != null) {
-        String id = ctx.term().ID().getText();
-        if (this.symbolTable.hasSymbol(id)) {
-          String varType = this.symbolTable.getSymbolEntry(id).getVarType();
-          LCVariableIdentifierNode varIdentifier = new LCVariableIdentifierNode(ctx, symbolTable,
-              ctx.term().ID().getText(), varType);
-          this.values.put(ctx, varIdentifier);
+    if (ctx.term().ID() != null) {
+      String id = ctx.term().ID().getText();
+      if (this.symbolTable.hasSymbol(id)) {
+        String varType = this.symbolTable.getSymbolEntry(id).getVarType();
+        LCVariableIdentifierNode varIdentifier = new LCVariableIdentifierNode(ctx, symbolTable, id, varType);
+        this.values.put(ctx, varIdentifier);
+      } else {
+        LCErrorListener.syntaxError(ctx, "variable " + id + " was not previously declared.");
+        return;
+      }
+    }
+    // Check for the existence of a literal.
+    else {
+      LCConstantLiteralNode constantLiteral = null;
+      TerminalNode literalNode = (TerminalNode) ctx.term().getChild(0);
+      int literalType = literalNode.getSymbol().getType();
+      if (literalType == LittleCLexer.INTLIT) {
+        String intLit = "";
+        if (LCUtilities.isValidIntLiteral(literalNode.getText())) {
+          intLit = "" + LCUtilities.getDecodedIntLiteral(literalNode.getText());
         } else {
-          LCErrorListener.syntaxError(ctx, "variable " + id + " was not previously declared.");
+          LCErrorListener.syntaxError(ctx, "cannot create an int literal.");
           return;
         }
+        constantLiteral = new LCConstantLiteralNode(ctx, intLit, "int");
+      } else if (literalType == LittleCLexer.CHARLIT) {
+        String literalValue = String.valueOf((int) LCUtilities.getCharFromString(literalNode.getText()));
+        constantLiteral = new LCConstantLiteralNode(ctx, literalValue, "char");
+      } else if (literalType == LittleCLexer.STRINGLIT) {
+        constantLiteral = new LCConstantLiteralNode(ctx, literalNode.getText(), "char[]");
       }
-      // Check for the existence of a literal.
-      else {
-        LCConstantLiteralNode constantLiteral = null;
-        if (ctx.term().INTLIT() != null) {
-          String intLit = "";
-          if (LCUtilities.isValidIntLiteral(ctx.term().INTLIT().getText())) {
-            intLit = "" + LCUtilities.getDecodedIntLiteral(ctx.term().INTLIT().getText());
-          } else {
-            LCErrorListener.syntaxError(ctx, "cannot create an int literal.");
-            return;
-          }
-          constantLiteral = new LCConstantLiteralNode(ctx, intLit, "int");
-        } else if (ctx.term().CHARLIT() != null) {
-          String characterStr = ctx.term().CHARLIT().getText();
-          String literalValue = String.valueOf((int) LCUtilities.getCharFromString(characterStr));
-          constantLiteral = new LCConstantLiteralNode(ctx, literalValue, "char");
-        } else if (ctx.term().STRINGLIT() != null) {
-          constantLiteral = new LCConstantLiteralNode(ctx, ctx.term().STRINGLIT().getText(), "char[]");
-        }
 
-        this.values.put(ctx, constantLiteral);
-      }
+      this.values.put(ctx, constantLiteral);
     }
   }
 
@@ -849,12 +819,14 @@ public class LCListener extends LittleCBaseListener {
    */
   @Override
   public void exitExprPostOp(LittleCParser.ExprPostOpContext ctx) {
-    if (LCErrorListener.sawError()) return;
+    if (LCErrorListener.sawError()) {
+      return;
+    }
     // First check if the symbol exists.
     String id = ctx.ID().getText();
     String idType = this.symbolTable.getSymbolEntry(id).getVarType();
-
     String op = "";
+
     if (!this.symbolTable.hasSymbol(id)) {
       LCErrorListener.syntaxError(ctx, "variable " + id + " was not previously declared.");
       return;
@@ -907,7 +879,6 @@ public class LCListener extends LittleCBaseListener {
    */
   @Override
   public void exitExprUnary(LittleCParser.ExprUnaryContext ctx) {
-    // Get the right-hand expression.
     LCSyntaxTree rexpr = this.values.get(ctx.expr());
     int tokenOp = ((TerminalNode) ctx.getChild(0)).getSymbol().getType();
     String op = ((TerminalNode) ctx.getChild(0)).getSymbol().getText();
@@ -921,14 +892,11 @@ public class LCListener extends LittleCBaseListener {
       } else {
         varType = "int";
       }
-    } else {
-      if (rexpr.isArray()) {
-        LCErrorListener.syntaxError(ctx, "invalid unary operator for r-value expression of type " + varType + ".");
-      }
+    } else if (tokenOp == LittleCLexer.SIZE_OP) {
+      LCErrorListener.syntaxError(ctx, "invalid unary operator for r-value expression of type " + varType + ".");
     }
 
     LCUnaryOperatorNode unaryOpNode = new LCUnaryOperatorNode(ctx, this.symbolTable, op, varType, rexpr);
-
     this.values.put(ctx, unaryOpNode);
   }
 
@@ -943,32 +911,20 @@ public class LCListener extends LittleCBaseListener {
     if (LCErrorListener.sawError()) {
       return;
     }
-
     LCSyntaxTree lexpr = this.values.get(ctx.expr().get(0));
     LCSyntaxTree rexpr = this.values.get(ctx.expr().get(1));
     ParseTree opNode = ctx.getChild(1);
-    String op = null;
 
-    // If this is an arithmetic operator (where we CANNOT compare strings...)
     if (opNode != null) {
       boolean lStr = lexpr.isArray();
       boolean rStr = rexpr.isArray();
-
       if (lStr || rStr) {
         LCErrorListener.syntaxError(ctx, "cannot use binary operator on array datatype.");
         return;
       }
-
-      // Now actually get the flags and set the operator.
-      op = ((TerminalNode) opNode).getSymbol().getText();
-      if (op == null) {
-        LCErrorListener.syntaxError(ctx, "invalid binary operator.");
-        return;
-      }
     }
 
-    LCBinaryOperatorNode binaryOpNode = new LCBinaryOperatorNode(ctx, this.symbolTable, op, lexpr, rexpr);
-
+    LCBinaryOperatorNode binaryOpNode = new LCBinaryOperatorNode(ctx, this.symbolTable, opNode.getText(), lexpr, rexpr);
     this.values.put(ctx, binaryOpNode);
   }
 
@@ -1010,7 +966,6 @@ public class LCListener extends LittleCBaseListener {
           LCErrorListener.syntaxError(ctx, "cannot create an int literal.");
           return;
         }
-
         constantLiteral = new LCConstantLiteralNode(ctx, intLit, "int");
       } else if (ctx.CHARLIT() != null) {
         String characterStr = ctx.CHARLIT().getText();
@@ -1090,7 +1045,7 @@ public class LCListener extends LittleCBaseListener {
   @Override
   public void exitIntDeclaration(LittleCParser.IntDeclarationContext ctx) {
     String lValue = ctx.ID().getText();
-    String storageClass = LCUtilities.getStorageClassType(ctx.EXTERN(), ctx.STATIC());
+    String storageClass = LCUtilities.getStorageClassType(ctx.optStorageClass());
     Object literalValue = null;
 
     // If we're assigning to something, grab the literal value.
@@ -1102,8 +1057,9 @@ public class LCListener extends LittleCBaseListener {
         return;
       }
     } else if (ctx.CHARLIT() != null) {
-      String characterStr = ctx.CHARLIT().getText();
-      literalValue = (int) LCUtilities.getCharFromString(characterStr);
+      literalValue = (int) LCUtilities.getCharFromString(ctx.CHARLIT().getText());
+    } else {
+      LCErrorListener.syntaxWarning(ctx, "int " + lValue + " may not have been initialized.");
     }
 
     LCVariableDeclarationNode intDeclarationNode = new LCVariableDeclarationNode(ctx, this.symbolTable, lValue, "int",
@@ -1120,7 +1076,7 @@ public class LCListener extends LittleCBaseListener {
   public void exitIntArrayDeclaration(LittleCParser.IntArrayDeclarationContext ctx) {
     String lValue = ctx.ID().getText();
     String type = "int[" + ctx.INTLIT().getText() + "]";
-    String storageClass = LCUtilities.getStorageClassType(ctx.EXTERN(), ctx.STATIC());
+    String storageClass = LCUtilities.getStorageClassType(ctx.optStorageClass());
     Object literalValue = null;
 
     // We need to test to see if the size is valid or not. It doesn't matter where
@@ -1144,7 +1100,7 @@ public class LCListener extends LittleCBaseListener {
   public void exitIntArrayRefDeclaration(LittleCParser.IntArrayRefDeclarationContext ctx) {
     String lValue = ctx.ID().getText();
     String type = "int[]";
-    String storageClass = LCUtilities.getStorageClassType(ctx.EXTERN(), ctx.STATIC());
+    String storageClass = LCUtilities.getStorageClassType(ctx.optStorageClass());
     Object literalValue = null;
 
     LCVariableDeclarationNode intArrayRef = new LCVariableDeclarationNode(ctx, this.symbolTable, lValue, type,
@@ -1159,32 +1115,29 @@ public class LCListener extends LittleCBaseListener {
    */
   @Override
   public void exitCharDeclaration(LittleCParser.CharDeclarationContext ctx) {
-    if (ctx.ID() != null) {
-      String lValue = ctx.ID().getText();
-      String storageClass = LCUtilities.getStorageClassType(ctx.EXTERN(), ctx.STATIC());
-      Object literalValue = null;
+    String lValue = ctx.ID().getText();
+    String storageClass = LCUtilities.getStorageClassType(ctx.optStorageClass());
+    Object literalValue = null;
 
-      // If we're assigning to something, grab the literal value.
-      if (ctx.CHARLIT() != null) {
-        String characterStr = ctx.CHARLIT().getText();
-        literalValue = (int) LCUtilities.getCharFromString(characterStr);
+    // If we're assigning to something, grab the literal value.
+    if (ctx.CHARLIT() != null) {
+      literalValue = (int) LCUtilities.getCharFromString(ctx.CHARLIT().getText());
+    } else if (ctx.INTLIT() != null) {
+      if (LCUtilities.isValidIntLiteral(ctx.INTLIT().getText())) {
+        literalValue = LCUtilities.getDecodedIntLiteral(ctx.INTLIT().getText());
+      } else {
+        LCErrorListener.syntaxError(ctx, "cannot create an int literal.");
+        return;
       }
-      // We can have both int literals and char literals for chars.
-      else if (ctx.INTLIT() != null) {
-        if (LCUtilities.isValidIntLiteral(ctx.INTLIT().getText())) {
-          literalValue = LCUtilities.getDecodedIntLiteral(ctx.INTLIT().getText());
-        } else {
-          LCErrorListener.syntaxError(ctx, "cannot create an int literal.");
-          return;
-        }
-      }
-
-      LCVariableDeclarationNode charDeclarationNode = new LCVariableDeclarationNode(ctx, this.symbolTable, lValue,
-          "char", storageClass, literalValue);
-
-      this.syntaxTree.addChild(charDeclarationNode);
-      this.values.put(ctx, charDeclarationNode);
+    } else {
+      LCErrorListener.syntaxWarning(ctx, "char " + lValue + " may not have been initialized.");
     }
+
+    LCVariableDeclarationNode charDeclarationNode = new LCVariableDeclarationNode(ctx, this.symbolTable, lValue, "char",
+        storageClass, literalValue);
+
+    this.syntaxTree.addChild(charDeclarationNode);
+    this.values.put(ctx, charDeclarationNode);
   }
 
   /**
@@ -1192,30 +1145,28 @@ public class LCListener extends LittleCBaseListener {
    */
   @Override
   public void exitStringDeclaration(LittleCParser.StringDeclarationContext ctx) {
-    if (ctx.ID() != null) {
-      String lValue = ctx.ID().getText();
-      String type = "char[" + ctx.INTLIT().getText() + "]";
-      String storageClass = LCUtilities.getStorageClassType(ctx.EXTERN(), ctx.STATIC());
-      Object literalValue = null;
+    String lValue = ctx.ID().getText();
+    String type = "char[" + ctx.INTLIT().getText() + "]";
+    String storageClass = LCUtilities.getStorageClassType(ctx.optStorageClass());
+    Object literalValue = null;
 
-      // If we're assigning to something, grab the literal value.
-      if (ctx.STRINGLIT() != null) {
-        literalValue = ctx.STRINGLIT().getText();
-      }
-
-      // We need to test to see if the size is valid or not. It doesn't matter where
-      // we store it; it just needs to be valid.
-      if (!LCUtilities.isValidIntLiteral(ctx.INTLIT().getText())) {
-        LCErrorListener.syntaxError(ctx, "cannot create an int literal for array index.");
-        return;
-      }
-
-      LCVariableDeclarationNode stringDeclarationNode = new LCVariableDeclarationNode(ctx, this.symbolTable, lValue,
-          type, storageClass, literalValue);
-
-      this.syntaxTree.addChild(stringDeclarationNode);
-      this.values.put(ctx, stringDeclarationNode);
+    // If we're assigning to something, grab the literal value.
+    if (ctx.STRINGLIT() != null) {
+      literalValue = ctx.STRINGLIT().getText();
     }
+
+    // We need to test to see if the size is valid or not. It doesn't matter where
+    // we store it; it just needs to be valid.
+    if (!LCUtilities.isValidIntLiteral(ctx.INTLIT().getText())) {
+      LCErrorListener.syntaxError(ctx, "cannot create an int literal for array index.");
+      return;
+    }
+
+    LCVariableDeclarationNode stringDeclarationNode = new LCVariableDeclarationNode(ctx, this.symbolTable, lValue, type,
+        storageClass, literalValue);
+
+    this.syntaxTree.addChild(stringDeclarationNode);
+    this.values.put(ctx, stringDeclarationNode);
   }
 
   /**
@@ -1223,18 +1174,16 @@ public class LCListener extends LittleCBaseListener {
    */
   @Override
   public void exitStringRefDeclaration(LittleCParser.StringRefDeclarationContext ctx) {
-    if (ctx.ID() != null) {
-      String lValue = ctx.ID().getText();
-      String type = "char[]";
-      String storageClass = LCUtilities.getStorageClassType(ctx.EXTERN(), ctx.STATIC());
-      Object literalValue = null;
+    String lValue = ctx.ID().getText();
+    String type = "char[]";
+    String storageClass = LCUtilities.getStorageClassType(ctx.optStorageClass());
+    Object literalValue = null;
 
-      LCVariableDeclarationNode stringRef = new LCVariableDeclarationNode(ctx, this.symbolTable, lValue, type,
-          storageClass, literalValue);
+    LCVariableDeclarationNode stringRef = new LCVariableDeclarationNode(ctx, this.symbolTable, lValue, type,
+        storageClass, literalValue);
 
-      this.syntaxTree.addChild(stringRef);
-      this.values.put(ctx, stringRef);
-    }
+    this.syntaxTree.addChild(stringRef);
+    this.values.put(ctx, stringRef);
   }
 
   // ======================== END DECLARATIONS ===============================//
@@ -1245,9 +1194,9 @@ public class LCListener extends LittleCBaseListener {
    * @return a syntax tree, or null if an error was detected.
    */
   public LCSyntaxTree getSyntaxTree() {
-    if (LCErrorListener.sawWarning()) {
-      LCErrorListener.printWarnings();
-    }
+//    if (LCErrorListener.sawWarning()) {
+//      LCErrorListener.printWarnings();
+//    }
 
     if (LCErrorListener.sawError()) {
       LCErrorListener.printErrors();

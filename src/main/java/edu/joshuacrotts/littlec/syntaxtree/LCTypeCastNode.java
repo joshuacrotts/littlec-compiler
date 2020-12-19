@@ -20,7 +20,7 @@ public class LCTypeCastNode extends LCSyntaxTree {
   public LCTypeCastNode(ParserRuleContext ctx, LCSyntaxTree rvalue, String targetType) {
     super("CAST", targetType); // No third parameter.
 
-    /* One child for the value that is casted. */
+    // One child for the value that is casted.
     super.addChild(rvalue);
   }
 
@@ -33,15 +33,12 @@ public class LCTypeCastNode extends LCSyntaxTree {
       return;
     }
     super.isCalled = true;
-
     String rvalType = this.getChildren().get(0).getType();
     String castType = "";
 
-    // This is a VERY ugly solution for now and doesn't handle adding new
-    // types... but it's okay for now.
-    if (rvalType.equals("char") && this.getType().equals("int")) {
+    if (LCUtilities.isUpCastable(rvalType, this.getType())) {
       castType = "widen";
-    } else if (rvalType.equals("int") && this.getType().equals("char")) {
+    } else if (LCUtilities.isDownCastable(rvalType, this.getType())) {
       castType = "narrow";
     } else {
       castType = "&";

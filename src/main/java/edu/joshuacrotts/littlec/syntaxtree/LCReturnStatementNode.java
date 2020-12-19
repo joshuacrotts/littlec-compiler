@@ -47,7 +47,7 @@ public class LCReturnStatementNode extends LCSyntaxTree {
       returnStr += retWidth;
     }
 
-    ICode.quad.addLine("", (!this.getChildren().isEmpty() ? info.ADDR : ""), "", returnStr);
+    ICode.quad.addLine("", (this.getChildren().isEmpty() ? "" : info.ADDR), "", returnStr);
   }
 
   @Override

@@ -16,27 +16,27 @@ import org.antlr.v4.runtime.Recognizer;
  * chains (or both). All it does is keep track of whether an error was detected,
  * so after parsing you can call sawError() to see if there was a problem.
  *
- * @author Steve Tate
+ * @author Joshua Crotts
  */
 public class LCErrorListener extends BaseErrorListener {
 
   /**
-   * 
+   * Set of all compiler errors generated while parsing.
    */
   private static Set<Message> errors = new HashSet<>();
   
   /**
-   * 
+   * Set of all warning errors generated while parsing.
    */
   private static Set<Message> warnings = new HashSet<>();
 
   /**
-   * 
+   * Keeps track of whether we have encountered an error or not.
    */
   private static boolean gotError = false;
  
   /**
-   * 
+   * Keeps track of whether we have encountered a warning or not.
    */
   private static boolean gotWarning = false;
 

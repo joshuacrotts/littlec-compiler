@@ -1,7 +1,8 @@
 package edu.joshuacrotts.littlec.main;
 
-import org.antlr.v4.runtime.tree.TerminalNode;
-
+import edu.joshuacrotts.littlec.antlr4.LittleCParser.ExprPostOpContext;
+import edu.joshuacrotts.littlec.antlr4.LittleCParser.ExprPreOpContext;
+import edu.joshuacrotts.littlec.antlr4.LittleCParser.OptStorageClassContext;
 import edu.joshuacrotts.littlec.syntaxtree.LCSyntaxTree;
 
 /**
@@ -78,6 +79,32 @@ public class LCUtilities {
   }
 
   /**
+   * 
+   * @param from
+   * @param to
+   * @return
+   */
+  public static boolean isUpCastable(String from, String to) {
+    return LCUtilities.isCastable(from, to) && 
+        ((from.equals("char") && to.equals("int"))
+        || from.equals("char") && to.equals("float") 
+        || (from.equals("int") && to.equals("float")));
+  }
+  
+  /**
+   * 
+   * @param from
+   * @param to
+   * @return
+   */
+  public static boolean isDownCastable(String from, String to) {
+    return LCUtilities.isCastable(from, to) && 
+        ((from.equals("float") && to.equals("int"))
+        || from.equals("float") && to.equals("char") 
+        || (from.equals("int") && to.equals("char")));
+  }
+
+  /**
    * Determines if a String variable type (stored in the symbol table) is an array
    * or not. This does not differentiate between array refs and array
    * declarations.
@@ -128,7 +155,7 @@ public class LCUtilities {
    *         otherwise.
    */
   public static boolean isValidIntLiteral(String intVal) {
-    long value; 
+    long value;
     // Binary has to be parsed differently than hex.
     try {
       if (intVal.startsWith("0b")) {
@@ -141,7 +168,7 @@ public class LCUtilities {
     } catch (NumberFormatException ex) {
       return false;
     }
-    
+
     if (value < Integer.MIN_VALUE || value > Integer.MAX_VALUE) {
       return false;
     }
@@ -354,18 +381,18 @@ public class LCUtilities {
   /**
    * Returns the string representation of the storage classes.
    * 
-   * @param externNode
-   * @param staticNode
    * @return string representation of storage class.
    */
-  public static String getStorageClassType(TerminalNode externNode, TerminalNode staticNode) {
-    if (externNode != null) {
-      return "extern";
-    } else if (staticNode != null) {
-      return "static";
-    } else {
-      return "auto";
+  public static String getStorageClassType(OptStorageClassContext ctx) {
+    if (ctx != null) {
+      if (ctx.EXTERN() != null) {
+        return "extern";
+      } else {
+        return "static";
+      }
     }
+
+    return "auto";
   }
 
   /**
