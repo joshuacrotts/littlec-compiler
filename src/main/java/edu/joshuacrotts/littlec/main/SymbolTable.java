@@ -138,7 +138,7 @@ public class SymbolTable {
 
     // Now iterate through the map and find all vars.
     for (String key : map.keySet()) {
-      if (map.get(key).getType().equals("VAR")) {
+      if (map.get(key).getType() == SymbolType.VAR) {
         String type = this.getSymbolEntry(key).getVarType();
         System.out.println(key + ": " + type);
       }
@@ -162,7 +162,7 @@ public class SymbolTable {
 
     // Now iterate through the map and find all vars.
     for (String key : map.keySet()) {
-      if (map.get(key).getType().equals("FNDEF")) {
+      if (map.get(key).getType() == SymbolType.FNDEF) {
 
         // Grab the parameters and return type.
         List<LCSyntaxTree> params = this.getSymbolEntry(key).getInfoList();
