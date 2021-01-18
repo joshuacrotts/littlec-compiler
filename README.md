@@ -39,6 +39,7 @@ Most standard programming language concepts are present. These include
 
 ## Planned Features
 The following is a list of planned features:
+- Bit rotation, absolute value operator, logical implication and biconditional
 - Single & Double Floating-Point Precision Variables
 - Standard API
 - Terminal argument support

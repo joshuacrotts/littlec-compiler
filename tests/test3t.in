@@ -1,38 +1,36 @@
-//
-// Testing issue #3 bug.
-//
+char gStr[100] = "Hi there!";
+int gInt = 2;
 
-void printlnd(int n) {
-	printd(n);
-	printc('\n');
-}
-
-void modify(int[] arr) {
-	int i;
-	int j = 2;
-	int k;
-	k = ++arr[j];
-	arr[i] = ++arr[j] + arr[0];
-	arr[0] = --arr[1];
-	arr[1] = arr[2]++;
-	arr[2] = arr[1]++ << (2 ** 3);
+void strcpy(char[] dst, char[] src) {
+    int i;
+    for (i=0; i<#src && i<#dst; i++) {
+        dst[i] = src[i];
+        if (dst[i] == '\0')
+            break;
+    }
 }
 
 void main() {
-	int arr[10];
+	char lArray[100];
 	int i;
-	for(i=0;i<#arr;i++)
-		arr[i] = i;
+	int j;
+	int k; 
 	
-	arr[0] = ++arr[1];
-	arr[1] = arr[2]++ * 3;
-	arr[1] = arr[0] + ++arr[1] + arr[0]++;
+	j = 5;
+	strcpy(lArray, gStr);
+	prints(lArray);
+	printc('\n');
 	
-	for(i=0;i<#arr;i++)
-		printlnd(--arr[i]);
+	for (i = 0; i < j; i++) {
+		k = ++k | (0b11 ** i) << (j - i + 1);
+		k = i ^ j & 0xffff;
+		printd(k);
+		printc('\n');
+	}
 	
-	modify(arr);
-	
-	for(i=0;i<#arr;i++)
-		printlnd(++arr[i] * arr[i]--);
+	j = 0xffffff >> 16 & 0xff;
+	i = j | ((2 ** 4) ^ (i + j - (j * 24 % 2)));
+	printd(j);
+	prints("\n");
+	printd(i);
 }

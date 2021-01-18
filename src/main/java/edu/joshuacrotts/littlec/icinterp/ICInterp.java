@@ -23,7 +23,7 @@ import java.util.Vector;
  */
 public class ICInterp {
   private static void debugPrint(String m) {
-//        System.out.println(m);
+        // System.out.println(m);
   }
 
   private Map<String, Integer> labels;
@@ -135,11 +135,12 @@ public class ICInterp {
       }
     }
 
+    // THIS METHOD IS THE PROBLEM
     public SimValue getVal(int width, int offset) {
       if (width == 1)
         return new SimValue(1, getByte(offset));
       else
-        return new SimValue(4, getInt(offset));
+        return new SimValue(4, getInt(offset)); // HERE IS THE BUG
     }
 
     public void setVal(int offset, SimValue val) {
@@ -156,6 +157,7 @@ public class ICInterp {
       System.err.println("Internal sim error: Bad segment number");
       System.exit(1);
     }
+    AddrSegment s = segments.get(segID);
     return segments.get(segID);
   }
 
@@ -340,7 +342,9 @@ public class ICInterp {
         return pSegment.getVal(getTWidth(name), Integer.parseInt(name.substring(3)));
       } else if (name.startsWith("g") || (name.startsWith("m"))) {
         int ptr = globals[labels.get(name)];
-        return ptrToSeg(ptr).getVal(getTWidth(name), 0);
+        //AddrSegment s = ptrToSeg(ptr);
+        //return ptrToSeg(ptr).getVal(getTWidth(name), 0);
+        return ptrToSeg(ptr).getVal(getTWidth(name), ptr - globals[0]);
       } else if (name.startsWith("S")) {
         return new SimValue(4, globals[labels.get(name)]);
       } else if (name.startsWith("t")) {
@@ -426,6 +430,10 @@ public class ICInterp {
             return new SimValue(1, (byte) (val1.cVal << val2.cVal));
           else if (parts[si + 1].equals(">>"))
             return new SimValue(1, (byte) (val1.cVal >> val2.cVal));
+          else if (parts[si + 1].equals("<<<"))
+            return new SimValue(4, (val1.cVal << val2.cVal) | (val1.cVal >> (Character.BYTES * 4 - val2.cVal)));
+          else if (parts[si + 1].equals(">>>"))
+            return new SimValue(4, (val1.cVal >> val2.cVal) | (val1.cVal << (Character.BYTES * 4 - val2.cVal)));
           else if (parts[si + 1].equals("<"))
             return new SimValue(4, (val1.cVal < val2.cVal) ? 1 : 0);
           else if (parts[si + 1].equals("<="))
@@ -438,6 +446,10 @@ public class ICInterp {
             return new SimValue(4, (val1.cVal == val2.cVal) ? 1 : 0);
           else if (parts[si + 1].equals("!="))
             return new SimValue(4, (val1.cVal != val2.cVal) ? 1 : 0);
+          else if (parts[si + 1].equals("<>"))
+            return new SimValue(4, (~(val1.cVal ^ val2.cVal) > 0) ? 1 : 0);
+          else if (parts[si + 1].equals("->"))
+            return new SimValue(4, ((~val1.cVal | val2.cVal) > 0) ? 1 : 0);
           else if (parts[si + 1].equals("ldidx1"))
             return new SimValue(1, ptrGetByte(val1.iVal, 4 + val2.iVal));
           else
@@ -465,6 +477,10 @@ public class ICInterp {
             return new SimValue(4, val1.iVal << val2.iVal);
           else if (parts[si + 1].equals(">>"))
             return new SimValue(4, val1.iVal >> val2.iVal);
+          else if (parts[si + 1].equals("<<<"))
+            return new SimValue(4, (val1.iVal << val2.iVal) | (val1.iVal >> (Integer.BYTES * 8 - val2.iVal)));
+          else if (parts[si + 1].equals(">>>"))
+            return new SimValue(4, (val1.iVal >> val2.iVal) | (val1.iVal << (Integer.BYTES * 8 - val2.iVal)));
           else if (parts[si + 1].equals("<"))
             return new SimValue(4, (val1.iVal < val2.iVal) ? 1 : 0);
           else if (parts[si + 1].equals("<="))
@@ -477,6 +493,10 @@ public class ICInterp {
             return new SimValue(4, (val1.iVal == val2.iVal) ? 1 : 0);
           else if (parts[si + 1].equals("!="))
             return new SimValue(4, (val1.iVal != val2.iVal) ? 1 : 0);
+          else if (parts[si + 1].equals("<>"))
+            return new SimValue(4, (val1.iVal == val2.iVal) ? 1 : 0);
+          else if (parts[si + 1].equals("->"))
+            return new SimValue(4, (!(val1.iVal !=0) || (val2.iVal!=0)) ? 1 : 0);
           else if (parts[si + 1].equals("ldidx4")) {
             return new SimValue(4, ptrGetInt(val1.iVal, 4 + 4 * val2.iVal));
           } else if (parts[si + 1].equals("ldidx1")) {
@@ -503,6 +523,12 @@ public class ICInterp {
             return new SimValue(1, ~((byte) val1.cVal));
           else
             return new SimValue(4, ~val1.iVal);
+        }
+        else if (parts[si].equals("@")) {
+          if ((tWidth == 1) || (val1.width == 1))
+            return new SimValue(1, Math.abs((byte) val1.cVal));
+          else
+            return new SimValue(4, Math.abs(val1.iVal));
         }
         else if (parts[si].equals("&")) {
           return new SimValue(4, getAddr(parts[si + 1]));
@@ -753,10 +779,10 @@ public class ICInterp {
       System.err.println("Error in executing intermediate code: Unknown function " + fname);
       return SimValue.errVal;
     }
+    
     LocalEnv env = new LocalEnv(startLine, params);
 
-    while (env.execLine())
-      ;
+    while (env.execLine());
 
     SimValue retVal = env.getRetVal();
     env.freeSpace();

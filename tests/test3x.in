@@ -1,0 +1,17 @@
+
+// Basic array test - both reading and writing, and using length operator
+
+void main() {
+    int i;
+    int a[20];
+    int sum = 0;
+    
+    for (i=0; i<20; i++)
+        a[i] = i;
+
+    for (i=0; i<#a; i++)
+        sum = sum + a[i];
+
+    prints("Sum is ");
+    printd(sum);
+}

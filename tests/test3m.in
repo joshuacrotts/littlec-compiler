@@ -19,11 +19,11 @@ int isprime(int x) {
 void checkprime(int x) {
 	char buf[10];
     printd(x);
-    if (isprime(x)) {
+    if (isprime(x)) 
     	strcpy(buf, " is ");
-    } else {
+    else 
     	strcpy(buf, " is not ");
-    }
+    
     prints(buf);
     prints("prime\n");
 }

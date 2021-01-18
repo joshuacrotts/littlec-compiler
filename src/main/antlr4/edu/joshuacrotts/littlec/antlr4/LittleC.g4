@@ -36,13 +36,14 @@ FLOAT		   : 'float'  ;
 CHAR           : 'char'   ;
 VOID           : 'void'   ;
 
-// Keywords (6).
-IF             : 'if'     ;
-ELSE           : 'else'   ;
-WHILE          : 'while'  ;
-FOR            : 'for'    ;
-RETURN         : 'return' ;
-BREAK          : 'break'  ;
+// Keywords (7).
+IF             	: 'if'     	;
+ELSE           	: 'else'   	;
+WHILE          	: 'while'  	;
+FOR            	: 'for'    	;
+RETURN         	: 'return' 	;
+BREAK          	: 'break'  	;
+TO				: 'to'		;
 
 /* Rule tokens. */
 CHARLIT		   : (SINGLE_QUOTE (ESCAPED_CHAR | ~ ['\\] ) '\'');
@@ -54,7 +55,7 @@ ID             : (ANY_CASE_LTR | UNDERSCORE)(ANY_CASE_LTR | DIGIT | UNDERSCORE)*
 // Assignment operator (1).
 ASSIGN           : '='    ;
 
-// Integer/array operations (8).
+// Integer/array operations (15).
 SIZE_OP          : '#'    ;
 PLUS_OP          : '+'    ;
 MINUS_OP         : '-'    ;
@@ -62,6 +63,7 @@ MULTIPLY_OP      : '*'    ;
 POW_OP			 : '**'   ;
 DIVIDE_OP        : '/'    ;
 MODULO_OP        : '%'    ;
+ABS_OP			 : '@'	  ;
 INC_OP           : '++'   ;
 DEC_OP           : '--'   ;
 BIT_AND		     : '&'    ;
@@ -70,9 +72,11 @@ BIT_NEG   		 : '~'    ;
 BIT_XOR			 : '^'    ;
 BIT_SHIFT_LEFT   : '<<'   ;
 BIT_SHIFT_RIGHT  : '>>'   ;
+BIT_ROTATE_LEFT  : '<<<'  ;
+BIT_ROTATE_RIGHT : '>>>'  ;
 
 
-// Comparison operators (12).
+// Comparison operators (6).
 EQUAL_CMP        		: '=='   	;
 LESS_THAN_CMP    		: '<'    	;
 LESS_EQ_CMP      		: '<='   	;
@@ -80,12 +84,14 @@ GREATER_THAN_CMP 		: '>'    	;
 GREATER_EQ_CMP   		: '>='   	;
 NOT_EQUAL_CMP    		: '!='   	;
  
-// Boolean operators (6).
+// Boolean operators (5).
 NOT : '!'  ;
 AND : '&&' ;
 OR  : '||' ;
+BI  : '<>' ;
+IMP : '->' ;
 
-// Punctuation (8).
+// Punctuation (10).
 OPEN_PAREN    : '('  ;
 CLOSE_PAREN   :  ')' ;
 OPEN_BRACE    : '{'  ;
@@ -93,6 +99,8 @@ CLOSE_BRACE   : '}'  ;
 OPEN_BRACKET  : '['  ;
 CLOSE_BRACKET : ']'  ;
 SEMICOLON     : ';'  ;
+TERNARY_COND  : '?'  ;
+TERNARY_ELSE  : ':'  ;
 COMMA 	      : ','  ;
 
 //=========== Grammar starts here ==============
@@ -106,10 +114,12 @@ declaration         : ((ruleVariableDeclaration | ruleFunctionPrototype) SEMICOL
 					;
 
 
+optStorageClass 					: EXTERN | STATIC;
+
 // Function-related rules.
-ruleFunctionPrototype				: (EXTERN|STATIC)? (INT|CHAR|FLOAT|VOID) ID OPEN_PAREN ruleFunctionDeclarationParameters* CLOSE_PAREN #functionPrototype;
+ruleFunctionPrototype				: optStorageClass? (INT|CHAR|FLOAT|VOID) ID OPEN_PAREN ruleFunctionDeclarationParameters* CLOSE_PAREN #functionPrototype;
 ruleFunctionDeclarationParameters   : (((termDatatype ID COMMA)* (termDatatype ID))) #functionDeclarationParams;
-ruleFunctionDeclaration          	: (EXTERN|STATIC)? ((INT|CHAR|FLOAT|VOID) ID OPEN_PAREN ruleFunctionDeclarationParameters* CLOSE_PAREN ruleFunctionBody) #functionDeclaration;
+ruleFunctionDeclaration          	: optStorageClass? ((INT|CHAR|FLOAT|VOID) ID OPEN_PAREN ruleFunctionDeclarationParameters* CLOSE_PAREN ruleFunctionBody) #functionDeclaration;
 ruleFunctionCallParameters			: ((expr COMMA)* expr) #FunctionCallParameters;
 ruleFunctionCall                 	: ID OPEN_PAREN ruleFunctionCallParameters? CLOSE_PAREN #functionCall;
 ruleFunctionBody                 	: OPEN_BRACE declaration* stmt* CLOSE_BRACE #functionBody;
@@ -126,15 +136,15 @@ ruleVariableDeclaration		 : ruleIntDeclaration
 							 | ruleStringDeclaration 
 							 | ruleStringRefDeclaration
 							 ;
-ruleIntDeclaration			 : (EXTERN|STATIC)? INT ID (ASSIGN (INTLIT | CHARLIT))? #IntDeclaration;
-ruleIntArrayDeclaration		 : (EXTERN|STATIC)? INT ID OPEN_BRACKET INTLIT CLOSE_BRACKET #IntArrayDeclaration;
-ruleIntArrayRefDeclaration	 : (EXTERN|STATIC)? INT OPEN_BRACKET CLOSE_BRACKET ID #IntArrayRefDeclaration;
-ruleFloatDeclaration		 : (EXTERN|STATIC)? FLOAT ID (ASSIGN (INTLIT | CHARLIT))? #FloatDeclaration;
-ruleFloatArrayDeclaration	 : (EXTERN|STATIC)? FLOAT ID OPEN_BRACKET INTLIT CLOSE_BRACKET #FloatArrayDeclaration;
-ruleFloatArrayRefDeclaration : (EXTERN|STATIC)? FLOAT OPEN_BRACKET CLOSE_BRACKET ID #FloatArrayRefDeclaration;
-ruleCharDeclaration			 : (EXTERN|STATIC)? CHAR ID (ASSIGN (INTLIT | CHARLIT))? #CharDeclaration;
-ruleStringDeclaration		 : (EXTERN|STATIC)? CHAR ID OPEN_BRACKET INTLIT CLOSE_BRACKET (ASSIGN STRINGLIT)? #StringDeclaration;
-ruleStringRefDeclaration     : (EXTERN|STATIC)? CHAR OPEN_BRACKET CLOSE_BRACKET ID #StringRefDeclaration;
+ruleIntDeclaration			 : optStorageClass? INT ID (ASSIGN (INTLIT | CHARLIT))? #IntDeclaration;
+ruleIntArrayDeclaration		 : optStorageClass? INT ID OPEN_BRACKET INTLIT CLOSE_BRACKET #IntArrayDeclaration;
+ruleIntArrayRefDeclaration	 : optStorageClass? INT OPEN_BRACKET CLOSE_BRACKET ID #IntArrayRefDeclaration;
+ruleFloatDeclaration		 : optStorageClass? FLOAT ID (ASSIGN (INTLIT | CHARLIT))? #FloatDeclaration;
+ruleFloatArrayDeclaration	 : optStorageClass? FLOAT ID OPEN_BRACKET INTLIT CLOSE_BRACKET #FloatArrayDeclaration;
+ruleFloatArrayRefDeclaration : optStorageClass? FLOAT OPEN_BRACKET CLOSE_BRACKET ID #FloatArrayRefDeclaration;
+ruleCharDeclaration			 : optStorageClass? CHAR ID (ASSIGN (INTLIT | CHARLIT))? #CharDeclaration;
+ruleStringDeclaration		 : optStorageClass? CHAR ID OPEN_BRACKET INTLIT CLOSE_BRACKET (ASSIGN STRINGLIT)? #StringDeclaration;
+ruleStringRefDeclaration     : optStorageClass? CHAR OPEN_BRACKET CLOSE_BRACKET ID #StringRefDeclaration;
 
 
 // Term-related rules.
@@ -155,19 +165,20 @@ expr					: term #exprTerm  // General term (literal or var.)
 						| ID OPEN_BRACKET expr CLOSE_BRACKET #exprArray // Array dereference.        
 						| (INC_OP|DEC_OP) ID (OPEN_BRACKET expr CLOSE_BRACKET)? #exprPreOp	// Pre operators.
 						| ID (OPEN_BRACKET expr CLOSE_BRACKET)? (INC_OP|DEC_OP) #exprPostOp // Post operators.
-						| (PLUS_OP|MINUS_OP|NOT|BIT_NEG|SIZE_OP) expr #exprUnary // Unary operators.
+						| (PLUS_OP|MINUS_OP|NOT|BIT_NEG|SIZE_OP|ABS_OP) expr #exprUnary // Unary operators.
 						| <assoc=right> expr (POW_OP) expr #exprBinaryOp // Power operator.
 						| expr (MULTIPLY_OP | DIVIDE_OP | MODULO_OP) expr #exprBinaryOp // Multiply, divide, modulo.
 						| expr (PLUS_OP | MINUS_OP) expr #exprBinaryOp // Addition & subtraction.
-						| expr (BIT_SHIFT_LEFT | BIT_SHIFT_RIGHT) expr #exprBinaryOp // Bitwise shift left/right.
+						| expr (BIT_SHIFT_LEFT | BIT_SHIFT_RIGHT | BIT_ROTATE_LEFT | BIT_ROTATE_RIGHT) expr #exprBinaryOp // Bitwise shift/rotate left/right.
 						| expr (LESS_THAN_CMP | LESS_EQ_CMP | GREATER_THAN_CMP | GREATER_EQ_CMP) expr #exprBinaryOp // Comparison operators.
 						| expr (EQUAL_CMP | NOT_EQUAL_CMP) expr #exprBinaryOp // Comparison of equality.
 						| expr (BIT_AND) expr #exprBinaryOp // Bitwise AND
 						| expr (BIT_XOR) expr #exprBinaryOp // Bitwise XOR
 						| expr (BIT_OR) expr #exprBinaryOp // Bitwise OR
-						| expr AND expr #exprBinaryOp // Comparison of AND.
-						| expr OR expr #exprBinaryOp // Comparison of OR.
-						| (OPEN_PAREN ruleAssignStatement CLOSE_PAREN) #exprAssign
+						| expr (AND) expr #exprBinaryOp // Comparison of AND.
+						| expr (OR) expr #exprBinaryOp // Comparison of OR.
+						| expr (BI|IMP) expr #exprBinaryOp // Comparison of BI/IMP.
+						| ruleAssignStatement #exprAssign
 						; 
                           
 
@@ -185,20 +196,20 @@ ruleNewBlock 			: (OPEN_BRACE declaration* stmt* CLOSE_BRACE) #newBlock;
 
 // Assignment. While it's not a direct "statement", it's used as a statement rule to
 // make conditionals easier.
-ruleAssignStatement		: <assoc=right> ID (OPEN_BRACKET expr CLOSE_BRACKET)? ASSIGN (expr | term | ruleAssignStatement) #assignStatement;
+ruleAssignStatement		: <assoc=right> ID (OPEN_BRACKET expr CLOSE_BRACKET)? ASSIGN (expr | term) #assignStatement;
 
 // If statement with else.
 ruleIfStatement			: IF OPEN_PAREN ruleIfStatementCond CLOSE_PAREN (stmt | (OPEN_BRACE stmt* CLOSE_BRACE)) ruleElseStatement? #ifStatement;
-ruleIfStatementCond		: (ruleAssignStatement | expr) #ifStatementConditional;
+ruleIfStatementCond		: expr #ifStatementConditional;
 ruleElseStatement		: ELSE (stmt | (OPEN_BRACE stmt* CLOSE_BRACE)) #elseStatement;
 
 // While statement.
 ruleWhileStatement		: WHILE OPEN_PAREN ruleWhileStatementCond CLOSE_PAREN (stmt | (OPEN_BRACE stmt* CLOSE_BRACE)) #whileStatement;
-ruleWhileStatementCond	: (ruleAssignStatement | expr) #whileStatementConditional;
+ruleWhileStatementCond	: expr #whileStatementConditional;
 
 // For statement (same as while semantically).
-ruleForStatement		: FOR OPEN_PAREN (ruleAssignStatement SEMICOLON) ruleForStatementCond SEMICOLON (expr | ruleAssignStatement) CLOSE_PAREN (stmt | (OPEN_BRACE stmt* CLOSE_BRACE)) #forStatement;
-ruleForStatementCond	: (ruleAssignStatement | expr) #forStatementConditional;
+ruleForStatement		: FOR OPEN_PAREN (expr SEMICOLON) (ruleForStatementCond SEMICOLON) (expr) CLOSE_PAREN (stmt | (OPEN_BRACE stmt* CLOSE_BRACE)) #forStatement;
+ruleForStatementCond	: expr #forStatementConditional;
 
 // Return statement.
 ruleReturnStatement		: RETURN expr? #returnStatement;

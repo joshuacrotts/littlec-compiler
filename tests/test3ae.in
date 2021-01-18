@@ -1,0 +1,26 @@
+int x[18];
+
+void output(int d) {
+	printd(d);
+	prints(" ");
+}
+
+void outnl() {
+	prints("\n");
+}
+
+void cat(int[] x)
+{
+    output(x[3]); outnl();
+    if (x[3]>0) {
+        x[3] = x[3] - 1;
+        cat(x);
+    }
+    return;
+}
+
+void main()
+{
+    x[3] = 12;
+    cat(x);
+}

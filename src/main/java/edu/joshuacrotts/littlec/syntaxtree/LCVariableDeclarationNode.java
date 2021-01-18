@@ -4,19 +4,28 @@ import org.antlr.v4.runtime.ParserRuleContext;
 
 import edu.joshuacrotts.littlec.icode.ICInhAttr;
 import edu.joshuacrotts.littlec.icode.ICode;
+import edu.joshuacrotts.littlec.main.LCErrorListener;
 import edu.joshuacrotts.littlec.main.LCUtilities;
+import edu.joshuacrotts.littlec.main.StorageClass;
 import edu.joshuacrotts.littlec.main.SymbolEntry;
 import edu.joshuacrotts.littlec.main.SymbolTable;
+import edu.joshuacrotts.littlec.main.SymbolType;
 
 public class LCVariableDeclarationNode extends LCSyntaxTree {
 
-  /** Name of the variable for later reference. */
+  /** 
+   * Name of the variable for later reference. 
+   */
   private String id;
 
-  /** Type of variable that we're declaring. */
+  /** 
+   * Type of variable that we're declaring. 
+   */
   private String varType;
 
-  /** The literal value that we're assigning. Null if no lit. */
+  /** 
+   * The literal value that we're assigning. Null if no lit. 
+   */
   private Object literalValue;
 
   /**
@@ -32,12 +41,11 @@ public class LCVariableDeclarationNode extends LCSyntaxTree {
    * @param literalValue - object either of type int, char, or String.
    */
   public LCVariableDeclarationNode(ParserRuleContext ctx, SymbolTable symbolTable, String id, String varType,
-      String storageClass, Object literalValue) {
+      StorageClass storageClass, Object literalValue) {
     super("DECL", "void", id + " " + "(" + varType + ")" + (literalValue != null ? " = " + literalValue : ""));
     this.id = id;
     this.varType = varType;
     this.literalValue = literalValue;
-
     // If we don't have the symbol in the current environment table (which defines
     // the current scope, then we're good to add it (we can shadow it). 
     if (!symbolTable.hasSymbolInCurrentEnvironment(this.id)) {
@@ -46,17 +54,17 @@ public class LCVariableDeclarationNode extends LCSyntaxTree {
       // shadowing a variable or there's a function with the same name declared), then
       // we need to make sure it's not previously declared as a function.
       if (symbolTable.hasSymbol(this.id)) {
-        String symbolEntry = symbolTable.getSymbolEntry(this.id).getType();
-        if (symbolEntry.equals("FNDEF")) {
-          this.printError(ctx, this.id + " was previously declared as a function.");
+        SymbolType symbolEntryType = symbolTable.getSymbolEntry(this.id).getType();
+        if (symbolEntryType == SymbolType.FNDEF) {
+          LCErrorListener.syntaxError(ctx, this.id + " was previously declared as a function.");
           return;
         }
       }
 
-      symbolTable.addSymbol(this.id, new SymbolEntry("VAR", varType, storageClass));
+      symbolTable.addSymbol(this.id, new SymbolEntry(SymbolType.VAR, varType, storageClass));
       return;
     } else {
-      this.printError(ctx, this.id + " has already been declared in this scope.");
+      LCErrorListener.syntaxError(ctx, this.id + " has already been declared in this scope.");
     }
   }
 
@@ -110,7 +118,7 @@ public class LCVariableDeclarationNode extends LCSyntaxTree {
         info.ADDR = lLabel;
       }
     }
-    /* Otherwise, we insert the value as normal. */
+    // Otherwise, we insert the value as normal.
     else {
       int dataWidth = LCUtilities.getDataWidth(this.varType);
       String lit = this.literalValue == null ? "0" : this.literalValue.toString();

@@ -6,12 +6,15 @@ import org.antlr.v4.runtime.ParserRuleContext;
 
 import edu.joshuacrotts.littlec.icode.ICInhAttr;
 import edu.joshuacrotts.littlec.icode.ICode;
+import edu.joshuacrotts.littlec.main.LCErrorListener;
 import edu.joshuacrotts.littlec.main.LCUtilities;
 import edu.joshuacrotts.littlec.main.SymbolTable;
 
 public class LCFunctionCallNode extends LCSyntaxTree {
 
-  /* Identifier of function. */
+  /**
+   * Identifier of function. 
+   */
   private String id;
 
   /**
@@ -45,7 +48,7 @@ public class LCFunctionCallNode extends LCSyntaxTree {
     // If the two parameter declarations aren't the same size, then there's no point
     // of continuing.
     if (fnDefArgs.size() != parametersList.size()) {
-      this.printError(ctx, "function definition for " + id + " expects " + fnDefArgs.size()
+      LCErrorListener.syntaxError(ctx, "function definition for " + id + " expects " + fnDefArgs.size()
           + " arguments, but was given " + parametersList.size() + ".");
       return;
     }
@@ -55,7 +58,7 @@ public class LCFunctionCallNode extends LCSyntaxTree {
       // If we get to here and find a null value in the parameter list, we just bail
       // out.
       if (fnDefArgs.get(i) == null || parametersList.get(i) == null) {
-        this.printError(ctx, "parameter " + (i + 1) + " is null.");
+        LCErrorListener.syntaxError(ctx, "parameter " + (i + 1) + " is null.");
         return;
       }
 
@@ -68,7 +71,7 @@ public class LCFunctionCallNode extends LCSyntaxTree {
           LCTypeCastNode castingNode = new LCTypeCastNode(ctx, parametersList.get(i), fnArg);
           parametersList.set(i, castingNode);
         } else {
-          this.printError(ctx, "function call: declaration for function " + id + " parameter " + (i + 1) + " expects "
+          LCErrorListener.syntaxError(ctx, "function call: declaration for function " + id + " parameter " + (i + 1) + " expects "
               + fnArg + " but " + param + " was given.");
           return;
         }

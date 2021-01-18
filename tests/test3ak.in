@@ -1,0 +1,47 @@
+char gStr[100] = "Hello again!";
+int gInt = 2;
+
+void strcpy(char[] dst, char[] src) {
+    int i;
+    for (i=0; i<#src && i<#dst; i++) {
+        dst[i] = src[i];
+        if (dst[i] == '\0')
+            break;
+    }
+}
+
+void main() {
+	char lArray[500];
+	int k;
+	int x;
+	int y;
+	int z; 
+	int i;
+	int j = 5;
+	strcpy(lArray, gStr);
+	prints(lArray);
+	printc('\n');
+	
+	while (z < 2000) {
+		printd((z++ << 1) & 0xff + 0b1111);
+		prints("\n");
+		i = z ^ j++;
+		if (z < 50) {
+			printd(@(-z));
+			printc('\n');
+			printd(-z);
+			printc('\n');
+		} else if (z > 50 && z <= 100) {
+			printd((500 >> 1) + 0xabcd);
+			printc('\n');
+		} else {
+			z = z + 0b10;
+		}
+		y = (y << z ^ 25) + (0xffff & (z << 2));
+		k = 45 + 9999 * z / 24;
+	}
+	prints("This is the end.\n");
+	printd(2 ** 4 ** 2 == 1 >>> 16);
+	printc('\n');
+	printd(1 >>> 16);
+}

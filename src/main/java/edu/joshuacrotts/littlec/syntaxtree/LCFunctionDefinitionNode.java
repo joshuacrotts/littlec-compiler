@@ -11,10 +11,12 @@ import edu.joshuacrotts.littlec.icode.ActivationRecord;
 import edu.joshuacrotts.littlec.icode.ICInhAttr;
 import edu.joshuacrotts.littlec.icode.ICode;
 import edu.joshuacrotts.littlec.main.Environment;
-import edu.joshuacrotts.littlec.main.LCMasks;
+import edu.joshuacrotts.littlec.main.LCErrorListener;
 import edu.joshuacrotts.littlec.main.LCUtilities;
+import edu.joshuacrotts.littlec.main.StorageClass;
 import edu.joshuacrotts.littlec.main.SymbolEntry;
 import edu.joshuacrotts.littlec.main.SymbolTable;
+import edu.joshuacrotts.littlec.main.SymbolType;
 
 public class LCFunctionDefinitionNode extends LCSyntaxTree {
 
@@ -43,7 +45,7 @@ public class LCFunctionDefinitionNode extends LCSyntaxTree {
    * @param newScope     - Scope of this function call, the current LCSyntaxTree
    */
   public LCFunctionDefinitionNode(ParserRuleContext ctx, SymbolTable symbolTable, String id, String retType,
-      String storageClass, LinkedHashMap<String, String> args, LCSyntaxTree newScope) {
+      StorageClass storageClass, LinkedHashMap<String, String> args, LCSyntaxTree newScope) {
     super("FNDEF", retType, id);
     super.addChild(newScope);
 
@@ -58,7 +60,7 @@ public class LCFunctionDefinitionNode extends LCSyntaxTree {
     // If we don't have the symbol in the table, then we're good to add it. The
     // scope of a functions is always global.
     if (!symbolTable.hasSymbol(id)) {
-      symbolTable.addSymbol(id, new SymbolEntry("FNDEF", retType, storageClass, argsList));
+      symbolTable.addSymbol(id, new SymbolEntry(SymbolType.FNDEF, retType, storageClass, argsList));
     } else {
       // If the definition already exists, then it has to be a function prototype or
       // it's invalid.
@@ -127,23 +129,21 @@ public class LCFunctionDefinitionNode extends LCSyntaxTree {
    * @return true if parameters were matched without error, false otherwise.
    */
   private boolean checkParameterMatching(ParserRuleContext ctx, SymbolTable symbolTable, List<LCSyntaxTree> argsList,
-      String id, String retType, String storageClass) {
-    if (symbolTable.getSymbolEntry(id).getType().equals("FNPROTOTYPE")) {
+      String id, String retType, StorageClass storageClass) {
+    if (symbolTable.getSymbolEntry(id).getType() == SymbolType.FNPROTOTYPE) {
       // We first need to check if the return types match.
       String prototypeReturnType = symbolTable.getSymbolEntry(id).getVarType();
       if (!prototypeReturnType.equals(retType)) {
-        this.printError(ctx, "prototype function " + id + " expects return type " + prototypeReturnType
+        LCErrorListener.syntaxError(ctx, "prototype function " + id + " expects return type " + prototypeReturnType
             + ", but the declaration expects " + retType + ".");
-        this.setFlags(LCMasks.ERROR_MASK);
         return false;
       }
 
       // Next, we need to check that the storage classes match.
-      String prototypeStorageClass = symbolTable.getSymbolEntry(id).getStorageClass();
-      if (!prototypeStorageClass.equals(storageClass)) {
-        this.printError(ctx, "prototype function " + id + " expects a storage class of " + prototypeStorageClass
+      StorageClass prototypeStorageClass = symbolTable.getSymbolEntry(id).getStorageClass();
+      if (prototypeStorageClass != storageClass) {
+        LCErrorListener.syntaxError(ctx, "prototype function " + id + " expects a storage class of " + prototypeStorageClass
             + ", but the declaration expects " + storageClass + ".");
-        this.setFlags(LCMasks.ERROR_MASK);
         return false;
       }
 
@@ -154,9 +154,8 @@ public class LCFunctionDefinitionNode extends LCSyntaxTree {
       // If the two parameter declarations aren't the same size, then there's no point
       // of continuing.
       if (prototypeArgs.size() != argsList.size()) {
-        this.printError(ctx, "prototype function " + id + " expects " + prototypeArgs.size()
+        LCErrorListener.syntaxError(ctx, "prototype function " + id + " expects " + prototypeArgs.size()
             + " arguments, but the declaration expects " + argsList.size() + " arguments.");
-        this.setFlags(LCMasks.ERROR_MASK);
         return false;
       }
 
@@ -167,15 +166,15 @@ public class LCFunctionDefinitionNode extends LCSyntaxTree {
 
         // Here we run into a small problem with arrays but it's easily solvable.
         if (!fnArg.equals(param)) {
-          this.printError(ctx, "declaration for function " + id + " parameter " + (i + 1) + " expects " + fnArg
+          LCErrorListener.syntaxError(ctx, "declaration for function " + id + " parameter " + (i + 1) + " expects " + fnArg
               + " but function expects " + param + ".");
           return false;
         }
       }
 
-      symbolTable.addSymbol(id, new SymbolEntry("FNDEF", retType, storageClass, argsList));
+      symbolTable.addSymbol(id, new SymbolEntry(SymbolType.FNDEF, retType, storageClass, argsList));
     } else {
-      this.printError(ctx, id + " has already been declared in this scope.");
+      LCErrorListener.syntaxError(ctx, id + " has already been declared in this scope.");
       return false;
     }
 
@@ -211,7 +210,7 @@ public class LCFunctionDefinitionNode extends LCSyntaxTree {
         LCParameterDeclarationNode paramNode = new LCParameterDeclarationNode(ctx, varID, varDatatype);
 
         newScope.addChild(paramNode); // Creates the child
-        environment.addSymbol(varID, new SymbolEntry("VAR", varDatatype)); // Adds it to the local symbol table.
+        environment.addSymbol(varID, new SymbolEntry(SymbolType.VAR, varDatatype)); // Adds it to the local symbol table.
         info.append(varDatatype + ",");
       }
       info.setCharAt(info.length() - 1, ')');

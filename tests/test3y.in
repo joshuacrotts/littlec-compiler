@@ -1,0 +1,27 @@
+//
+// Tests global/local variables and mixed assignments.
+//
+// (NOTE: This does NOT work with Dr. Tate's interpreter - my modified one fixes the issue).
+//
+
+int x;
+int y;
+
+void printlnd(int d) {
+	printd(d);
+	prints("\n");
+}
+
+void main()
+{
+	int i = 753;
+	int j = 444;
+
+    x = 753;
+    y = 444;
+    printlnd(--x);
+    printlnd(x = y--);
+    
+	printlnd(--i);
+	printlnd(i = j--);
+}

@@ -575,12 +575,20 @@ public class CodeGeneration {
     progState.copyVal(op2Reg, op2);
 
     // Perform the binary op (power op uses different code).
-    if (!op.equals("**")) 
-      sb.append(MIPSInstruction.genBinaryOp(getMIPSBinaryOp(op), "" + resReg, "" + op1Reg, "" + op2Reg));
-    else {
+    if (op.equals("**")){
       MIPSReg op3Reg = progState.getNextAvailableRegister();
       sb.append(MIPSInstruction.genPowerBinaryOp("" + resReg, "" + op1Reg, "" + op2Reg, "" + op3Reg));
       progState.invalidate(op3Reg);
+    } else if (op.equals("<>")) {
+      MIPSReg op3Reg = progState.getNextAvailableRegister();
+      sb.append(MIPSInstruction.genBiconditionalBinaryOp("" + resReg, "" + op1Reg, "" + op2Reg, "" + op3Reg));
+      progState.invalidate(op3Reg);
+    } else if (op.equals("->")) {
+      MIPSReg op3Reg = progState.getNextAvailableRegister();
+      sb.append(MIPSInstruction.genImplicationBinaryOp("" + resReg, "" + op1Reg, "" + op2Reg, "" + op3Reg));
+      progState.invalidate(op3Reg);
+    } else {
+      sb.append(MIPSInstruction.genBinaryOp(getMIPSBinaryOp(op), "" + resReg, "" + op1Reg, "" + op2Reg));
     }
     
     // Store the result if we loaded in a new temporary for the destination.
@@ -859,6 +867,10 @@ public class CodeGeneration {
       return "sll";
     case ">>":
       return "sra";
+    case "<<<":
+      return "rol";
+    case ">>>":
+      return "ror";
     case "^":
       return "xor";
     default:
@@ -881,6 +893,8 @@ public class CodeGeneration {
       return "move";
     case "~":
       return "not";
+    case "@":
+      return "abs";
     case "-":
     case "!":
       return "negu";

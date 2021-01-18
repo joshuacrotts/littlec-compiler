@@ -1,0 +1,41 @@
+// C-F20
+
+void output(int d) {
+	printd(d);
+	prints(" ");
+}
+
+void outnl() {
+	prints("\n");
+}
+
+void main()
+{
+    int x;
+
+    if (1>0) output(13);
+    output(23);
+    outnl();
+
+    x = 0;
+    if (x>0) output(44);
+    if ( x==0) output(55);
+    outnl();
+
+    if (3>1) output(987);
+    if (3<1) output(211);
+    outnl();
+
+    if (1>0) output(13); else output(51);
+    if (0>0) output(23); else output(451);
+    outnl();
+
+    x = 0;
+    if (x>0) output(44); else output(514);
+    if ( x==0) output(55); else output(1514);
+    outnl();
+
+    if (3>1) output(987); else output(114);
+    if (3<1) output(211); else output(1614);
+    outnl();
+}

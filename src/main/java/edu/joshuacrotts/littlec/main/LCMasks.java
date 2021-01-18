@@ -30,32 +30,11 @@ public class LCMasks {
   public static final int EXPR_ASSIGN_MASK = 0x00000020;
 
   /**
-   * Multi-line mask is toggled if we enter a statement (if/for/while) with braces
-   * (i.e. it has multiple lines).
-   */
-  public static final int MULTI_LINE_MASK = 0x00001000;
-
-  /**
    * Cond mask is toggled if we enter the conditional of an if/for/while
    * statement.
    */
   public static final int COND_MASK = 0x00002000;
 
-  /** Void mask is toggled if the function we declare returns nothing. */
-  public static final int RETURN_VOID_MASK = 0x00100000;
-
-  /** Int mask is toggled if the function we declare returns an int. */
-  public static final int RETURN_INT_MASK = 0x00200000;
-
-  /** Char mask is toggled if the function we declare returns a char. */
-  public static final int RETURN_CHAR_MASK = 0x00400000;
-
   /** */
   public static final int WARNING_MASK = 0x40000000;
-  
-  /**
-   * Error mask is toggled whenever an error is encountered by the semantic
-   * checks. If this flag is set, then all other listeners terminate immediately.
-   */
-  public static final int ERROR_MASK = 0x80000000;
 }

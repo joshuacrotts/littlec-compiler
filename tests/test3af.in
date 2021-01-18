@@ -1,0 +1,24 @@
+void output(int d) {
+	printd(d);
+	prints(" ");
+}
+
+void outnl() {
+	prints("\n");
+}
+
+
+void main()
+{
+    int i;
+    int j;
+
+    i=j=23;
+    if (i>j) i=666;
+    if (j==i) i=666;
+    else j=777;
+
+    output(i);
+    output(j ** 2);
+    outnl();
+}

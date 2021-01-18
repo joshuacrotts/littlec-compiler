@@ -46,7 +46,7 @@ public class LCVariableIdentifierNode extends LCSyntaxTree {
     } else if (ICode.getTopAR().getGlobalVariable(this.id) != null) {
       e.ADDR = ICode.getTopAR().getGlobalVariable(this.id);
     } else {
-      throw new RuntimeException(id + "...Invalid variable ID location... how did you even get here?");
+      throw new RuntimeException(id + "Internal compiler error - Invalid variable ID location.");
     }
   }
 

@@ -11,6 +11,7 @@ import org.opentest4j.AssertionFailedError;
 
 import edu.joshuacrotts.littlec.exec.RunCode;
 import edu.joshuacrotts.littlec.icode.ICode;
+import edu.joshuacrotts.littlec.main.LCErrorListener;
 
 /**
  * Testing file for intermediate code generation (phase 4 of the
@@ -63,8 +64,9 @@ public class ICodeTester {
    * 
    * Removes the global [static] stack storage.
    */
-  public static void cleanup() {
+  private static void cleanup() {
     ICode.cleanup();
+    LCErrorListener.reset();
   }
 
   @Test
@@ -170,6 +172,86 @@ public class ICodeTester {
   @Test
   public void icTestU() {
     runICTest("test3u");
+  }
+
+  @Test
+  public void icTestV() {
+    runICTest("test3v");
+  }
+  
+  @Test
+  public void icTestW() {
+    runICTest("test3w");
+  }
+  
+  @Test
+  public void icTestX() {
+    runICTest("test3x");
+  }
+  
+  @Test
+  public void icTestY() {
+    runICTest("test3y");
+  }
+  
+  @Test
+  public void icTestZ() {
+    runICTest("test3z");
+  }
+  
+  @Test
+  public void icTestAA() {
+    runICTest("test3aa");
+  }
+  
+  @Test
+  public void icTestAB() {
+    runICTest("test3ab");
+  }
+  
+  @Test
+  public void icTestAC() {
+    runICTest("test3ac");
+  }
+  
+  @Test
+  public void icTestAD() {
+    runICTest("test3ad");
+  }
+  
+  @Test
+  public void icTestAE() {
+    runICTest("test3ae");
+  }
+  
+  @Test
+  public void icTestAF() {
+    runICTest("test3af");
+  }
+  
+  @Test
+  public void icTestAG() {
+    runICTest("test3ag");
+  }
+  
+  @Test
+  public void icTestAH() {
+    runICTest("test3ah");
+  }
+  
+  @Test
+  public void icTestAI() {
+    runICTest("test3ai");
+  }
+  
+  @Test
+  public void icTestAJ() {
+    runICTest("test3aj");
+  }
+  
+  @Test
+  public void icTestAK() {
+    runICTest("test3ak");
   }
   
   @Test

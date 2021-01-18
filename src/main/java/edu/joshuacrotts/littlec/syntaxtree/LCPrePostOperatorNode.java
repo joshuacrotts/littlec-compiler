@@ -27,7 +27,7 @@ public class LCPrePostOperatorNode extends LCSyntaxTree {
       LCSyntaxTree lvar) {
     super(type, lvarType);
 
-    /* One child for the lvalue being incremented or decremented. */
+    // One child for the lvalue being incremented or decremented.
     super.addChild(lvar);
   }
 

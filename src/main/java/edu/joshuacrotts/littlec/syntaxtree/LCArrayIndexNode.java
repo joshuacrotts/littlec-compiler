@@ -4,6 +4,7 @@ import org.antlr.v4.runtime.ParserRuleContext;
 
 import edu.joshuacrotts.littlec.icode.ICInhAttr;
 import edu.joshuacrotts.littlec.icode.ICode;
+import edu.joshuacrotts.littlec.main.LCErrorListener;
 import edu.joshuacrotts.littlec.main.LCUtilities;
 
 public class LCArrayIndexNode extends LCSyntaxTree {
@@ -29,7 +30,7 @@ public class LCArrayIndexNode extends LCSyntaxTree {
     super.addChild(arrayIdentifier);
 
     if (!(indexExpr.getType().equals("int")) && !(LCUtilities.isCastable(indexExpr.getType(), "int"))) {
-      this.printError(ctx, "array index expression is invalid.");
+      LCErrorListener.syntaxError(ctx, "array index expression is invalid.");
       return;
     }
 
